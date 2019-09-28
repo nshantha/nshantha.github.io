@@ -2,15 +2,54 @@
 # uncomment the urls if you wish to display them, and add your own URL
 
 # jazznotes.io
-- project: jazznotes.io
-  role: Founder & Primary Developer
-  duration: 2012 &mdash; Present
+- project: Global Remote Electronics Unit for Bombardier Global
+  role: Reviewer & Integration Tester
+  duration: Nov, 2018 &mdash; May, 2019
   # url: "#"
-  description: Jazz Notes is an open source node/ember app that helps you keep track of your music compositions and new ideas.
+  description: Verified control and monitoring of all primary and secondary flight controls, through an integrated Fly-By-Wire control system where PFCC’s receive pilot commands from the IIM’s and the AFCU which performs sensor selection and voting to calculate appropriate surface commands based on the PFCC State control laws.
+              •	Analyzed requirements as per Software Detail Design (SWDD), and prepared test plans from High-Level Requirement (HLR) for Remote Electronics Unit in Bombardier Aircrafts
+              •	Conducted Software-Software Integration Testing to prepare test scripts in Vector Cast tool from test plans, and executed it in code composer and Visual DSP simulator environment
+              •	Conducted technical reviews of test plans, scripts, results, and HLR reviews with respect to system requirement; designed reviews to reduce error rate by ~70% and improve the quality of the plans
 
-# Springfield Community Outreach Group
-- project: Springfield Community Outreach Group
-  role: Co-Founder & Organizer
-  duration: 2007 &mdash; Present
+
+- project: Electronic Engine Controller for Rolls Royce Trent 7000
+  role: Reviewer & Integration Tester
+  duration: May, 2018 &mdash; Aug, 2018
   # url: "#"
-  description: SCOG is a local monthly meetup in Springfield where we share opportunities to volunteer in the community and organize support for families and neighborhoods in need of assistance that the community can provide.
+  description: Controlled aspects of aircraft engine performance (air density, throttle lever position, engine temperatures, and engine pressures) and parameters like power output and fuel flow
+              •	Analyzed requirements as per Software Detail Design (SWDD); prepared test plans from High-Level Requirement (HLR) for engine temperature and pressure
+              •	Conducted Hardware-Software Integration Testing to prepare test script in CUTE tool and produce Ada-Test Harness file
+              •	Executed Ada-Test Harness file in Ada-Test Harness Environment and RAPITA (target environment) to provide real-time verification solutions
+
+- project: Doors and Slides Management System (DSMS) for Airbus A380
+  role: Reviewer & Integration Tester
+  duration: Jan, 2018 &mdash; April, 2018
+  # url: "#"
+  description: Verifying control unit of the DSMS installed in the avionics bay of various types of aircraft with different sets of doors to be monitored.  Verifying handling of DSMCU by software pin programming interface via the AFDX Bus.
+              •	Analyzing requirements as per Software Design (SWDD), and performing black box testing in RTRT for low level requirements for the interface between AFDX bus and DSMCU.
+              •	Conducting Expert and Audit reviews of developers test scripts to identify quality issues and to reduce customer feedback on deliverable artifacts and for certification purposes
+              •	Mentoring 3 engineers for queries and test related and process related issues in the project.
+
+- project: Graphics Processing Modules (Open GL library)
+  role: Developer and Unit Tester
+  duration: Jan, 2017 &mdash; July, 2018
+  # url: "#"
+  description: •	Designed ARINC protocol implementation to interface display heads and worked on system design implementation of ~10 processing modules
+               •	Conducted Unit testing using VectorCast of ~25 core Open graphics library modules written in C++ for safety and reliability according to DO178B- Level A standards
+               •	Improved efficiency by ~50% through test case reviews and raised problem reports regarding concerns in the modules
+
+- project: EDCU Pilatus
+  role: Developer and Integration Tester
+  duration: Sep, 2016 &mdash; Dec, 2017
+  # url: "#"
+  description: Verified input and output from Engine Data Concentrator Unit (EDCU) to convert data from aircraft and engine sensors into digital format provided over arinc-429 interface to flight displays to know intricacies of flight data
+              •	Conducted requirement analysis of functionalities (gas, oil temperatures and Tachometer information) to ensure positive software functionality and real-time condition tracking
+              •	Conducted scenario and simulation tests to meet software design requirements (for safety and reliability of primary and redundant engines) for certification by FAA according to DO178B- Level A standards
+
+- project: (Course Project) Object Recognition and Sorting Robot
+  role: Developer
+  duration: Sep, 2016 &mdash; Dec, 2017
+  # url: "#"
+  description: Designed a robot to recognize and sort objects based on color by sending commands to the robotic arm
+              •	Executed color recognition using the camera by sending resolution inputs to MATLAB to distinguish object color
+              •	Programmed in MPLAB IDE and used PIC18F452 microcontroller; achieved an accuracy of 95%
