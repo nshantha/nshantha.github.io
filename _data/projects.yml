@@ -2,17 +2,17 @@
 # uncomment the urls if you wish to display them, and add your own URL
 
 # jazznotes.io
-- project: Global Remote Electronics Unit for Bombardier Global
+- project: Global Remote Electronics Unit
   role: Reviewer & Integration Tester
   duration: Nov, 2018 &mdash; May, 2019
   # url: "#"
-  description: Verified control and monitoring of all primary and secondary flight controls, through an integrated Fly-By-Wire control system where PFCC’s receive pilot commands from the IIM’s and the AFCU which performs sensor selection and voting to calculate appropriate surface commands based on the PFCC State control laws.
+  description: Verified control and monitoring of all primary and secondary flight controls, through an integrated Fly-By-Wire control system where PFCC’s receive pilot commands from the IIM’s and the AFCU which performs sensor selection and voting to calculate appropriate surface commands based on the PFCC State control laws.</br>
               •	Analyzed requirements as per Software Detail Design (SWDD), and prepared test plans from High-Level Requirement (HLR) for Remote Electronics Unit in Bombardier Aircrafts
               •	Conducted Software-Software Integration Testing to prepare test scripts in Vector Cast tool from test plans, and executed it in code composer and Visual DSP simulator environment
               •	Conducted technical reviews of test plans, scripts, results, and HLR reviews with respect to system requirement; designed reviews to reduce error rate by ~70% and improve the quality of the plans
 
 
-- project: Electronic Engine Controller for Rolls Royce Trent 7000
+- project: Electronic Engine Controller
   role: Reviewer & Integration Tester
   duration: May, 2018 &mdash; Aug, 2018
   # url: "#"
@@ -21,7 +21,7 @@
               •	Conducted Hardware-Software Integration Testing to prepare test script in CUTE tool and produce Ada-Test Harness file
               •	Executed Ada-Test Harness file in Ada-Test Harness Environment and RAPITA (target environment) to provide real-time verification solutions
 
-- project: Doors and Slides Management System (DSMS) for Airbus A380
+- project: Doors and Slides Management System
   role: Reviewer & Integration Tester
   duration: Jan, 2018 &mdash; April, 2018
   # url: "#"
