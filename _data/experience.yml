@@ -2,11 +2,17 @@
 # VP of Global Communications
 - company: Ak Aerotek Software Centre Pvt Ltd
   position: Senior Software Engineer
-  duration: May, 2016 &mdash; May, 2019
-  summary: |
-           •	Assessing verifiability of software requirement to ensure its robust design
-           •	Conducting requirement-based host and target testing covering Black Box and White Box Testing for Level “A” projects adhering to DO-178B/C standards.
-           •	Conducting Reviews for output deliverables from the SDLC.
+  duration: Jan, 2018 &mdash; May, 2019
+  summary: •	Assessed verifiability of software requirements to ensure its robust design and conducted Reviews for output deliverables.</br>
+           •	Participated and lead quality audits conducted by the customer as well as the FAA for improved product quality.</br>
+           •	Conducted requirement-based host and target testing covering HSIT, SSIT and UT for Level “A” projects.</br>
+           <ul class="resume-item-list">
+
+- company: Ak Aerotek Software Centre Pvt Ltd
+  position: Software Engineer
+  duration: May, 2016 &mdash; Dec, 2017
+  summary: •	Conducted requirement-based host and target testing covering Black Box and White Box Testing a/c to DO-178B/C standards.</br>
+           •	Implemented code for modified requirements for software design.</br>
            <ul class="resume-item-list">
 
 # # Director of Digital Stratgy
