@@ -3,22 +3,19 @@
 
 - project: Grid Localization using Bayes Filter (ROS, Python)
   # url: "#"
-  description: 
-              • Performed Grid localization which is a form of discrete Bayes localization with messages recorded with Rosbag and visualized in Rviz</br>
+  description: Performed Grid localization which is a form of discrete Bayes localization with messages recorded with Rosbag and visualized in Rviz</br>
               •	Performed localization in an occupancy grid map where the algorithm finds out the probabilities of robot’s presence in each cell.</br>
 
 
 
 - project: A* Global Planning and Execution  (ROS, Python)
   # url: "#"
-  description: 
-              • Autonomously planned and executed a path for a robot in the stage simulator from start location to goal location, given a map.</br>
+  description: Autonomously planned and executed a path for a robot in the stage simulator from start location to goal location, given a map.</br>
               •	The global plan is A* and the local planning is done using a modified Vector field histogram (VFH)</br>
               
 - project: Projects on Convolutional Neural Networks(Python, Google Colab, Tensorflow, Keras) 
   # url: "#"
-  description:
-              •	Implemented Resnet-50 using Keras and Tensorflow and implemented Transfer learning.</br>
+  description: Implemented Resnet-50 using Keras and Tensorflow and implemented Transfer learning.</br>
               •	Understood and Implemented Detection algorithms like sliding windows and bounding box predictions and optimizing those with using Non-max suppression, anchor boxes and IOU.</br>
               •	Implemented YOLO V2 algorithm for Car detection using Tensorflow and Keras.</br>
               •	Implemented Facial Verification and Recognition algorithms using algorithms like Siamese network and implemented Neural Style Transfer where content and style cost function where implemented from scratch.</br>
