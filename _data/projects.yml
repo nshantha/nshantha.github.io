@@ -4,7 +4,7 @@
 - project: Grid Localization using Bayes Filter (ROS, Python)
   # url: "#"
   description: Performed Grid localization which is a form of discrete Bayes localization with messages recorded with Rosbag and visualized in Rviz</br>
-              •	Performed localization in an occupancy grid map where the algorithm finds out the probabilities of robot’s presence in each cell.</br>
+              •	Performed localization in an occupancy grid map where the algorithm finds out the probabilities of robot’s presence in each cell.</br>                         
 
 - project: A* Global Planning and Execution  (ROS, Python)
   # url: "#"
