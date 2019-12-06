@@ -2,6 +2,8 @@
 - degree: Master of Science, Robotics
   uni: University at Buffalo
   year: 2019 &mdash; 2021
+  courses: Robotic Algorithms, Robot Motion and Control,
+           Intro to Machine Learning, Continuous Control Systems
   # awards:
   #   - award: Summa Cumme Laude graduate
   # summary: If you had any meaningful roles at college, feel free to write about them here
@@ -9,3 +11,12 @@
 - degree: Bachelor of Engineering, Electronics and Communications Eng.
   uni: Visvesvaraya Technological University
   year: 2011 &mdash; 2015
+  
+- certificate: Embedded Software Developer
+  credential by: Vimarshana Technologies
+  year: 2015
+  course content: Data Structures, 
+                  Linux device drivers- multi-thread programming,
+                                        memory management, socket programming, performing bitbake on Intel Edison
+                                        board and implementing USB camera application using V4L2 API's and
+                                        understanding the V4L2 Camera framework.
