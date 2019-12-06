@@ -2,6 +2,8 @@
 # uncomment the urls if you wish to display them, and add your own URL
 
 - project: Grid Localization using Bayes Filter (ROS, Python)
+  # role: Reviewer & Integration Tester
+  # duration: Nov, 2018 &mdash; May, 2019
   # url: "#"
   description: Performed Grid localization which is a form of discrete Bayes localization with messages recorded with Rosbag and visualized in Rviz</br>
               •	Performed localization in an occupancy grid map where the algorithm finds out the probabilities of robot’s presence in each cell.</br>                         
