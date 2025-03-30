@@ -94,7 +94,7 @@ const Home = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-textLight dark:text-textDark">
-              Hey, I'm <span className="uppercase">Nitesh</span>
+              Hello, I'm <span className="uppercase">Nitesh</span>
             </h1>
           </motion.div>
           
