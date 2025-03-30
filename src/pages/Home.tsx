@@ -119,7 +119,7 @@ const Home = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <h2 className="text-xl md:text-2xl mt-4 text-textLight dark:text-textDark font-light tracking-wide">
-              Engineer | Architect | Distributed Systems
+              Backend Engineer | AI Enthusiast
             </h2>
           </motion.div>
           
