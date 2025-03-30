@@ -32,24 +32,25 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: NavbarProps) => {
     setIsMenuOpen(false)
   }, [location])
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMenuOpen])
+
   const toggleMenu = () => setIsMenuOpen(prev => !prev)
 
   return (
     <>
       {/* Mobile Menu Button - Fixed at the top for mobile */}
-      <div className="fixed top-4 left-4 z-50 flex items-center md:hidden">
-        <button 
-          onClick={toggleDarkMode}
-          className="p-2 mr-2 rounded-full bg-white/90 dark:bg-primary/90 hover:bg-gray-200 dark:hover:bg-gray-700/50 shadow-md"
-          aria-label="Toggle dark mode"
-        >
-          {isDarkMode ? (
-            <FiSun className="text-yellow-400 w-5 h-5" />
-          ) : (
-            <FiMoon className="text-gray-700 w-5 h-5" />
-          )}
-        </button>
-        
+      <div className="fixed top-4 right-4 z-50 flex items-center md:hidden">
         <button
           onClick={toggleMenu}
           className="p-2 rounded-md bg-white/90 dark:bg-primary/90 hover:bg-gray-200 dark:hover:bg-gray-700/50 shadow-md"
@@ -128,36 +129,48 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: NavbarProps) => {
         </div>
       </header>
       
-      {/* Mobile Menu - Slide in from left */}
+      {/* Mobile Menu - Full screen overlay with content */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ x: '-100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed top-0 left-0 h-full w-64 bg-white dark:bg-primary shadow-lg z-40 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-white dark:bg-primary z-40 md:hidden overflow-auto"
           >
-            <div className="flex flex-col h-full p-6">
-              <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col h-full p-6 pt-16">
+              {/* Logo */}
+              <div className="mb-8 mt-2">
                 <Link to="/" className="text-2xl font-bold text-gray-800 dark:text-white">
                   Nitesh Shantha Kumar
                 </Link>
-                <button
-                  onClick={toggleMenu}
-                  className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700/50"
-                  aria-label="Close menu"
+              </div>
+              
+              {/* Dark Mode Toggle in Mobile Menu */}
+              <div className="mb-8">
+                <button 
+                  onClick={toggleDarkMode}
+                  className="p-2 rounded-full bg-gray-100 dark:bg-gray-800/50 hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-colors duration-300"
+                  aria-label="Toggle dark mode"
                 >
-                  <FiX className="w-6 h-6 text-gray-800 dark:text-white" />
+                  {isDarkMode ? (
+                    <FiSun className="text-yellow-400 w-5 h-5" />
+                  ) : (
+                    <FiMoon className="text-gray-700 w-5 h-5" />
+                  )}
+                  <span className="ml-2 text-gray-800 dark:text-white">
+                    {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                  </span>
                 </button>
               </div>
               
-              <nav className="flex flex-col space-y-4">
+              <nav className="flex flex-col space-y-6">
                 {navLinks.map((link) => (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`py-2 px-3 rounded-md flex items-center transition-colors duration-300 ${
+                    className={`py-2 px-3 text-lg rounded-md flex items-center transition-colors duration-300 ${
                       location.pathname === link.path
                         ? 'text-accent font-medium' 
                         : 'text-gray-800 dark:text-textDark hover:text-highlight dark:hover:text-highlight'
@@ -171,7 +184,7 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: NavbarProps) => {
                 ))}
                 
                 {/* Social Links for Mobile */}
-                <div className="pt-4 mt-2">
+                <div className="pt-6 mt-2">
                   <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 px-3">Connect With Me</p>
                   <div className="flex px-3 space-x-5">
                     {socialLinks.map((link) => (
@@ -192,20 +205,6 @@ const Navbar = ({ isDarkMode, toggleDarkMode }: NavbarProps) => {
               </nav>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-      
-      {/* Overlay when mobile menu is open */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/50 z-30 md:hidden"
-            onClick={toggleMenu}
-          />
         )}
       </AnimatePresence>
     </>

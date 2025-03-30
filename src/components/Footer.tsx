@@ -17,7 +17,7 @@ const Footer = ({ className = '' }: FooterProps) => {
   
   return (
     <footer className={`bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 ${className}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center md:justify-start space-x-6">
             {socialLinks.map((link) => (
@@ -35,17 +35,18 @@ const Footer = ({ className = '' }: FooterProps) => {
             ))}
           </div>
           
-          <div className="mt-8 md:mt-0">
-            <nav className="flex flex-wrap justify-center md:justify-end space-x-6 text-sm">
+          <div className="mt-6 md:mt-0">
+            <nav className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6 text-sm">
               <Link to="/" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">Home</Link>
               <Link to="/about" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">About</Link>
               <Link to="/projects" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">Projects</Link>
-              <Link to="/contact" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">Contact</Link>
+              <Link to="/blog" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">Blog</Link>
+              <Link to="/resume" className="text-gray-600 hover:text-secondary dark:text-gray-400 dark:hover:text-secondary">Resume</Link>
             </nav>
           </div>
         </div>
         
-        <div className="mt-8 border-t border-gray-200 dark:border-gray-800 pt-8">
+        <div className="mt-6 md:mt-8 border-t border-gray-200 dark:border-gray-800 pt-6 md:pt-8">
           <p className="text-center text-gray-500 dark:text-gray-400 text-sm">
             &copy; {currentYear} Nitesh Shantha Kumar. All rights reserved.
           </p>

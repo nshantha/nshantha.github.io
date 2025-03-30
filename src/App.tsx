@@ -141,7 +141,7 @@ function App() {
       <Router>
         <div className="min-h-screen flex flex-col">
           <Navbar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-          <main className="flex-grow md:pl-64 transition-all duration-300">
+          <main className="flex-grow md:pl-64 pt-16 md:pt-0 transition-all duration-300">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />

@@ -12,7 +12,7 @@ const fallbackProjectsData: Project[] = [
     description: "A SQL query generator powered by AI that helps users create complex database queries using natural language input.",
     technologies: ["Python", "AI/ML", "SQL", "Natural Language Processing"],
     github: "https://github.com/nshantha/SqlAI",
-    featured: true
+    featured: false
   },
   {
     id: 2,
@@ -20,7 +20,7 @@ const fallbackProjectsData: Project[] = [
     description: "An AI-powered research assistant that helps researchers find and summarize academic papers, generate insights, and track research progress.",
     technologies: ["Python", "AI/ML", "NLP", "PDF Processing"],
     github: "https://github.com/nshantha/ai_research_assistant",
-    featured: true
+    featured: false
   },
   {
     id: 3,
@@ -28,7 +28,7 @@ const fallbackProjectsData: Project[] = [
     description: "An intelligent cybersecurity assistant that uses ML techniques to detect and respond to security threats and vulnerabilities.",
     technologies: ["Jupyter Notebook", "Python", "TensorFlow", "Cybersecurity"],
     github: "https://github.com/nshantha/CyberSageAI",
-    featured: true
+    featured: false
   },
   {
     id: 4,
