@@ -17,18 +17,33 @@ const Home = () => {
   // Set featured projects from context
   useEffect(() => {
     if (pinnedProjects.length > 0) {
-      // Get the first 6 pinned projects (or all if less than 6)
-      const displayProjects = pinnedProjects.slice(0, 6);
-      console.log("Number of projects to display:", displayProjects.length);
+      // Convert project titles to a Set to track which ones we've already included
+      const includedProjects = new Set();
+      
+      // First, include GitHub pinned projects (up to 6)
+      const displayProjects = pinnedProjects
+        .filter(project => {
+          // Only include each project once
+          if (includedProjects.has(project.title)) {
+            return false;
+          }
+          includedProjects.add(project.title);
+          return true;
+        })
+        .slice(0, 6);
+      
+      console.log("Number of projects to display from GitHub:", displayProjects.length);
       
       // If we have less than 6 projects from GitHub, supplement with fallback projects
       if (displayProjects.length < 6) {
         console.log("Supplementing with fallback projects");
-        // Add fallback projects to fill the missing slots
+        
+        // Add fallback projects that haven't already been included
         const fallbackProjectsToAdd = fallbackProjects
+          .filter(p => !includedProjects.has(p.title))
           .slice(0, 6 - displayProjects.length)
           .map((p, i) => ({ 
-            id: 1000 + i, // Use a high ID to avoid conflicts 
+            id: 1000 + i, // Use a high ID to avoid conflicts
             title: p.title, 
             description: p.description, 
             technologies: [p.category], 
@@ -166,20 +181,21 @@ const Home = () => {
                   id: i, 
                   title: p.title, 
                   description: p.description, 
-                  technologies: [], 
+                  technologies: [p.category], 
                   github: p.github, 
                   featured: true 
                 }))).slice(0, 6).map((project, index) => {
-                  // Determine project category based on technologies or fallback data
-                  const projectCategory = featuredProjects.length > 0 
-                    ? (project.technologies[0] || "PROJECT")
-                    : fallbackProjects[index]?.category || "PROJECT";
+                  // Find the matching fallback project for additional data
+                  const matchingFallback = fallbackProjects.find(p => p.title === project.title);
                   
-                  console.log(`Rendering project ${index + 1}:`, project.title);
+                  // Determine project category
+                  const projectCategory = project.technologies && project.technologies.length > 0
+                    ? project.technologies[0]
+                    : matchingFallback?.category || "PROJECT";
                   
                   return (
                     <a 
-                      key={index} 
+                      key={project.id} 
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
