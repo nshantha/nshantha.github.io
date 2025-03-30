@@ -53,6 +53,14 @@ function App() {
   useEffect(() => {
     let isMounted = true;
     
+    // Add a timeout to ensure we don't wait forever
+    const loadingTimeout = setTimeout(() => {
+      if (isMounted && !isLoaded) {
+        console.log('Loading timeout reached, using fallback data');
+        setIsLoaded(true);
+      }
+    }, 5000); // 5 second timeout
+    
     const preloadProjects = async () => {
       try {
         console.log('Preloading GitHub projects data...');
@@ -75,6 +83,11 @@ function App() {
           }
           
           console.log('GitHub projects data preloaded successfully');
+          if (isMounted) {
+            setIsLoaded(true);
+          }
+        } else {
+          // No repositories found, mark as loaded to show fallback data
           if (isMounted) {
             setIsLoaded(true);
           }
@@ -105,6 +118,7 @@ function App() {
     // Cleanup function
     return () => {
       isMounted = false;
+      clearTimeout(loadingTimeout);
     };
   }, []);
 

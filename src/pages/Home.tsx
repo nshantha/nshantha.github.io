@@ -6,10 +6,21 @@ import { Project } from "../utils/githubApi";
 import { ProjectLoadingContext } from "../App";
 
 const Home = () => {
-  const [mounted, setMounted] = useState(false);
-  const { isLoaded, pinnedProjects } = useContext(ProjectLoadingContext);
+  const { isLoaded: contextLoaded, pinnedProjects } = useContext(ProjectLoadingContext);
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
+  const [mounted, setMounted] = useState(false);
+  // Add a local loading state that we can control
+  const [localLoaded, setLocalLoaded] = useState(contextLoaded);
+  
+  // Use a combined loading state (either from context or local)
+  const isLoaded = contextLoaded || localLoaded;
 
+  // Keep our local loading state in sync with the context
+  useEffect(() => {
+    setLocalLoaded(contextLoaded);
+  }, [contextLoaded]);
+
+  // Mount animation effect
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -167,18 +178,26 @@ const Home = () => {
           
           {!isLoaded ? (
             <div className="flex flex-col items-center justify-center min-h-[300px]">
-              {/* Spinner animation */}
+              {/* Spinner animation with a timeout */}
               <div className="animate-spin h-12 w-12 mb-4 relative">
                 <div className="h-full w-full border-t-2 border-b-2 border-white rounded-full absolute"></div>
                 <div className="h-full w-full border-l-2 border-r-2 border-transparent border-t-white rounded-full animate-spin absolute" style={{ animationDuration: '1s' }}></div>
               </div>
               <p className="text-lg text-gray-300">Loading projects from GitHub...</p>
+              
+              {/* Add a fallback that will appear after a short delay */}
+              <button 
+                onClick={() => setLocalLoaded(true)}
+                className="mt-6 text-accent hover:underline"
+              >
+                Show fallback projects instead
+              </button>
             </div>
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {(featuredProjects.length > 0 ? featuredProjects : fallbackProjects.map((p, i) => ({ 
-                  id: i, 
+                  id: 1000 + i, 
                   title: p.title, 
                   description: p.description, 
                   technologies: [p.category], 
