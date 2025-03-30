@@ -57,17 +57,10 @@ const isCacheValid = <T>(cache: Record<string, T>, key: string): boolean => {
  * @returns The headers object for fetch requests
  */
 const createApiHeaders = (): HeadersInit => {
+  // Use minimal headers for public access
   const headers: HeadersInit = {
     'Accept': 'application/vnd.github.v3+json'
   };
-  
-  // Use environment variable if available (preferred in production)
-  // Use import.meta.env for Vite projects
-  const token = import.meta.env.VITE_GITHUB_TOKEN;
-  
-  if (token) {
-    headers['Authorization'] = `token ${token}`;
-  }
   
   return headers;
 };
