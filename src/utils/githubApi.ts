@@ -63,7 +63,7 @@ const createApiHeaders = (): HeadersInit => {
   
   // Use environment variable if available (preferred in production)
   // Use import.meta.env for Vite projects
-  const token = import.meta.env.VITE_GITHUB_TOKEN || '';
+  const token = import.meta.env.VITE_GITHUB_TOKEN;
   
   if (token) {
     headers['Authorization'] = `token ${token}`;
@@ -95,10 +95,8 @@ export const fetchGitHubRepositories = async (username: string): Promise<Reposit
     );
     
     if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      const errorMessage = errorData?.message || response.statusText;
-      console.error(`GitHub API error: ${errorMessage}`);
-      throw new Error(`Failed to fetch repositories: ${response.status} - ${errorMessage}`);
+      console.error(`GitHub API error: ${response.statusText}`);
+      throw new Error(`Failed to fetch repositories: ${response.status}`);
     }
     
     const data = await response.json();
@@ -109,6 +107,7 @@ export const fetchGitHubRepositories = async (username: string): Promise<Reposit
     return data;
   } catch (error) {
     console.error('Error fetching GitHub repositories:', error);
+    // Return empty array on error - fallback data will be used
     return [];
   }
 };
@@ -322,6 +321,11 @@ export const fetchPinnedRepositories = async (username: string): Promise<Reposit
   try {
     // First, get all repositories to have access to repo details
     const allRepos = await fetchGitHubRepositories(username);
+    
+    if (allRepos.length === 0) {
+      console.log('No repositories found, using fallback data');
+      return [];
+    }
     
     // Based on the GitHub pinned repos from search results, these are the pinned repos for the user:
     const pinnedRepoNames = [

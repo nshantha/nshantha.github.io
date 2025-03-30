@@ -94,11 +94,43 @@ To customize the GitHub username:
 
 This site is configured for easy deployment to GitHub Pages:
 
-```
-npm run build
-```
+1. Install the gh-pages package if you haven't already:
+   ```
+   npm install --save-dev gh-pages
+   ```
 
-Then push the contents of the `dist` folder to the `gh-pages` branch of your repository.
+2. Make sure your package.json has these scripts:
+   ```json
+   "scripts": {
+     "predeploy": "npm run build",
+     "deploy": "gh-pages -d dist"
+   }
+   ```
+
+3. Set the homepage in package.json:
+   ```json
+   "homepage": "https://nshantha.github.io/"
+   ```
+
+4. Configure GitHub token for API access (optional):
+   - Create a `.env` file based on `.env.example`
+   - Add your GitHub token with public repo access
+
+5. Run the deployment command:
+   ```
+   npm run deploy
+   ```
+
+This will build the project and push it to the `gh-pages` branch of your repository.
+
+### Troubleshooting GitHub Pages Deployment
+
+If your site is not loading properly on GitHub Pages, check the following:
+
+1. Make sure you're using HashRouter instead of BrowserRouter in App.tsx
+2. Check that all asset paths in index.html use relative paths (./assets) instead of absolute paths (/assets)
+3. Verify that your repository settings have GitHub Pages enabled and pointing to the gh-pages branch
+4. Check for any token exposure issues in the GitHub Security tab
 
 ## License
 

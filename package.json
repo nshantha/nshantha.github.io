@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "https://nshantha.github.io/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -26,6 +27,7 @@
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "framer-motion": "^12.6.2",
+    "gh-pages": "^6.3.0",
     "globals": "^15.15.0",
     "postcss": "^8.5.3",
     "react-icons": "^5.5.0",
