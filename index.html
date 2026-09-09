@@ -278,6 +278,69 @@
     .contact .button:hover { background: white; border-color: white; color: var(--ink); }
     .contact .button.secondary { background: transparent; border-color: #66727b; color: white; }
     .contact .button.secondary:hover { background: white; color: var(--ink); border-color: white; }
+    .contact-email { margin: 0 0 24px; }
+    .contact-email-label {
+      display: block;
+      margin-bottom: 7px;
+      color: #94a1aa;
+      font: 400 11px/1.4 var(--mono);
+    }
+    .email-address-row { display: flex; flex-wrap: wrap; align-items: center; gap: 9px 12px; }
+    .email-address {
+      color: white;
+      font: 500 15px/1.4 var(--mono);
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+    .copy-email {
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid #66727b;
+      background: transparent;
+      color: white;
+      font: 500 11px/1 var(--mono);
+      cursor: pointer;
+    }
+    .copy-email:hover { background: white; border-color: white; color: var(--ink); }
+    .copy-status { min-height: 17px; color: #94c9de; font: 400 11px/1.4 var(--mono); }
+    .email-picker { position: relative; display: inline-flex; }
+    .email-provider-menu {
+      position: absolute;
+      z-index: 10;
+      left: 0;
+      bottom: calc(100% + 10px);
+      width: min(320px, calc(100vw - 30px));
+      padding: 8px;
+      border: 1px solid #66727b;
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 0 18px 40px rgb(0 0 0 / .24);
+    }
+    .email-provider-menu[hidden] { display: none; }
+    .email-provider-title { margin: 4px 6px 8px; color: var(--muted); font: 500 11px/1.4 var(--mono); }
+    .email-provider-menu a {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 52px;
+      padding: 8px 9px;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .email-provider-menu a:hover { background: var(--surface); color: var(--blue); }
+    .provider-mark {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      color: var(--accent);
+      font: 600 12px/1 var(--mono);
+    }
+    .provider-name { font-weight: 600; line-height: 1.2; }
+    .provider-detail { display: block; margin-top: 2px; color: var(--muted); font: 400 10px/1.3 var(--mono); }
+    .provider-arrow { color: var(--accent); font-size: 17px; }
 
     footer { background: var(--ink); color: #9ca6ad; }
     .footer-inner { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-top: 1px solid #33404a; font: 400 12px/1.4 var(--mono); }
@@ -338,6 +401,9 @@
       .skill-group, .skill-group + .skill-group { padding: 26px 0; border-right: 0; border-bottom: 1px solid var(--line); }
       .skill-group:last-child { border-bottom: 0; }
       .contact h2 { font-size: 46px; }
+      .email-picker { display: flex; flex-direction: column; }
+      .email-picker > .button { width: 100%; }
+      .email-provider-menu { position: static; order: 2; width: 100%; margin-top: 10px; box-shadow: none; }
       .footer-inner { min-height: 110px; align-items: flex-start; flex-direction: column; justify-content: center; gap: 9px; }
       .footer-links { flex-wrap: wrap; }
     }
@@ -356,7 +422,7 @@
         <a href="#experience">Experience</a>
         <a href="#work">Selected work</a>
         <a href="#skills">Toolkit</a>
-        <a class="nav-cta" href="mailto:nithesh1001@gmail.com">Contact ↗</a>
+        <a class="nav-cta" href="#contact">Contact ↓</a>
       </nav>
     </div>
   </header>
@@ -507,8 +573,41 @@
         </div>
         <div class="contact-copy">
           <p>For engineering conversations, collaboration, or questions about my work, email is the best place to start.</p>
+          <div class="contact-email">
+            <span class="contact-email-label">Email address</span>
+            <div class="email-address-row">
+              <span class="email-address" id="emailAddress">nithesh1001@gmail.com</span>
+              <button class="copy-email" id="copyEmail" type="button" aria-label="Copy nithesh1001@gmail.com to clipboard">Copy</button>
+              <span class="copy-status" id="copyStatus" aria-live="polite"></span>
+            </div>
+          </div>
           <div class="actions">
-            <a class="button" href="mailto:nithesh1001@gmail.com">Email Nitesh <span class="arrow">↗</span></a>
+            <div class="email-picker">
+              <button class="button" id="emailMenuButton" type="button" aria-expanded="false" aria-controls="emailProviderMenu">Email me <span class="arrow" aria-hidden="true">↑</span></button>
+              <div class="email-provider-menu" id="emailProviderMenu" hidden>
+                <p class="email-provider-title">Choose your email provider</p>
+                <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=nithesh1001%40gmail.com&amp;su=Hello%20Nitesh%20%E2%80%94%20via%20your%20portfolio" target="_blank" rel="noreferrer">
+                  <span class="provider-mark" aria-hidden="true">G</span>
+                  <span><span class="provider-name">Gmail</span><span class="provider-detail">Open in your browser</span></span>
+                  <span class="provider-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a href="https://outlook.live.com/owa/?path=/mail/action/compose&amp;to=nithesh1001%40gmail.com&amp;subject=Hello%20Nitesh%20%E2%80%94%20via%20your%20portfolio" target="_blank" rel="noreferrer">
+                  <span class="provider-mark" aria-hidden="true">O</span>
+                  <span><span class="provider-name">Outlook</span><span class="provider-detail">Open in your browser</span></span>
+                  <span class="provider-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a href="https://compose.mail.yahoo.com/?to=nithesh1001%40gmail.com&amp;subject=Hello%20Nitesh%20%E2%80%94%20via%20your%20portfolio" target="_blank" rel="noreferrer">
+                  <span class="provider-mark" aria-hidden="true">Y</span>
+                  <span><span class="provider-name">Yahoo Mail</span><span class="provider-detail">Open in your browser</span></span>
+                  <span class="provider-arrow" aria-hidden="true">↗</span>
+                </a>
+                <a href="mailto:nithesh1001@gmail.com?subject=Hello%20Nitesh%20%E2%80%94%20via%20your%20portfolio">
+                  <span class="provider-mark" aria-hidden="true">A</span>
+                  <span><span class="provider-name">Apple Mail / default app</span><span class="provider-detail">Use this device’s mail app</span></span>
+                  <span class="provider-arrow" aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
             <a class="button secondary" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub <span class="arrow">↗</span></a>
           </div>
         </div>
@@ -661,6 +760,59 @@
     showMore.addEventListener('click', () => {
       expanded = !expanded;
       renderProjects();
+    });
+
+    const emailAddress = document.getElementById('emailAddress').textContent.trim();
+    const copyEmail = document.getElementById('copyEmail');
+    const copyStatus = document.getElementById('copyStatus');
+    const emailMenuButton = document.getElementById('emailMenuButton');
+    const emailProviderMenu = document.getElementById('emailProviderMenu');
+
+    async function copyAddress() {
+      try {
+        await navigator.clipboard.writeText(emailAddress);
+      } catch (error) {
+        const helper = document.createElement('textarea');
+        helper.value = emailAddress;
+        helper.setAttribute('readonly', '');
+        helper.style.position = 'fixed';
+        helper.style.opacity = '0';
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand('copy');
+        helper.remove();
+      }
+      copyEmail.textContent = 'Copied';
+      copyStatus.textContent = 'Email copied';
+      window.setTimeout(() => {
+        copyEmail.textContent = 'Copy';
+        copyStatus.textContent = '';
+      }, 2400);
+    }
+
+    function setEmailMenu(open) {
+      emailProviderMenu.hidden = !open;
+      emailMenuButton.setAttribute('aria-expanded', String(open));
+      const arrow = emailMenuButton.querySelector('.arrow');
+      arrow.textContent = open ? '↓' : '↑';
+      if (open) emailProviderMenu.querySelector('a').focus();
+    }
+
+    copyEmail.addEventListener('click', copyAddress);
+    emailMenuButton.addEventListener('click', () => {
+      setEmailMenu(emailProviderMenu.hidden);
+    });
+    emailProviderMenu.addEventListener('click', (event) => {
+      if (event.target.closest('a')) setEmailMenu(false);
+    });
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.email-picker')) setEmailMenu(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !emailProviderMenu.hidden) {
+        setEmailMenu(false);
+        emailMenuButton.focus();
+      }
     });
 
     renderProjects();
