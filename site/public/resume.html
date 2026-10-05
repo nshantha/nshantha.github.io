@@ -370,7 +370,7 @@
       <nav class="topnav" aria-label="Primary">
         <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
-        <a href="index.html">← Home</a>
+        <a href="/">← Home</a>
         <a href="#contact">Contact</a>
       </nav>
       <div class="top-actions">
@@ -631,7 +631,7 @@
               </div>
             </div>
             <a class="btn" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub ↗</a>
-            <a class="btn" href="index.html">About me →</a>
+            <a class="btn" href="/">About me →</a>
             <a class="btn" data-linkedin hidden target="_blank" rel="noreferrer">LinkedIn ↗</a>
             <button class="btn" type="button" data-action="print">Save as PDF</button>
           </div>
@@ -652,13 +652,13 @@
         <div class="action-list">
           <button class="action primary pixel-btn" type="button" data-action="copy-email">Copy email <span class="muted">⧉</span></button>
           <button class="action" type="button" data-action="print">Save as PDF <span class="muted">⌘P</span></button>
-          <a class="action" href="index.html">About me <span class="muted">→</span></a>
+          <a class="action" href="/">About me <span class="muted">→</span></a>
           <a class="action" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub <span class="muted">↗</span></a>
           <a class="action" data-linkedin hidden target="_blank" rel="noreferrer">LinkedIn <span class="muted">↗</span></a>
           <button class="action" type="button" data-action="copy-url">Copy page link <span class="muted">⧉</span></button>
         </div>
       </div>
-      <a class="action" href="index.html#projects">See my projects <span class="muted">→</span></a>
+      <a class="action" href="/#projects">See my projects <span class="muted">→</span></a>
     </aside>
   </div>
 
@@ -854,7 +854,7 @@
     const ITEMS = [
       ...tocLinks.map((a) => ({ label: $('.label', a).textContent, kind: 'Section', run: go(a.hash.slice(1)) })),
       ...areas.map((d) => ({ label: $('.case-title', d).textContent, kind: 'Topic', keys: d.textContent, run: go(d.id) })),
-      { label: 'About me (home)', kind: 'Page', run: () => (location.href = 'index.html') },
+      { label: 'About me (home)', kind: 'Page', run: () => (location.href = '/') },
       { label: 'Copy email address', kind: 'Action', run: ACTIONS['copy-email'] },
       { label: 'Save resume as PDF', kind: 'Action', run: ACTIONS.print },
       { label: 'Toggle dark mode', kind: 'Action', run: ACTIONS.theme },

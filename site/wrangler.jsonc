@@ -1,0 +1,24 @@
+// Cloudflare Worker that serves the static site in ./public.
+// Deploy from this folder with `npx wrangler deploy` (or Workers Builds, root directory "site").
+{
+  "name": "nitesh-fyi",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page",
+    // Run the Worker on every request so it can redirect other hostnames to nitesh.fyi.
+    "run_worker_first": true
+  },
+  // Custom domains: Cloudflare creates the DNS records and certificates for these.
+  "routes": [
+    { "pattern": "nitesh.fyi", "custom_domain": true },
+    { "pattern": "www.nitesh.fyi", "custom_domain": true },
+    { "pattern": "nitesh.onemorelayer.dev", "custom_domain": true }
+  ],
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": { "enabled": true }
+}
