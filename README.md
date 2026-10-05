@@ -33,7 +33,7 @@ site/
 
 ## Deploying
 
-- **First time only:** run `npx wrangler d1 create nitesh-fyi` and paste the `database_id` into `wrangler.jsonc`. Then run `npx wrangler d1 migrations apply nitesh-fyi --remote`.
+- **Database:** the `nitesh-fyi` D1 database already exists and is set in `wrangler.jsonc`. After adding a migration, run `npx wrangler d1 migrations apply nitesh-fyi --remote`.
 - **Deploy:** run `npx wrangler deploy` from `site/`. To deploy automatically, connect the repo in Cloudflare (**Workers & Pages → Create → Import a repository**) with root directory `site` and deploy command `npx wrangler deploy`.
 - **Local dev:** run `npx wrangler d1 migrations apply nitesh-fyi --local`, then `npx wrangler dev --host localhost`.
 - **The CV:** edit `public/cv.html`, start `wrangler dev`, then run `node tools/build-cv.mjs http://localhost:8787/cv`.

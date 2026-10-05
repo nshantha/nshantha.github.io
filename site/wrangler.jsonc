@@ -19,13 +19,12 @@
     { "pattern": "www.nitesh.fyi", "custom_domain": true },
     { "pattern": "nitesh.onemorelayer.dev", "custom_domain": true }
   ],
-  // Bug2 leaderboard. Create it once with `npx wrangler d1 create nitesh-fyi`, paste the
-  // database_id below, then `npx wrangler d1 migrations apply nitesh-fyi --remote`.
+  // Bug2 leaderboard. Apply schema changes with `npx wrangler d1 migrations apply nitesh-fyi --remote`.
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "nitesh-fyi",
-      "database_id": "REPLACE_WITH_DATABASE_ID",
+      "database_id": "71eaa93c-1358-4c59-9c16-b0e7b3855508",
       "migrations_dir": "migrations"
     }
   ],
