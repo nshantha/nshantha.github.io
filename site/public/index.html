@@ -14,66 +14,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <title>Nitesh Shantha Kumar</title>
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="stylesheet" href="/css/base.css">
   <link rel="stylesheet" href="/css/site.css">
   <style>
-    :root {
-      --paper: #f2f0e9; --surface: #fbfaf6; --sunken: #e7e4da; --ink: #16150f; --muted: #56544b; --faint: #8a877c;
-      --line: #d6d2c6; --accent: #c8532c; --accent-ink: #a8431f; --accent-soft: #f6dfd3; --blue: #1f74b8;
-      --good: #2f7a4f; --shadow: #16150f; --coffee: #6b3b22; --crema: #c08a5a;
-      --mono: "IBM Plex Mono", ui-monospace, monospace;
-      --sans: "IBM Plex Sans", system-ui, sans-serif;
-      --serif: "IBM Plex Serif", Georgia, serif;
-      --pixel: "Pixelify Sans", "IBM Plex Mono", monospace;
-      --top: 56px;
-    }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --paper: #141413; --surface: #1c1b19; --sunken: #262522; --ink: #ebe8df; --muted: #b3afa4; --faint: #7f7b71;
-        --line: #2f2d29; --accent: #d9683f; --accent-ink: #ec936f; --accent-soft: #3a241b; --blue: #3f8fd6;
-        --good: #6cc592; --shadow: #000; --coffee: #8a5233; --crema: #d4a373;
-      }
-    }
-    :root[data-theme="dark"] {
-      --paper: #141413; --surface: #1c1b19; --sunken: #262522; --ink: #ebe8df; --muted: #b3afa4; --faint: #7f7b71;
-      --line: #2f2d29; --accent: #d9683f; --accent-ink: #ec936f; --accent-soft: #3a241b; --blue: #3f8fd6;
-      --good: #6cc592; --shadow: #000; --coffee: #8a5233; --crema: #d4a373;
-    }
-
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--top) + 24px); }
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
-    body { margin: 0; color: var(--ink); background: var(--paper); font: 16px/1.7 var(--sans); -webkit-font-smoothing: antialiased; }
-    a { color: inherit; }
-    button { font: inherit; color: inherit; cursor: pointer; }
-    :focus-visible { outline: 2px dashed var(--accent); outline-offset: 3px; }
-    .skip { position: absolute; left: 12px; top: -48px; z-index: 50; padding: 8px 12px; background: var(--ink); color: var(--paper); }
-    .skip:focus { top: 12px; }
-    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-    footer.site kbd { font: inherit; padding: 0 4px; border: 1px solid var(--line); }
-    h1, h2, .px, .monogram { font-kerning: none; font-variant-ligatures: none; letter-spacing: .02em; }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    /* Pixel primitives */
-    .steps { clip-path: polygon(0 4px, 2px 4px, 2px 2px, 4px 2px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px, calc(100% - 2px) 2px, calc(100% - 2px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 2px) calc(100% - 4px), calc(100% - 2px) calc(100% - 2px), calc(100% - 4px) calc(100% - 2px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 2px), 2px calc(100% - 2px), 2px calc(100% - 4px), 0 calc(100% - 4px)); }
-    .pixel-btn { box-shadow: 3px 3px 0 var(--shadow); transition: transform .08s steps(2), box-shadow .08s steps(2); }
-    .pixel-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--shadow); }
-    .pixel-btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--shadow); }
-
-    /* Top bar */
-    .topbar { position: sticky; top: 0; z-index: 30; height: var(--top); background: var(--paper); border-bottom: 1px solid var(--line); }
-    .topbar-inner { height: 100%; max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 20px; }
-    .monogram { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 500 16px/1 var(--pixel); }
-    .monogram svg { width: 24px; height: 24px; shape-rendering: crispEdges; }
-    .topnav { display: flex; gap: 22px; margin-left: 12px; }
-    .topnav a { color: var(--muted); font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
-    .topnav a:hover, .topnav a.is-active { color: var(--ink); }
-    .topnav a.is-active::before { content: "▸ "; color: var(--accent); }
-    .top-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-    .icon-btn { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; background: var(--surface); border: 1px solid var(--ink); font: 500 12px/1 var(--mono); color: var(--ink); text-decoration: none; }
-    .icon-btn kbd { font: inherit; color: var(--muted); }
-    .progress-line { position: absolute; left: 0; bottom: -1px; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: repeating-linear-gradient(90deg, var(--accent) 0 6px, transparent 6px 8px); }
-
     /* Layout */
     .layout { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 250px minmax(0, 720px) 250px; gap: 56px; justify-content: center; }
     .rail { position: sticky; top: calc(var(--top) + 32px); align-self: start; max-height: calc(100vh - var(--top) - 48px); overflow: auto; padding-bottom: 24px; scrollbar-width: thin; }
@@ -114,19 +58,9 @@
     .action { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 9px 10px; background: var(--surface); border: 1px solid var(--ink); text-decoration: none; text-align: left; font: 500 12px/1 var(--mono); color: var(--ink); }
     .action.primary { background: var(--accent); color: #fff; }
     .action .muted { opacity: .6; }
-    .toast { position: fixed; left: 50%; bottom: 24px; z-index: 60; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; padding: 10px 14px; background: var(--ink); color: var(--paper); font: 500 12px/1 var(--mono); transition: .15s steps(3); }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
-    .tip { position: fixed; z-index: 55; pointer-events: none; padding: 6px 8px; background: var(--ink); color: var(--paper); font: 500 11px/1.4 var(--mono); opacity: 0; transform: translate(-50%, calc(-100% - 12px)); white-space: nowrap; }
-    .tip.show { opacity: 1; }
 
     /* Article */
     main { min-width: 0; padding: 48px 0 96px; }
-    section.chapter { padding-top: 76px; }
-    .chapter-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
-    .chapter-num { color: var(--accent-ink); font: 500 14px/1 var(--mono); }
-    h2 { margin: 0; font: 500 34px/1.1 var(--pixel); }
-    .lead { color: var(--muted); font-size: 17px; margin: 10px 0 26px; }
-    p { margin: 0 0 16px; }
 
     /* Hero */
     .hero { display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start; }
@@ -186,30 +120,6 @@
     .aside-quote cite { display: block; margin-top: 4px; font: 400 12px/1 var(--mono); font-style: normal; color: var(--faint); }
 
     /* Repo timeline */
-    .repo-fig { background: var(--surface); padding: 24px 24px 18px; }
-    .repo-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0 0 20px; background: var(--line); border: 1px solid var(--line); }
-    .repo-stats div { padding: 12px 14px; background: var(--surface); }
-    .repo-stats dt { color: var(--faint); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
-    .repo-stats dd { margin: 8px 0 0; font: 500 28px/1 var(--pixel); }
-    .repo-stats dd.sm { font: 500 12px/1.4 var(--mono); color: var(--muted); }
-    .repo-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; color: var(--muted); font: 500 12px/1 var(--mono); }
-    .repo-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; }
-    .years { display: grid; gap: 10px; }
-    .year { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: center; min-height: 22px; }
-    .year > span { color: var(--faint); font: 500 12px/1 var(--mono); }
-    .cells { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
-    .cell { width: 20px; height: 20px; display: block; border: 0; padding: 0; }
-    .cell.ml { background: var(--blue); }
-    .cell.ai { background: var(--accent); }
-    .cell.web { background: repeating-conic-gradient(var(--faint) 0 25%, transparent 0 50%) 0 0 / 4px 4px; }
-    .cell.private { background: repeating-linear-gradient(135deg, var(--muted) 0 2px, transparent 2px 5px); box-shadow: inset 0 0 0 1px var(--muted); cursor: default; }
-    .cell:hover, .cell:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-    .repo-fig figcaption { margin-top: 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
-    .repo-list { margin-top: 10px; }
-    .repo-list summary { cursor: pointer; color: var(--muted); font: 500 12px/1.6 var(--mono); }
-    .repo-list table { width: 100%; margin-top: 10px; border-collapse: collapse; font-size: 13px; }
-    .repo-list td { padding: 6px 8px 6px 0; border-bottom: 1px dashed var(--line); vertical-align: top; }
-    .repo-list td:first-child { color: var(--faint); font: 400 12px/1.5 var(--mono); white-space: nowrap; }
 
     /* Likes */
     .likes { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
@@ -240,22 +150,12 @@
     .quote-after { margin-top: 20px; font-size: 18px; }
 
     /* Projects */
-    .proj-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
-    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
     .chip { padding: 4px 9px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); font: 500 12px/1.4 var(--mono); }
     .chip.is-on { background: var(--ink); color: var(--paper); }
     .chip span { opacity: .6; margin-left: 6px; }
     .filter-note { color: var(--faint); font: 400 12px/1.4 var(--mono); }
     .tag { padding: 2px 7px; border: 1px solid var(--line); color: var(--muted); font: 500 11px/1.4 var(--mono); }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .project { display: grid; grid-template-columns: 38px 1fr auto; gap: 14px; padding: 18px 0; border-bottom: 1px dashed var(--line); text-decoration: none; }
-    .project-num { color: var(--faint); font: 500 12px/2 var(--mono); }
-    .project h3 { margin: 0; font-size: 18px; }
-    .project p { margin: 6px 0 10px; color: var(--muted); font-size: 15px; line-height: 1.6; }
-    .project-meta { color: var(--faint); font: 400 12px/1.4 var(--mono); margin-bottom: 8px; }
-    .project-arrow { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--ink); font: 500 13px/1 var(--mono); }
-    .project:hover h3 { color: var(--accent-ink); }
-    .project:hover .project-arrow { background: var(--accent); color: #fff; }
     .text-btn { background: none; border: 0; padding: 4px 0; color: var(--muted); font: 500 12px/1 var(--mono); text-decoration: underline dashed; text-underline-offset: 4px; }
 
     /* Elsewhere */
@@ -304,15 +204,10 @@
       .explore-grid { grid-template-columns: 1fr; }
       .now { grid-template-columns: 1fr 1fr; }
       .likes, .shelf, .contact-grid { grid-template-columns: 1fr; }
-      .project { grid-template-columns: 1fr auto; }
-      .project-num { display: none; }
       .monogram span { display: none; }
-      .repo-fig { padding: 18px 14px; }
-      .year { grid-template-columns: 40px 1fr; }
       .quote { padding: 28px 22px; }
     }
     @media (max-width: 400px) { .now { grid-template-columns: 1fr; } }
-    @media (max-width: 640px) { .repo-stats { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -347,7 +242,6 @@
           <li><a href="#now"><span class="glyph" aria-hidden="true">├ </span><span class="label">Right now</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#story"><span class="glyph" aria-hidden="true">├ </span><span class="label">My story</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#play"><span class="glyph" aria-hidden="true">├ </span><span class="label">Play: coffee run</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
-          <li><a href="#github"><span class="glyph" aria-hidden="true">├ </span><span class="label">Learning in public</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#likes"><span class="glyph" aria-hidden="true">├ </span><span class="label">Likes &amp; dislikes</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#why"><span class="glyph" aria-hidden="true">├ </span><span class="label">Why I build</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#writing"><span class="glyph" aria-hidden="true">├ </span><span class="label">Writing</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
@@ -404,7 +298,7 @@
               </form>
               <small class="ex-foot">Try <code>help</code>, <code>cat story</code> or <code>coffee</code>.</small>
             </div>
-            <a class="ex-card ex-game" href="#play">
+            <a class="ex-card ex-game" href="#play" data-open="playOut">
               <div class="meta-row"><span class="kind kind-game">▶ Game</span><small data-stars>8 levels, 24 stars</small></div>
               <b>☕ Coffee run</b>
               <span class="pt-track" aria-hidden="true"><i class="pt-bean"></i><i class="pt-bot"></i><i class="pt-flag"></i></span>
@@ -433,51 +327,75 @@
           <p class="lead">From soldering robots in Bangalore to building agents in Seattle.</p>
           <div class="story-wrap">
           <span class="story-line" id="storyLine" aria-hidden="true"></span>
-          <ol class="story" id="storyList">
+          <ol class="story cmd-out" id="storyList">
             <li>
               <span class="when">Bangalore · the robot years</span>
               <h3>It started with electronics</h3>
-              <p>I loved electronics, but I always wanted to write the software and build the robots too. I built a <strong>color-sorting robot</strong>, line followers, and obstacle-avoiding robots running the Bug2 algorithm (<a href="#play">you can play with one below</a>). That pulled me into embedded systems.</p>
+              <p class="short">Built a color-sorting robot, line followers and Bug2 bots, and fell into embedded systems.</p>
+              <div class="long">
+              <p>I loved electronics, but I always wanted to write the software and build the robots too. I built a <strong>color-sorting robot</strong>, line followers, and obstacle-avoiding robots running the Bug2 algorithm (<a href="#play" data-open="playOut">you can play with one below</a>). That pulled me into embedded systems.</p>
+              </div>
             </li>
             <li>
               <span class="when">2016 – 2019 · Avionics</span>
               <h3>Software for airplane engines</h3>
+              <p class="short">Wrote software for an aircraft engine controller. Loved the rigor, not the pace.</p>
+              <div class="long">
               <p>I worked on software for an <strong>electronic engine controller</strong>, the computer that runs an aircraft engine. I was curious how safety-critical software gets built, and I learned a lot from that rigor. Eventually, though, the pace wasn’t for me.</p>
               <blockquote class="aside-quote">“I feel the need — the need for speed!”<cite>— Top Gun, and roughly my reasoning</cite></blockquote>
+              </div>
             </li>
             <li>
               <span class="when">2017 · The spark</span>
               <h3>Andrej Karpathy’s lectures</h3>
+              <p class="short">Andrej Karpathy’s lectures got me hooked on machine learning.</p>
+              <div class="long">
               <p>I came across <a href="https://www.youtube.com/playlist?list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC" target="_blank" rel="noreferrer">Andrej Karpathy’s machine learning lectures</a> and got hooked on machine learning. That curiosity is still driving most of what I build.</p>
+              </div>
             </li>
             <li>
               <span class="when">2019 – 2021 · Buffalo, NY</span>
               <h3>A master’s in robotics</h3>
+              <p class="short">An M.S. in Robotics: self-driving cars, perception and sensor fusion.</p>
+              <div class="long">
               <p>I went to the University at Buffalo for an M.S. in Robotics. I loved autonomous systems and worked on <strong>self-driving cars</strong>: perception and sensor fusion in the LANDR lab. The part I loved most was building the software.</p>
+              </div>
             </li>
             <li>
               <span class="when">2021 – now · Nordstrom</span>
               <h3>Systems for millions of people</h3>
+              <p class="short">High-traffic systems for millions of customers. This made me the engineer I am.</p>
+              <div class="long">
               <p>I moved into building software at Nordstrom. Working on high-traffic, business-critical systems that serve millions of customers made me the engineer I am today.</p>
+              </div>
             </li>
             <li>
               <span class="when">2025 · Agents</span>
               <h3>Early to the new stuff</h3>
+              <p class="short">MCP servers from scratch, and long-running agents before they were a thing.</p>
+              <div class="long">
               <p>I like new systems the moment they come out. When MCP arrived, I built a bunch of <strong>MCP servers from scratch</strong>. In June 2025, before long-running agents were a thing people talked about, I built a framework for them at work: multiple agents running autonomous workflows defined in Jinja templates. It wasn’t adopted, but I learned a lot. A skill set I built for on-call engineering workflows is used by several teams today.</p>
+              </div>
             </li>
             <li>
               <span class="when">Now</span>
               <h3>Building Hushy</h3>
-              <p>A dictation and voice assistant app, built with as much love as I can put into it.</p>
+              <p class="short">A dictation and voice assistant app, built with love.</p>
+              <div class="long">
+              <p>Hushy is a dictation and voice assistant app, built with as much love as I can put into it.</p>
+              </div>
             </li>
           </ol>
           </div>
+          <button type="button" class="cmd" data-cmd-target="storyList" aria-controls="storyList" aria-expanded="false" data-hint-open="hide ↑"><span class="cmd-prompt" aria-hidden="true">❯</span><code class="cmd-text">cat story.md</code><span class="cmd-hint">read the full story ↓</span></button>
         </section>
 
         <!-- PLAY -->
         <section class="chapter" id="play" aria-labelledby="play-title">
           <div class="chapter-head"><span class="chapter-num">03</span><h2 id="play-title">Play: coffee run</h2></div>
-          <p class="lead">My robot runs Bug2, one of the first algorithms I built: it heads straight for the flag and hugs any wall in its way. Place a few walls, and choose which side it hugs, so it grabs every coffee bean on the way.</p>
+          <p class="lead">A tiny puzzle built on Bug2, one of the first robot algorithms I wrote. Place a few walls so my robot grabs every coffee bean on its way to the flag. <span data-stars>8 levels, 24 stars</span>.</p>
+          <button type="button" class="cmd" data-cmd-target="playOut" aria-controls="playOut" aria-expanded="false" data-hint-open="close the game ↑"><span class="cmd-prompt" aria-hidden="true">❯</span><code class="cmd-text">./coffee-run</code><span class="cmd-hint">open the game ▶</span></button>
+          <div class="cmd-out" id="playOut">
           <div class="game steps">
             <div class="level-strip" id="levelStrip" role="group" aria-label="Levels"></div>
             <div class="level-head">
@@ -516,29 +434,12 @@
               <li>Back where you hit the wall? Then there’s no way through, and Bug2 knows to stop.</li>
             </ol>
           </details>
-        </section>
-
-        <!-- GITHUB -->
-        <section class="chapter" id="github" aria-labelledby="github-title">
-          <div class="chapter-head"><span class="chapter-num">04</span><h2 id="github-title">Learning in public</h2></div>
-          <p class="lead">My GitHub, one square per repository, private ideas included. Hover or tap a square to see what it is.</p>
-          <figure class="repo-fig steps" style="margin:0">
-            <dl class="repo-stats">
-              <div><dt>Repositories</dt><dd id="repoTotal">–</dd></div>
-              <div><dt>Public</dt><dd id="repoPublic">–</dd></div>
-              <div><dt>Private</dt><dd id="repoPrivate">–</dd></div>
-              <div><dt>Source</dt><dd class="sm" id="repoSynced">snapshot</dd></div>
-            </dl>
-            <div class="repo-legend"><span><i class="cell ml" style="display:inline-block"></i>Robotics &amp; ML</span><span><i class="cell ai" style="display:inline-block"></i>LLMs &amp; agents</span><span><i class="cell web" style="display:inline-block"></i>Web &amp; other</span><span><i class="cell private" style="display:inline-block"></i>Private ideas</span></div>
-            <div class="years" id="years"></div>
-            <figcaption id="repoCaption"></figcaption>
-            <details class="repo-list"><summary>Show as a list</summary><table id="repoTable"></table></details>
-          </figure>
+          </div>
         </section>
 
         <!-- LIKES -->
         <section class="chapter" id="likes" aria-labelledby="likes-title">
-          <div class="chapter-head"><span class="chapter-num">05</span><h2 id="likes-title">Likes &amp; dislikes</h2></div>
+          <div class="chapter-head"><span class="chapter-num">04</span><h2 id="likes-title">Likes &amp; dislikes</h2></div>
           <p class="lead">A few things that make me, me.</p>
           <div class="likes">
             <div>
@@ -571,7 +472,7 @@
 
         <!-- WHY -->
         <section class="chapter" id="why" aria-labelledby="why-title">
-          <div class="chapter-head"><span class="chapter-num">06</span><h2 id="why-title">Why I build</h2></div>
+          <div class="chapter-head"><span class="chapter-num">05</span><h2 id="why-title">Why I build</h2></div>
           <blockquote class="quote steps" style="margin-top:26px">
             <p>For anything to be good, truly good, there must be love in it. There must be love for the gift itself, love for the subject being depicted or the story being told, and love for the audience.</p>
             <footer>— Theo of Golden</footer>
@@ -581,7 +482,7 @@
 
         <!-- WRITING -->
         <section class="chapter" id="writing" aria-labelledby="writing-title">
-          <div class="chapter-head"><span class="chapter-num">07</span><h2 id="writing-title">Writing</h2></div>
+          <div class="chapter-head"><span class="chapter-num">06</span><h2 id="writing-title">Writing</h2></div>
           <p class="lead">Latest from <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">One More Layer</a>, my Substack on AI, systems, infrastructure and hardware.</p>
           <div class="posts" id="postList">
             <a class="post" href="https://onemorelayer.dev/p/they-already-had-the-flag" target="_blank" rel="noreferrer">
@@ -598,17 +499,12 @@
 
         <!-- PROJECTS -->
         <section class="chapter" id="projects" aria-labelledby="projects-title">
-          <div class="chapter-head"><span class="chapter-num">08</span><h2 id="projects-title">Projects</h2></div>
-          <p class="lead">Things I’ve built in the open.</p>
-          <div class="proj-tools">
-            <div class="filters" role="group" aria-label="Filter projects">
-              <button class="chip is-on" type="button" data-filter="all" aria-pressed="true">All<span id="countAll"></span></button>
-              <button class="chip" type="button" data-filter="ai" aria-pressed="false">AI &amp; agents<span id="countAi"></span></button>
-              <button class="chip" type="button" data-filter="robotics" aria-pressed="false">Robotics<span id="countRobotics"></span></button>
-            </div>
-            <span class="filter-note" id="projStatus" aria-live="polite"></span>
-          </div>
-          <div id="projectList"></div>
+          <div class="chapter-head"><span class="chapter-num">07</span><h2 id="projects-title">Projects</h2></div>
+          <p class="lead"><span id="repoSummary">Highlights from my repositories on GitHub.</span></p>
+          <div class="pgrid" id="projectsFeatured" data-count="4"></div>
+          <button type="button" class="cmd" data-cmd-target="projectList" aria-controls="projectList" aria-expanded="false" data-hint-open="hide ↑"><span class="cmd-prompt" aria-hidden="true">❯</span><code class="cmd-text">ls projects --all</code><span class="cmd-hint">show the rest ↓</span></button>
+          <div class="pgrid cmd-out" id="projectList"></div>
+          <p class="more-link"><a href="https://github.com/nshantha?tab=repositories" target="_blank" rel="noreferrer">Everything else is on GitHub ↗</a></p>
         </section>
 
         <!-- ELSEWHERE -->
@@ -654,119 +550,10 @@
     <ul id="paletteList" role="listbox"></ul>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="tip" id="tip" aria-hidden="true"></div>
 
+  <script src="/js/projects.js"></script>
   <script>
     const EMAIL = 'nithesh1001@gmail.com';
-
-    // GitHub-backed portfolio data. Refresh this array from the GitHub API when repositories change.
-    const PROJECTS = [
-      {
-        name: 'Actuamind',
-        url: 'https://github.com/nshantha/actuamind-archived',
-        description: 'Autonomous software engineering intelligence that indexes code repositories into a Neo4j knowledge graph with vector embeddings, then serves natural-language codebase Q&A through a LangGraph agent.',
-        year: '2026', language: 'Python', categories: ['ai'],
-        tags: ['LangGraph', 'Neo4j', 'FastAPI', 'Streamlit']
-      },
-      {
-        name: 'AlgoMentor',
-        url: 'https://github.com/nshantha/codeviz',
-        description: 'A local-first FAANG interview-prep desktop app rebuilt with Electron, React, and TypeScript. Its 171-question research-backed catalog drives an 8-week plan, evidence-sized company banks, confusable-pattern drills, and spaced reviews; system-design and behavioral workspaces cover the rest of the loop. A Socratic tutor runs through locally installed Claude Code or Codex CLIs with an offline fallback, while the XP engine rewards unaided pattern recognition, no-hint solves, and on-time reviews. Progress stays in local SQLite and nothing is uploaded.',
-        year: 'Sept 2026', language: 'TypeScript', categories: ['ai'],
-        tags: ['Electron', 'SQLite', 'Claude / Codex', 'Interview prep']
-      },
-      {
-        name: 'Universal MCP Manager',
-        url: 'https://github.com/nshantha/mcp-manager',
-        description: 'An Electron desktop app for installing, configuring, and managing Model Context Protocol servers across Claude Code, VS Code, and Cursor.',
-        year: '2025', language: 'TypeScript', categories: ['ai'],
-        tags: ['Electron', 'MCP', 'React', 'Developer tools']
-      },
-      {
-        name: 'Neo4jAI',
-        url: 'https://github.com/nshantha/Neo4jAI',
-        description: 'A natural-language interface to Neo4j that translates questions into Cypher through a LangGraph ReAct agent, with MCP integration, Streamlit chat, and automatic query retry.',
-        year: '2025', language: 'Python', categories: ['ai'],
-        tags: ['MCP', 'Cypher', 'LangGraph', 'Neo4j']
-      },
-      {
-        name: 'SqlAI',
-        url: 'https://github.com/nshantha/SqlAI',
-        description: 'A chat application for answering natural-language questions over PostgreSQL, using FastAPI, Claude, and an MCP server for controlled database access.',
-        year: '2025', language: 'Python', categories: ['ai'],
-        tags: ['Claude', 'PostgreSQL', 'MCP', 'FastAPI']
-      },
-      {
-        name: 'Gradle Dependency Upgrader',
-        url: 'https://github.com/nshantha/dependency-upgrade-ai',
-        description: 'An AI tool that parses build.gradle files, checks Maven Central, upgrades dependencies to the latest safe minor versions, and verifies the resulting build.',
-        year: '2025', language: 'Python', categories: ['ai'],
-        tags: ['Gradle', 'Maven Central', 'Automation', 'Python']
-      },
-      {
-        name: 'Research Paper Assistant',
-        url: 'https://github.com/nshantha/ai_research_assistant',
-        description: 'A Streamlit research companion for understanding papers through PDF analysis, equation breakdowns, and contextual question answering.',
-        year: '2025', language: 'Python', categories: ['ai'],
-        tags: ['Research', 'PDF analysis', 'Q&A', 'Streamlit']
-      },
-      {
-        name: 'RecipeAI',
-        url: 'https://github.com/nshantha/RecipeAI',
-        description: 'A full-stack recipe experience that browses cooking videos by cuisine, extracts structured recipes, and generates custom recipes with OpenAI.',
-        year: '2025', language: 'JavaScript', categories: ['ai'],
-        tags: ['React', 'Node.js', 'MongoDB', 'OpenAI']
-      },
-      {
-        name: 'FireBot',
-        url: 'https://github.com/nshantha/FireBot',
-        description: 'A ROS-based firefighting robot built with TurtleBot and a manipulator arm—part of my university robotics work.',
-        year: 'University work', language: 'Python', categories: ['robotics'],
-        tags: ['ROS', 'TurtleBot', 'Manipulation', 'Robotics']
-      },
-      {
-        name: 'BUG2',
-        url: 'https://github.com/nshantha/BUG2',
-        description: 'An implementation of the BUG2 robot motion-planning algorithm and the most-starred repository in my GitHub portfolio.',
-        year: 'University work', language: 'Python', categories: ['robotics'],
-        tags: ['Motion planning', 'Navigation', 'Algorithms', 'Python']
-      }
-    ];
-
-    // Public repositories for the "Learning in public" timeline (year = last updated).
-    const REPOS = [
-      ['ML_Cancer_Logiostic_Reg', 2019, 'ml', 'Logistic regression on cancer data'],
-      ['BUG2', 2019, 'ml', 'The Bug2 motion-planning algorithm'],
-      ['VFH_and_Astar', 2019, 'ml', 'Vector Field Histogram and A* planning'],
-      ['Quadratic-Discriminant-Classifier', 2020, 'ml', 'QDA on MNIST'],
-      ['svm', 2020, 'ml', 'SVMs and the dual optimization problem'],
-      ['Cpp_ND_Openstreet_PathPlanning_Astar', 2020, 'ml', 'A* route planning on OpenStreetMap, in C++'],
-      ['Bayesian_networks_graphical_model', 2020, 'ml', 'Bayesian networks and graphical models'],
-      ['discriminant_analysis', 2020, 'ml', 'Discriminant analysis'],
-      ['SDCND', 2020, 'ml', 'Self-driving car projects, in C++'],
-      ['FireBot', 2020, 'ml', 'A firefighting robot in ROS with TurtleBot'],
-      ['Pytorch_notebooks', 2020, 'ml', 'PyTorch notebooks'],
-      ['web_dev_projects', 2021, 'web', 'Web development projects'],
-      ['NLP', 2021, 'ml', 'Natural language processing projects'],
-      ['QuizGen', 2025, 'ai', 'Quiz generation with LLMs'],
-      ['LLM', 2025, 'ai', 'LLM notebooks'],
-      ['ai_research_assistant', 2025, 'ai', 'Research paper assistant'],
-      ['CyberSageAI', 2025, 'ai', 'Security-focused AI notebooks'],
-      ['RecipeAI', 2025, 'ai', 'Recipes from cooking videos, with OpenAI'],
-      ['SqlAI', 2025, 'ai', 'Ask PostgreSQL questions in plain English, via MCP'],
-      ['Neo4jAI', 2025, 'ai', 'Natural language to Cypher, via MCP'],
-      ['dependency-upgrade-ai', 2025, 'ai', 'AI Gradle dependency upgrader'],
-      ['actuamind-archived', 2025, 'ai', 'Codebase Q&A over a Neo4j knowledge graph'],
-      ['mcp-manager', 2025, 'ai', 'Desktop app for managing MCP servers'],
-      ['workflow', 2025, 'ai', 'Workflow experiments'],
-      ['codeviz', 2026, 'ai', 'AlgoMentor: local-first interview prep with a Socratic tutor'],
-      ['nshantha.github.io', 2026, 'web', 'This website']
-    ];
-
-    // Private repositories per year: ideas still in progress. Shown as hatched squares
-    // without names. Edit the counts to match GitHub; named entries show their name.
-    const PRIVATE_REPOS = { 2022: 2, 2023: 3, 2024: 4, 2025: 6, 2026: 8 };
-    const PRIVATE_NAMED = { 2026: ['Hushy · dictation and voice assistant app'] };
 
     const $ = (s, el = document) => el.querySelector(s);
     const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -849,112 +636,6 @@
     });
 
     // ---- Repo timeline -----------------------------------------------------
-    const tip = $('#tip');
-    const KIND = { ml: 'Robotics & ML', ai: 'LLMs & agents', web: 'Web & other' };
-    // Category for a repo: the hand-picked one if known, otherwise a guess from its name and topics.
-    const KNOWN_KIND = Object.fromEntries(REPOS.map((r) => [r[0].toLowerCase(), r[2]]));
-    function kindOf(repo) {
-      const known = KNOWN_KIND[repo.name.toLowerCase()];
-      if (known) return known;
-      const text = `${repo.name} ${repo.description} ${(repo.topics || []).join(' ')}`.toLowerCase();
-      if (/\b(ai|llm|mcp|agent|agents|gpt|claude|rag|langgraph|langchain|openai|embedding)\b|ai$/.test(text)) return 'ai';
-      if (/ros|robot|slam|lidar|planning|pytorch|tensorflow|vision|mnist|regression|svm|bayes|nlp|kalman/.test(text)) return 'ml';
-      return 'web';
-    }
-    function showTip(el, x, y) { tip.textContent = el.dataset.tip; tip.style.left = x + 'px'; tip.style.top = y + 'px'; tip.classList.add('show'); }
-    function bindTips(root) {
-      $$('[data-tip]', root).forEach((el) => {
-        el.addEventListener('pointermove', (e) => showTip(el, e.clientX, e.clientY));
-        el.addEventListener('pointerleave', () => tip.classList.remove('show'));
-        el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); });
-        el.addEventListener('blur', () => tip.classList.remove('show'));
-      });
-    }
-    // data: { repos: [{ name, description, url, year }], privateByYear: { year: count }, total, public, private, live }
-    function renderTimeline(data) {
-      const allYears = [...data.repos.map((r) => r.year), ...Object.keys(data.privateByYear).map(Number)];
-      const first = Math.min(2019, ...allYears), last = Math.max(new Date().getFullYear(), ...allYears);
-      const years = []; for (let y = first; y <= last; y++) years.push(y);
-      $('#years').innerHTML = years.map((y) => {
-        const rs = data.repos.filter((r) => r.year === y);
-        const named = PRIVATE_NAMED[y] || [];
-        const privates = Array.from({ length: Math.max(data.privateByYear[y] || 0, named.length) }, (_, i) => named[i] || 'Private repo · an idea in progress');
-        const body = rs.map((r) => `<a class="cell ${kindOf(r)}" href="${escapeHTML(r.url)}" target="_blank" rel="noreferrer" data-tip="${escapeHTML(r.name)}${r.description ? ' · ' + escapeHTML(r.description.slice(0, 80)) : ''}" aria-label="${escapeHTML(r.name)}"></a>`).join('')
-          + privates.map((label) => `<span class="cell private" tabindex="0" role="img" data-tip="🔒 ${escapeHTML(label)}" aria-label="Private: ${escapeHTML(label)}"></span>`).join('');
-        return `<div class="year"><span>${y}</span><div class="cells">${body}</div></div>`;
-      }).join('');
-      $('#repoTable').innerHTML = data.repos.map((r) => `<tr><td>${r.year}</td><td><a href="${escapeHTML(r.url)}" target="_blank" rel="noreferrer">${escapeHTML(r.name)}</a></td><td>${escapeHTML(r.description)}</td><td>${KIND[kindOf(r)]}</td></tr>`).join('')
-        + Object.entries(data.privateByYear).map(([y, n]) => `<tr><td>${y}</td><td>${n} private ${n === 1 ? 'repository' : 'repositories'}</td><td>${escapeHTML((PRIVATE_NAMED[y] || []).join(', ') || 'Ideas in progress')}</td><td>Private ideas</td></tr>`).join('');
-      $('#repoTotal').textContent = data.total;
-      $('#repoPublic').textContent = data.public;
-      $('#repoPrivate').textContent = data.private;
-      $('#repoSynced').textContent = data.live ? `live from GitHub · ${new Date(data.updatedAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : 'snapshot';
-      $('#repoCaption').textContent = data.live
-        ? 'Grouped by the year each repository was created, straight from GitHub. Hatched squares are private repositories, ideas I’m still building, counted but never named (Hushy excepted).'
-        : 'Grouped by the year each repository was last updated. Hatched squares are private repositories: ideas I’m still building, Hushy among them.';
-      bindTips($('#years'));
-    }
-    // Built-in snapshot first, so the timeline never waits on the network…
-    const snapshotPrivate = Object.values(PRIVATE_REPOS).reduce((a, b) => a + b, 0);
-    renderTimeline({
-      live: false,
-      repos: REPOS.map((r) => ({ name: r[0], year: r[1], description: r[3], url: `https://github.com/nshantha/${r[0]}` })),
-      privateByYear: PRIVATE_REPOS, total: REPOS.length + snapshotPrivate, public: REPOS.length, private: snapshotPrivate
-    });
-    // …then the live list from GitHub (via the Worker, cached for an hour).
-    let githubLive = null;
-    fetch('/api/github').then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((gh) => {
-      githubLive = gh;
-      const privateByYear = gh.includesPrivate ? gh.privateByYear : PRIVATE_REPOS;
-      const privateCount = gh.includesPrivate ? gh.private : snapshotPrivate;
-      renderTimeline({
-        live: true, updatedAt: gh.updatedAt,
-        repos: gh.repos.map((r) => ({ ...r, year: Number(r.created.slice(0, 4)) })),
-        privateByYear, total: gh.public + privateCount, public: gh.public, private: privateCount
-      });
-      renderProjects();
-    }).catch(() => { /* keep the snapshot */ });
-
-    // ---- Projects -----------------------------------------------------------
-    const projectList = $('#projectList');
-    const filterButtons = $$('[data-filter]');
-    const countOf = (cat) => PROJECTS.filter((p) => cat === 'all' || p.categories.includes(cat)).length;
-    $('#countAll').textContent = countOf('all');
-    $('#countAi').textContent = countOf('ai');
-    $('#countRobotics').textContent = countOf('robotics');
-    let activeFilter = 'all';
-    // Live GitHub details (stars, last push) for a curated project, once /api/github has loaded.
-    function liveMeta(p) {
-      const repo = githubLive && githubLive.repos.find((r) => r.url.toLowerCase() === p.url.replace(/\/$/, '').toLowerCase());
-      if (!repo) return '';
-      const days = Math.floor((Date.now() - new Date(repo.pushed)) / 86400000);
-      const ago = days < 1 ? 'today' : days < 30 ? `${days}d ago` : days < 365 ? `${Math.floor(days / 30)}mo ago` : `${Math.floor(days / 365)}y ago`;
-      return ` · updated ${ago}${repo.stars ? ` · ★ ${repo.stars}` : ''}`;
-    }
-    function renderProjects() {
-      const list = PROJECTS.filter((p) => activeFilter === 'all' || p.categories.includes(activeFilter));
-      projectList.innerHTML = list.map((p) => `
-        <a class="project" href="${escapeHTML(p.url)}" target="_blank" rel="noreferrer">
-          <span class="project-num">${String(PROJECTS.indexOf(p) + 1).padStart(2, '0')}</span>
-          <div>
-            <span class="meta-row"><span class="kind kind-project">&lt;/&gt; Project</span><small>Open source on GitHub</small></span>
-            <h3>${escapeHTML(p.name)}</h3>
-            <p>${escapeHTML(p.description)}</p>
-            <div class="project-meta">${escapeHTML(p.year)} · ${escapeHTML(p.language)}${liveMeta(p)}</div>
-            <div class="tags">${p.tags.map((t) => `<span class="tag">${escapeHTML(t)}</span>`).join('')}</div>
-            <span class="cta">View the code ↗</span>
-          </div>
-          <span class="project-arrow" aria-hidden="true">↗</span>
-        </a>`).join('');
-      $('#projStatus').textContent = `Showing ${list.length} ${list.length === 1 ? 'project' : 'projects'}`;
-    }
-    filterButtons.forEach((b) => b.addEventListener('click', () => {
-      activeFilter = b.dataset.filter;
-      filterButtons.forEach((x) => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
-      renderProjects();
-    }));
-    renderProjects();
-
     // ---- Scroll: progress, coffee, tree, story line ------------------------
     const article = $('article');
     const tocLinks = $$('.tree a');

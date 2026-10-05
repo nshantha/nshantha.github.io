@@ -19,8 +19,10 @@ site/
     ├── cv.html           print-first CV (served at /cv)
     ├── Nitesh-Shantha-Kumar-CV.pdf
     ├── 404.html
-    ├── css/site.css      shared: transitions, scroll-in, terminal, game, posts
-    ├── js/site.js        shared: ~ terminal, scroll-in, latest posts
+    ├── css/base.css      shared: colour tokens, base elements, top bar, headings
+    ├── css/site.css      shared: transitions, scroll-in, terminal, game, posts, cards
+    ├── js/site.js        shared: ~ terminal, command expanders, scroll-in, latest posts
+    ├── js/projects.js    project data (PROJECTS) and project cards
     ├── js/bug2.js        Bug2 engine (used by the game and the Worker)
     ├── js/levels.js      coffee-run levels and scoring (shared with the Worker)
     ├── js/game.js        the coffee-run puzzle
@@ -32,7 +34,7 @@ site/
 - `GET /api/scores`: the top 10 coffee-run players, by stars.
 - `POST /api/scores` with `{ name, solutions: { levelId: { walls, side } } }`: the Worker re-plays every solution with the shared engine, so stars can't be faked. It limits each visitor to 5 submissions a minute, filters names, and keeps each name's best result.
 - `GET /api/posts`: the latest posts from One More Layer's RSS feed, cached for an hour.
-- `GET /api/github`: your repositories from GitHub, cached for an hour. It powers the totals and the "Learning in public" timeline, and adds stars and last-updated dates to project cards. Private repos are only counted per year and are never named. Private counts need a `GITHUB_TOKEN` secret (run `npx wrangler secret put GITHUB_TOKEN` with a fine-grained, read-only token); without it, only public repos are live and the private counts come from `PRIVATE_REPOS`.
+- `GET /api/github`: your repositories from GitHub, cached for an hour. It powers the repository counts in the Projects intro and adds stars and last-updated dates to project cards. Private repos are only counted per year and are never named. Private counts need a `GITHUB_TOKEN` secret (run `npx wrangler secret put GITHUB_TOKEN` with a fine-grained, read-only token); without it, only public repos are counted.
 
 ## Deploying
 
@@ -45,7 +47,7 @@ site/
 
 ## Pages
 
-- **`index.html`: the personal home page.** It has an intro with a pixelated portrait you can "enhance", a "Right now" grid, the story so far as a timeline, a GitHub timeline (one square per public repo), likes and dislikes, a bookshelf, a favourite quote, projects, and contact links.
+- **`index.html`: the personal home page.** It has an intro with a pixelated portrait you can "enhance", an Explore row (terminal and game), a "Right now" grid, the story so far, the coffee-run game, likes and dislikes, a bookshelf, a favourite quote, the latest article, featured projects, and contact links. Longer parts unfold on demand.
 - **`cv.html` / the CV PDF:** a one-page, generic CV with no phone number and no internal work numbers.
 - **`resume.html`: the resume.** It shows what I know (expandable knowledge areas), experience, how I work, skills, and education. Printing it, or "Save as PDF", gives a clean one-column resume.
 - **`assets/portrait.jpg`: the photo** used by the home page.
@@ -53,6 +55,8 @@ site/
 Both pages share the same pixel look and the same blog-style layout: a tree table of contents on the left with per-section read meters, the article in the middle, and quick links on the right. On the home page, the reading progress is a pixel coffee mug that fills as you scroll.
 
 ## Interactions
+
+- The home page stays short: each section shows its highlights, and a command button unfolds the rest in place: `cat story.md` (the full story), `./coffee-run` (the game, also at `nitesh.fyi/play`) and `ls projects --all` (every project). Clicking the button types the command out first. The same commands work in the terminal, and without JavaScript everything is simply shown.
 
 - `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.
@@ -64,8 +68,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 
 ## Editing
 
-- **Projects** live in the `PROJECTS` array in `site/public/index.html`. It keeps the same format so the automated GitHub sync still works.
-- **The GitHub timeline** reads the `REPOS` array in `site/public/index.html`, where `year` is the year the repo was last updated. Private repositories are counted per year in `PRIVATE_REPOS` and shown as hatched squares; `PRIVATE_NAMED` labels the ones you're happy to name, such as Hushy.
+- **Projects** live in the `PROJECTS` array in `site/public/js/projects.js`. The first four are featured on the home page. It keeps the same format so the automated GitHub sync still works.
 - **Resume content** is plain HTML in `site/public/resume.html`. Set `LINKEDIN_URL` there to show LinkedIn links.
 - The resume stays generic on purpose: it shows concepts and tools, not internal work details.
 

@@ -20,6 +20,47 @@
     });
   }
 
+  // ---- Command expanders: a command button that unfolds more content ---------------
+  // <button class="cmd" data-cmd-target="id"> toggles .is-open on #id. Opening types the
+  // command out first, like a terminal. The same commands work in the ~ terminal.
+  const expanders = new Map();
+  $$('[data-cmd-target]').forEach((btn) => {
+    const target = document.getElementById(btn.dataset.cmdTarget);
+    if (!target) return;
+    const e = { btn, target, code: $('.cmd-text', btn), hint: $('.cmd-hint', btn) };
+    e.command = e.code.textContent;
+    expanders.set(target.id, e);
+    btn.addEventListener('click', () => setOpen(target.id, !target.classList.contains('is-open')));
+  });
+  function setOpen(id, open) {
+    const e = expanders.get(id);
+    if (!e) return;
+    const finish = () => {
+      e.target.classList.toggle('is-open', open);
+      e.btn.setAttribute('aria-expanded', String(open));
+      if (open) { e.closedHint = e.hint.textContent; e.hint.textContent = e.btn.dataset.hintOpen || 'hide ↑'; }
+      else if (e.closedHint) e.hint.textContent = e.closedHint;
+    };
+    if (!open || reduceMotion || e.target.classList.contains('is-open')) return finish();
+    // Type the command, then reveal.
+    let n = 0;
+    e.code.classList.add('typing');
+    const tick = setInterval(() => {
+      e.code.textContent = e.command.slice(0, ++n);
+      if (n >= e.command.length) { clearInterval(tick); e.code.classList.remove('typing'); finish(); }
+    }, 28);
+  }
+  function openAndShow(id) {
+    const e = expanders.get(id);
+    if (!e) return false;
+    setOpen(id, true);
+    (e.btn.closest('section') || e.btn).scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    return true;
+  }
+  $$('[data-open]').forEach((a) => a.addEventListener('click', () => setOpen(a.dataset.open, true)));
+  if (location.hash === '#play') setOpen('playOut', true);
+  window.openSection = openAndShow;
+
   // ---- Latest posts from One More Layer -------------------------------------------
   const postList = $('#postList');
   if (postList) {
@@ -45,7 +86,7 @@
     github: 'https://github.com/nshantha/', substack: 'https://onemorelayer.dev/', blog: 'https://onemorelayer.dev/',
     hushy: 'https://tryhushy.com/', resume: '/resume', cv: '/Nitesh-Shantha-Kumar-CV.pdf', home: '/'
   };
-  const SECTIONS = ['hello', 'now', 'story', 'play', 'github', 'likes', 'why', 'writing', 'projects', 'elsewhere'];
+  const SECTIONS = ['hello', 'now', 'story', 'play', 'likes', 'why', 'writing', 'projects', 'elsewhere'];
   const TEXT = {
     story: [
       'bangalore   loved electronics; built a color-sorting robot, line followers, Bug2 bots',
@@ -76,7 +117,11 @@
     '  cat <file>        story · now · likes · quote',
     '  cd <section>      jump to a section' + (onHome ? '' : ' (on the home page)'),
     '  open <link>       x · github · substack · hushy · resume · cv',
-    '  play              play the Bug2 robot game',
+    '  play              play the coffee-run robot game',
+    'on the home page, these unfold more:',
+    '  cat story.md      the full story',
+    '  ./coffee-run      the game',
+    '  ls projects --all every project',
     '  cv                download my CV',
     '  coffee            make a cup',
     '  theme             toggle dark mode',
@@ -123,6 +168,12 @@
     print(`❯ ${line}`, 'cmd');
     if (!line) return;
     history.push(line); hIndex = history.length;
+    const UNFOLD = { 'cat story.md': 'storyList', './coffee-run': 'playOut', 'ls projects --all': 'projectList' };
+    const unfold = UNFOLD[line.toLowerCase().replace(/\s+/g, ' ')];
+    if (unfold) {
+      if (!onHome) { go('/#' + { storyList: 'story', playOut: 'play', projectList: 'projects' }[unfold]); return; }
+      print('unfolding it on the page…', 'dim'); close(); openAndShow(unfold); return;
+    }
     const [cmd, ...args] = line.split(/\s+/);
     const arg = (args[0] || '').toLowerCase();
     switch (cmd.toLowerCase()) {
@@ -144,7 +195,7 @@
       case 'open':
         if (LINKS[arg]) { print(`opening ${arg}…`, 'dim'); return go(LINKS[arg]); }
         return print(`open: ${arg || '(nothing)'}: try ${Object.keys(LINKS).join(', ')}`, 'err');
-      case 'play': if (onHome) return scrollTo('play'); return go('/#play');
+      case 'play': if (onHome) { close(); openAndShow('playOut'); return; } return go('/play');
       case 'cv': case 'resume.pdf': print('downloading CV…', 'dim'); return go(LINKS.cv);
       case 'coffee': return print(COFFEE);
       case 'theme': document.getElementById('themeToggle')?.click(); return print('theme toggled.', 'dim');
@@ -159,7 +210,7 @@
       default: return print(`${cmd}: command not found. type \`help\`.`, 'err');
     }
   }
-  const COMPLETIONS = ['help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
+  const COMPLETIONS = ['cat story.md', './coffee-run', 'ls projects --all', 'help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
   function onKey(e) {
     if (e.key === 'Enter') { run(input.value); input.value = ''; }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (hIndex > 0) input.value = history[--hIndex]; }
