@@ -282,7 +282,7 @@
     }
     @media (max-width: 640px) {
       .hero { grid-template-columns: 1fr; gap: 24px; }
-      .portrait { max-width: 220px; }
+      .portrait { max-width: 150px; }
       .now { grid-template-columns: 1fr 1fr; }
       .likes, .shelf, .contact-grid { grid-template-columns: 1fr; }
       .project { grid-template-columns: 1fr auto; }
@@ -371,6 +371,12 @@
               <a href="/Nitesh-Shantha-Kumar-CV.pdf" download>CV · PDF ↓</a>
               <button type="button" data-action="copy-email">Copy email</button>
             </div>
+            <form class="hero-term" id="heroTerm" autocomplete="off">
+              <label for="heroTermInput" class="ht-prompt"><span class="ht-host">nitesh@fyi</span> ~ ❯</label>
+              <input id="heroTermInput" type="text" spellcheck="false" autocapitalize="off" placeholder="whoami" aria-label="Run a command in this site's terminal">
+              <button type="submit">run ↵</button>
+            </form>
+            <p class="ht-note">This site has a terminal. Type a command above, or press <kbd>~</kbd> anywhere. Try <code>help</code>.</p>
             <a class="play-teaser pixel-btn" href="#play">
               <span class="pt-track" aria-hidden="true"><i class="pt-bean"></i><i class="pt-bot"></i><i class="pt-flag"></i></span>
               <span class="pt-text"><i class="kind kind-game">▶ Game</i><b>☕ Play coffee run</b><small>A tiny robot puzzle hidden in this site · <span data-stars>8 levels, 24 stars</span></small></span>
@@ -598,12 +604,6 @@
     </main>
 
     <aside class="rail rail-right" aria-label="Quick links">
-      <div class="card play-card">
-        <h3>☕ Coffee run</h3>
-        <p>A tiny puzzle: steer my robot so it grabs every coffee bean.</p>
-        <p class="play-card-stars"><span data-stars>8 levels, 24 stars</span></p>
-        <div class="action-list"><a class="action primary pixel-btn" href="#play">Play now <span class="muted">→</span></a></div>
-      </div>
       <div class="card">
         <h3>Nitesh Shantha Kumar</h3>
         <p>Software engineer · Seattle, WA</p>

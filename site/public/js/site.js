@@ -177,9 +177,38 @@
   });
   $$('[data-terminal]').forEach((b) => b.addEventListener('click', open));
 
+  // The prompt in the hero: types example commands by itself, and runs what you type
+  // in the full terminal.
+  const heroTerm = $('#heroTerm');
+  if (heroTerm) {
+    const field = $('input', heroTerm);
+    heroTerm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cmd = field.value.trim() || current();
+      field.value = '';
+      open();
+      run(cmd);
+    });
+    const examples = ['whoami', 'cat story', 'play', 'coffee', 'ls projects', 'help'];
+    let i = 0;
+    const current = () => examples[i % examples.length];
+    // Focusing shows the whole example, so Enter on an empty prompt runs it.
+    field.addEventListener('focus', () => { field.placeholder = current(); });
+    if (!reduceMotion) {
+      let ch = 0, deleting = false;
+      setInterval(() => {
+        if (document.activeElement === field || field.value) return;
+        const word = current();
+        if (!deleting) { ch++; if (ch > word.length + 12) deleting = true; }
+        else { ch--; if (ch <= 0) { deleting = false; i++; ch = 0; } }
+        field.placeholder = word.slice(0, Math.min(ch, word.length)) + (Math.min(ch, word.length) < word.length || Math.floor(Date.now() / 400) % 2 ? '▌' : ' ');
+      }, 110);
+    }
+  }
+
   // Tell first-time visitors the terminal exists, once, after they start scrolling.
   const seen = (() => { try { return localStorage.getItem('term-hint') === '1'; } catch (e) { return true; } })();
-  if (!seen) {
+  if (!seen && !document.getElementById('heroTerm')) {
     const onScroll = () => {
       if (window.scrollY < window.innerHeight * 0.6) return;
       window.removeEventListener('scroll', onScroll);
