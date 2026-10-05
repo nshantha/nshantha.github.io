@@ -1,30 +1,26 @@
 # nshantha.github.io
 
-Interactive resume for Nitesh Shantha Kumar — https://nshantha.github.io/
+Personal site of Nitesh Shantha Kumar, built as static pages for GitHub Pages with no build step.
 
-A single static `index.html` with no build step, so GitHub Pages serves it as-is.
+## Pages
 
-## Layout
+- **`index.html`: the personal home page.** It has an intro with a pixelated portrait you can "enhance", a "Right now" grid, the story so far as a timeline, a GitHub timeline (one square per public repo), likes and dislikes, a bookshelf, a favourite quote, projects, and contact links.
+- **`resume.html`: the resume.** It shows what I know (expandable knowledge areas), experience, how I work, skills, and education. Printing it, or "Save as PDF", gives a clean one-column resume.
+- **`assets/portrait.jpg`: the photo** used by the home page.
 
-Three columns, modeled on a long-form blog post:
-
-- **Left rail:** a tree-style table of contents with per-section read meters, a dithered progress bar, and time remaining. On phones it becomes a "Contents" drawer.
-- **Main column:** the resume as an article. It has a "Read this first" summary, a "What I know" section of expandable knowledge areas, a step-through outbox diagram (Fig A), a throughput calculator (Fig B), experience, skills, projects, education, and contact.
-- **Right rail:** a profile card with actions (copy email, save as PDF, GitHub, LinkedIn, copy link) and selected projects.
+Both pages share the same pixel look and the same blog-style layout: a tree table of contents on the left with per-section read meters, the article in the middle, and quick links on the right. On the home page, the reading progress is a pixel coffee mug that fills as you scroll.
 
 ## Interactions
 
-- `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, stories, and projects, or to run actions.
+- `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.
-- Skill chips open the matching knowledge area.
 - Dark mode follows the system setting, and the toggle remembers your choice.
-- Printing (or "Save as PDF") uses a print stylesheet that produces a clean one-column resume.
 
 ## Editing
 
-- **Resume content** is plain HTML in `index.html`. Each knowledge area is a `<details class="case" id="k-…">` block with a `<dl class="concepts">` list.
-- The content stays generic on purpose: it shows concepts and tools, not internal work details or production numbers.
-- **Projects** come from the `PROJECTS` array in the script. It keeps the same format so the automated GitHub sync still works.
-- **LinkedIn:** set `LINKEDIN_URL` at the top of the script. The links stay hidden while it is empty.
+- **Projects** live in the `PROJECTS` array in `index.html`. It keeps the same format so the automated GitHub sync still works.
+- **The GitHub timeline** reads the `REPOS` array in `index.html`, where `year` is the year the repo was last updated.
+- **Resume content** is plain HTML in `resume.html`. Set `LINKEDIN_URL` there to show LinkedIn links.
+- The resume stays generic on purpose: it shows concepts and tools, not internal work details.
 
 The live site is served from the `gh-pages` branch. The original React + Vite + Tailwind source is preserved on the `archive/react-source` branch.
