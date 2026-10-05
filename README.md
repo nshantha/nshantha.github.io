@@ -1,6 +1,6 @@
 # nshantha.github.io
 
-Personal site of Nitesh Shantha Kumar, built as static pages for GitHub Pages with no build step.
+Personal site of Nitesh Shantha Kumar — https://nitesh.fyi/ — built as static pages for GitHub Pages with no build step.
 
 ## Pages
 
