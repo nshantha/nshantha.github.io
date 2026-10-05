@@ -171,6 +171,11 @@
 
     /* Repo timeline */
     .repo-fig { background: var(--surface); padding: 24px 24px 18px; }
+    .repo-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 0 0 20px; background: var(--line); border: 1px solid var(--line); }
+    .repo-stats div { padding: 12px 14px; background: var(--surface); }
+    .repo-stats dt { color: var(--faint); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+    .repo-stats dd { margin: 8px 0 0; font: 500 28px/1 var(--pixel); }
+    .repo-stats dd.sm { font: 500 12px/1.4 var(--mono); color: var(--muted); }
     .repo-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; color: var(--muted); font: 500 12px/1 var(--mono); }
     .repo-legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; }
     .years { display: grid; gap: 10px; }
@@ -288,6 +293,7 @@
       .quote { padding: 28px 22px; }
     }
     @media (max-width: 400px) { .now { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) { .repo-stats { grid-template-columns: 1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -483,9 +489,15 @@
           <div class="chapter-head"><span class="chapter-num">04</span><h2 id="github-title">Learning in public</h2></div>
           <p class="lead">My GitHub, one square per repository, private ideas included. Hover or tap a square to see what it is.</p>
           <figure class="repo-fig steps" style="margin:0">
+            <dl class="repo-stats">
+              <div><dt>Repositories</dt><dd id="repoTotal">–</dd></div>
+              <div><dt>Public</dt><dd id="repoPublic">–</dd></div>
+              <div><dt>Private</dt><dd id="repoPrivate">–</dd></div>
+              <div><dt>Source</dt><dd class="sm" id="repoSynced">snapshot</dd></div>
+            </dl>
             <div class="repo-legend"><span><i class="cell ml" style="display:inline-block"></i>Robotics &amp; ML</span><span><i class="cell ai" style="display:inline-block"></i>LLMs &amp; agents</span><span><i class="cell web" style="display:inline-block"></i>Web &amp; other</span><span><i class="cell private" style="display:inline-block"></i>Private ideas</span></div>
             <div class="years" id="years"></div>
-            <figcaption>Grouped by the year each repository was last updated. Hatched squares are private repositories: ideas I’m still building, Hushy among them. The public side was quiet while I was heads-down at Nordstrom; then LLMs and MCP arrived.</figcaption>
+            <figcaption id="repoCaption"></figcaption>
             <details class="repo-list"><summary>Show as a list</summary><table id="repoTable"></table></details>
           </figure>
         </section>
@@ -806,25 +818,70 @@
 
     // ---- Repo timeline -----------------------------------------------------
     const tip = $('#tip');
-    const years = [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026];
     const KIND = { ml: 'Robotics & ML', ai: 'LLMs & agents', web: 'Web & other' };
-    $('#years').innerHTML = years.map((y) => {
-      const rs = REPOS.filter((r) => r[1] === y);
-      const named = PRIVATE_NAMED[y] || [];
-      const privates = Array.from({ length: Math.max(PRIVATE_REPOS[y] || 0, named.length) }, (_, i) => named[i] || 'Private repo · an idea in progress');
-      const body = rs.map((r) => `<a class="cell ${r[2]}" href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer" data-tip="${escapeHTML(r[0])} · ${escapeHTML(r[3])}" aria-label="${escapeHTML(r[0])}: ${escapeHTML(r[3])}"></a>`).join('')
-        + privates.map((label) => `<span class="cell private" tabindex="0" role="img" data-tip="🔒 ${escapeHTML(label)}" aria-label="Private: ${escapeHTML(label)}"></span>`).join('');
-      return `<div class="year"><span>${y}</span><div class="cells">${body}</div></div>`;
-    }).join('');
-    $('#repoTable').innerHTML = REPOS.map((r) => `<tr><td>${r[1]}</td><td><a href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer">${escapeHTML(r[0])}</a></td><td>${escapeHTML(r[3])}</td><td>${KIND[r[2]]}</td></tr>`).join('')
-      + Object.entries(PRIVATE_REPOS).map(([y, n]) => `<tr><td>${y}</td><td>${n} private ${n === 1 ? 'repository' : 'repositories'}</td><td>${escapeHTML((PRIVATE_NAMED[y] || []).join(', ') || 'Ideas in progress')}</td><td>Private ideas</td></tr>`).join('');
+    // Category for a repo: the hand-picked one if known, otherwise a guess from its name and topics.
+    const KNOWN_KIND = Object.fromEntries(REPOS.map((r) => [r[0].toLowerCase(), r[2]]));
+    function kindOf(repo) {
+      const known = KNOWN_KIND[repo.name.toLowerCase()];
+      if (known) return known;
+      const text = `${repo.name} ${repo.description} ${(repo.topics || []).join(' ')}`.toLowerCase();
+      if (/\b(ai|llm|mcp|agent|agents|gpt|claude|rag|langgraph|langchain|openai|embedding)\b|ai$/.test(text)) return 'ai';
+      if (/ros|robot|slam|lidar|planning|pytorch|tensorflow|vision|mnist|regression|svm|bayes|nlp|kalman/.test(text)) return 'ml';
+      return 'web';
+    }
     function showTip(el, x, y) { tip.textContent = el.dataset.tip; tip.style.left = x + 'px'; tip.style.top = y + 'px'; tip.classList.add('show'); }
-    $$('[data-tip]').forEach((el) => {
-      el.addEventListener('pointermove', (e) => showTip(el, e.clientX, e.clientY));
-      el.addEventListener('pointerleave', () => tip.classList.remove('show'));
-      el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); });
-      el.addEventListener('blur', () => tip.classList.remove('show'));
+    function bindTips(root) {
+      $$('[data-tip]', root).forEach((el) => {
+        el.addEventListener('pointermove', (e) => showTip(el, e.clientX, e.clientY));
+        el.addEventListener('pointerleave', () => tip.classList.remove('show'));
+        el.addEventListener('focus', () => { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); });
+        el.addEventListener('blur', () => tip.classList.remove('show'));
+      });
+    }
+    // data: { repos: [{ name, description, url, year }], privateByYear: { year: count }, total, public, private, live }
+    function renderTimeline(data) {
+      const allYears = [...data.repos.map((r) => r.year), ...Object.keys(data.privateByYear).map(Number)];
+      const first = Math.min(2019, ...allYears), last = Math.max(new Date().getFullYear(), ...allYears);
+      const years = []; for (let y = first; y <= last; y++) years.push(y);
+      $('#years').innerHTML = years.map((y) => {
+        const rs = data.repos.filter((r) => r.year === y);
+        const named = PRIVATE_NAMED[y] || [];
+        const privates = Array.from({ length: Math.max(data.privateByYear[y] || 0, named.length) }, (_, i) => named[i] || 'Private repo · an idea in progress');
+        const body = rs.map((r) => `<a class="cell ${kindOf(r)}" href="${escapeHTML(r.url)}" target="_blank" rel="noreferrer" data-tip="${escapeHTML(r.name)}${r.description ? ' · ' + escapeHTML(r.description.slice(0, 80)) : ''}" aria-label="${escapeHTML(r.name)}"></a>`).join('')
+          + privates.map((label) => `<span class="cell private" tabindex="0" role="img" data-tip="🔒 ${escapeHTML(label)}" aria-label="Private: ${escapeHTML(label)}"></span>`).join('');
+        return `<div class="year"><span>${y}</span><div class="cells">${body}</div></div>`;
+      }).join('');
+      $('#repoTable').innerHTML = data.repos.map((r) => `<tr><td>${r.year}</td><td><a href="${escapeHTML(r.url)}" target="_blank" rel="noreferrer">${escapeHTML(r.name)}</a></td><td>${escapeHTML(r.description)}</td><td>${KIND[kindOf(r)]}</td></tr>`).join('')
+        + Object.entries(data.privateByYear).map(([y, n]) => `<tr><td>${y}</td><td>${n} private ${n === 1 ? 'repository' : 'repositories'}</td><td>${escapeHTML((PRIVATE_NAMED[y] || []).join(', ') || 'Ideas in progress')}</td><td>Private ideas</td></tr>`).join('');
+      $('#repoTotal').textContent = data.total;
+      $('#repoPublic').textContent = data.public;
+      $('#repoPrivate').textContent = data.private;
+      $('#repoSynced').textContent = data.live ? `live from GitHub · ${new Date(data.updatedAt).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}` : 'snapshot';
+      $('#repoCaption').textContent = data.live
+        ? 'Grouped by the year each repository was created, straight from GitHub. Hatched squares are private repositories, ideas I’m still building, counted but never named (Hushy excepted).'
+        : 'Grouped by the year each repository was last updated. Hatched squares are private repositories: ideas I’m still building, Hushy among them.';
+      bindTips($('#years'));
+    }
+    // Built-in snapshot first, so the timeline never waits on the network…
+    const snapshotPrivate = Object.values(PRIVATE_REPOS).reduce((a, b) => a + b, 0);
+    renderTimeline({
+      live: false,
+      repos: REPOS.map((r) => ({ name: r[0], year: r[1], description: r[3], url: `https://github.com/nshantha/${r[0]}` })),
+      privateByYear: PRIVATE_REPOS, total: REPOS.length + snapshotPrivate, public: REPOS.length, private: snapshotPrivate
     });
+    // …then the live list from GitHub (via the Worker, cached for an hour).
+    let githubLive = null;
+    fetch('/api/github').then((r) => (r.ok ? r.json() : Promise.reject(r.status))).then((gh) => {
+      githubLive = gh;
+      const privateByYear = gh.includesPrivate ? gh.privateByYear : PRIVATE_REPOS;
+      const privateCount = gh.includesPrivate ? gh.private : snapshotPrivate;
+      renderTimeline({
+        live: true, updatedAt: gh.updatedAt,
+        repos: gh.repos.map((r) => ({ ...r, year: Number(r.created.slice(0, 4)) })),
+        privateByYear, total: gh.public + privateCount, public: gh.public, private: privateCount
+      });
+      renderProjects();
+    }).catch(() => { /* keep the snapshot */ });
 
     // ---- Projects -----------------------------------------------------------
     const projectList = $('#projectList');
@@ -834,6 +891,14 @@
     $('#countAi').textContent = countOf('ai');
     $('#countRobotics').textContent = countOf('robotics');
     let activeFilter = 'all';
+    // Live GitHub details (stars, last push) for a curated project, once /api/github has loaded.
+    function liveMeta(p) {
+      const repo = githubLive && githubLive.repos.find((r) => r.url.toLowerCase() === p.url.replace(/\/$/, '').toLowerCase());
+      if (!repo) return '';
+      const days = Math.floor((Date.now() - new Date(repo.pushed)) / 86400000);
+      const ago = days < 1 ? 'today' : days < 30 ? `${days}d ago` : days < 365 ? `${Math.floor(days / 30)}mo ago` : `${Math.floor(days / 365)}y ago`;
+      return ` · updated ${ago}${repo.stars ? ` · ★ ${repo.stars}` : ''}`;
+    }
     function renderProjects() {
       const list = PROJECTS.filter((p) => activeFilter === 'all' || p.categories.includes(activeFilter));
       projectList.innerHTML = list.map((p) => `
@@ -842,7 +907,7 @@
           <div>
             <h3>${escapeHTML(p.name)}</h3>
             <p>${escapeHTML(p.description)}</p>
-            <div class="project-meta">${escapeHTML(p.year)} · ${escapeHTML(p.language)}</div>
+            <div class="project-meta">${escapeHTML(p.year)} · ${escapeHTML(p.language)}${liveMeta(p)}</div>
             <div class="tags">${p.tags.map((t) => `<span class="tag">${escapeHTML(t)}</span>`).join('')}</div>
           </div>
           <span class="project-arrow" aria-hidden="true">↗</span>

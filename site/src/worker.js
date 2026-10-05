@@ -5,6 +5,7 @@ import { levelById, playLevel } from '../public/js/levels.js';
 
 const CANONICAL_HOST = 'nitesh.fyi';
 const FEED_URL = 'https://onemorelayer.dev/feed';
+const GITHUB_USER = 'nshantha';
 
 // Hostnames that should be served as-is: local dev and *.workers.dev previews.
 const isDevHost = (host) => host === 'localhost' || host === '127.0.0.1' || host.endsWith('.workers.dev');
@@ -42,6 +43,7 @@ async function handleApi(request, url, env, ctx) {
     if (url.pathname === '/api/scores' && request.method === 'GET') return await topScores(env);
     if (url.pathname === '/api/scores' && request.method === 'POST') return await submitScore(request, env);
     if (url.pathname === '/api/posts' && request.method === 'GET') return await latestPosts(ctx);
+    if (url.pathname === '/api/github' && request.method === 'GET') return await githubRepos(env, ctx);
     return json({ error: 'Not found' }, 404);
   } catch (err) {
     console.error('api error', url.pathname, err);
@@ -141,6 +143,55 @@ async function latestPosts(ctx) {
   })).filter((p) => p.url.startsWith('https://onemorelayer.dev/'));
 
   const response = json({ posts }, 200, { 'Cache-Control': 'public, max-age=3600' });
+  ctx.waitUntil(cache.put(cacheKey, response.clone()));
+  return response;
+}
+
+// ---- GitHub repositories -----------------------------------------------------------
+// Public repos come back with details. Private repos are only counted per year: no
+// names or descriptions ever leave the Worker. Private counts need a GITHUB_TOKEN secret
+// (fine-grained, read-only metadata); without it only public repos are listed.
+
+async function githubRepos(env, ctx) {
+  const cache = caches.default;
+  const cacheKey = new Request(`https://${CANONICAL_HOST}/api/github`);
+  const cached = await cache.match(cacheKey);
+  if (cached) return cached;
+
+  const headers = { 'User-Agent': 'nitesh.fyi', Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' };
+  if (env.GITHUB_TOKEN) headers.Authorization = `Bearer ${env.GITHUB_TOKEN}`;
+  const base = env.GITHUB_TOKEN
+    ? 'https://api.github.com/user/repos?affiliation=owner&visibility=all&per_page=100'
+    : `https://api.github.com/users/${GITHUB_USER}/repos?type=owner&per_page=100`;
+
+  const all = [];
+  for (let page = 1; page <= 5; page++) {
+    const res = await fetch(`${base}&page=${page}`, { headers });
+    if (!res.ok) return json({ error: 'GitHub unavailable' }, 502, { 'Cache-Control': 'public, max-age=300' });
+    const batch = await res.json();
+    all.push(...batch);
+    if (batch.length < 100) break;
+  }
+
+  const mine = all.filter((r) => r.owner?.login?.toLowerCase() === GITHUB_USER && !r.fork);
+  const publicRepos = mine.filter((r) => !r.private);
+  const privateRepos = mine.filter((r) => r.private);
+  const privateByYear = {};
+  for (const r of privateRepos) { const y = r.created_at.slice(0, 4); privateByYear[y] = (privateByYear[y] || 0) + 1; }
+
+  const body = {
+    updatedAt: new Date().toISOString(),
+    includesPrivate: Boolean(env.GITHUB_TOKEN),
+    total: mine.length,
+    public: publicRepos.length,
+    private: env.GITHUB_TOKEN ? privateRepos.length : null,
+    privateByYear: env.GITHUB_TOKEN ? privateByYear : null,
+    repos: publicRepos.map((r) => ({
+      name: r.name, description: r.description || '', language: r.language || '', url: r.html_url,
+      stars: r.stargazers_count, topics: r.topics || [], created: r.created_at, pushed: r.pushed_at
+    })).sort((a, b) => a.created.localeCompare(b.created))
+  };
+  const response = json(body, 200, { 'Cache-Control': 'public, max-age=3600' });
   ctx.waitUntil(cache.put(cacheKey, response.clone()));
   return response;
 }

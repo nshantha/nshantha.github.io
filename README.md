@@ -32,6 +32,7 @@ site/
 - `GET /api/scores`: the top 10 coffee-run players, by stars.
 - `POST /api/scores` with `{ name, solutions: { levelId: { walls, side } } }`: the Worker re-plays every solution with the shared engine, so stars can't be faked. It limits each visitor to 5 submissions a minute, filters names, and keeps each name's best result.
 - `GET /api/posts`: the latest posts from One More Layer's RSS feed, cached for an hour.
+- `GET /api/github`: your repositories from GitHub, cached for an hour. It powers the totals and the "Learning in public" timeline, and adds stars and last-updated dates to project cards. Private repos are only counted per year and are never named. Private counts need a `GITHUB_TOKEN` secret (run `npx wrangler secret put GITHUB_TOKEN` with a fine-grained, read-only token); without it, only public repos are live and the private counts come from `PRIVATE_REPOS`.
 
 ## Deploying
 
