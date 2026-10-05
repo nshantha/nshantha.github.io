@@ -1,5 +1,6 @@
 // Cloudflare Worker that serves the static site in ./public.
 // Deploy from this folder with `npx wrangler deploy` (or Workers Builds, root directory "site").
+// The Worker also serves /api/scores (Bug2 leaderboard) and /api/posts (latest Substack posts).
 {
   "name": "nitesh-fyi",
   "main": "src/worker.js",
@@ -17,6 +18,20 @@
     { "pattern": "nitesh.fyi", "custom_domain": true },
     { "pattern": "www.nitesh.fyi", "custom_domain": true },
     { "pattern": "nitesh.onemorelayer.dev", "custom_domain": true }
+  ],
+  // Bug2 leaderboard. Create it once with `npx wrangler d1 create nitesh-fyi`, paste the
+  // database_id below, then `npx wrangler d1 migrations apply nitesh-fyi --remote`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nitesh-fyi",
+      "database_id": "REPLACE_WITH_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // At most 5 leaderboard submissions per visitor per minute.
+  "ratelimits": [
+    { "name": "SCORE_LIMIT", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
   ],
   "workers_dev": true,
   "preview_urls": true,

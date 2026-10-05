@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <title>Resume — Nitesh Shantha Kumar</title>
+  <link rel="stylesheet" href="/css/site.css">
   <style>
     :root {
       --paper: #f2f0e9;
@@ -403,7 +404,7 @@
       </nav>
       <div class="toc-progress" aria-hidden="true"><span class="bar dither-track"><i class="dither-fill" id="progressBar"></i></span><output id="progressPct">00%</output></div>
       <p class="toc-meta" id="timeLeft"></p>
-      <p class="rail-hint">Press <kbd>J</kbd> / <kbd>K</kbd> for sections<br><kbd>⌘K</kbd> or <kbd>/</kbd> to search</p>
+      <p class="rail-hint">Press <kbd>J</kbd> / <kbd>K</kbd> for sections<br><kbd>⌘K</kbd> or <kbd>/</kbd> to search<br><kbd>~</kbd> for a terminal</p>
     </aside>
 
     <!-- MAIN COLUMN -->
@@ -431,7 +432,7 @@
 
           <div class="action-list mobile-only-actions" style="margin-top:20px">
             <button class="action primary" type="button" data-action="copy-email">Copy email <span class="muted">nithesh1001@gmail.com</span></button>
-            <button class="action" type="button" data-action="print">Save as PDF <span class="muted">⌘P</span></button>
+            <a class="action" href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download CV <span class="muted">PDF</span></a>
           </div>
         </header>
 
@@ -633,7 +634,7 @@
             <a class="btn" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub ↗</a>
             <a class="btn" href="/">About me →</a>
             <a class="btn" data-linkedin hidden target="_blank" rel="noreferrer">LinkedIn ↗</a>
-            <button class="btn" type="button" data-action="print">Save as PDF</button>
+            <a class="btn" href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download CV ↓</a>
           </div>
         </section>
 
@@ -651,7 +652,7 @@
         <span class="status">Open to conversations</span>
         <div class="action-list">
           <button class="action primary pixel-btn" type="button" data-action="copy-email">Copy email <span class="muted">⧉</span></button>
-          <button class="action" type="button" data-action="print">Save as PDF <span class="muted">⌘P</span></button>
+          <a class="action" href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download CV <span class="muted">PDF</span></a>
           <a class="action" href="/">About me <span class="muted">→</span></a>
           <a class="action" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub <span class="muted">↗</span></a>
           <a class="action" data-linkedin hidden target="_blank" rel="noreferrer">LinkedIn <span class="muted">↗</span></a>
@@ -856,7 +857,8 @@
       ...areas.map((d) => ({ label: $('.case-title', d).textContent, kind: 'Topic', keys: d.textContent, run: go(d.id) })),
       { label: 'About me (home)', kind: 'Page', run: () => (location.href = '/') },
       { label: 'Copy email address', kind: 'Action', run: ACTIONS['copy-email'] },
-      { label: 'Save resume as PDF', kind: 'Action', run: ACTIONS.print },
+      { label: 'Download CV (PDF)', kind: 'Link', run: () => (location.href = '/Nitesh-Shantha-Kumar-CV.pdf') },
+      { label: 'Open the terminal', kind: 'Action', run: () => window.openTerminal() },
       { label: 'Toggle dark mode', kind: 'Action', run: ACTIONS.theme },
       { label: 'Copy link to this page', kind: 'Action', run: ACTIONS['copy-url'] }
     ];
@@ -901,5 +903,6 @@
       }
     });
   </script>
+  <script src="/js/site.js" defer></script>
 </body>
 </html>

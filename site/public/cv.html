@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CV of Nitesh Shantha Kumar, software engineer in Seattle." />
+  <title>CV — Nitesh Shantha Kumar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* A print-first CV. Source for /Nitesh-Shantha-Kumar-CV.pdf (see tools/build-cv.mjs). */
+    :root { --ink: #16150f; --muted: #4a4840; --faint: #77746a; --line: #d6d2c6; --accent: #b4461f; --paper: #f2f0e9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 9.6pt/1.42 "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    .sheet { width: 8.5in; min-height: 11in; margin: 24px auto; padding: 0.5in 0.6in; background: #fff; box-shadow: 0 2px 18px rgba(0,0,0,.08); }
+    .toolbar { width: 8.5in; margin: 24px auto 0; display: flex; justify-content: space-between; font: 500 12px/1 "IBM Plex Mono", monospace; }
+    .toolbar a { color: var(--ink); }
+    header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+    h1 { margin: 0; font-size: 22pt; line-height: 1; letter-spacing: -.01em; }
+    .role { margin-top: 5px; color: var(--muted); font-size: 10.5pt; }
+    .contact { text-align: right; font: 400 8.5pt/1.6 "IBM Plex Mono", monospace; color: var(--muted); }
+    .contact a { color: inherit; text-decoration: none; }
+    h2 { margin: 13px 0 5px; color: var(--accent); font: 600 8.5pt/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; }
+    p { margin: 0; }
+    .summary { margin-top: 10px; }
+    .job { margin-top: 6px; }
+    .job-head { display: flex; justify-content: space-between; gap: 12px; }
+    .job-head b { font-size: 10.5pt; }
+    .job-head span { color: var(--faint); font: 400 8.5pt/1.6 "IBM Plex Mono", monospace; white-space: nowrap; }
+    .job-title { color: var(--muted); font-style: italic; }
+    ul { margin: 4px 0 0; padding-left: 15px; }
+    li { margin: 1px 0; }
+    .skills { display: grid; grid-template-columns: 1.35in 1fr; gap: 3px 12px; }
+    .skills dt { font-weight: 600; }
+    .skills dd { margin: 0; color: var(--muted); }
+    .projects li b { color: var(--ink); }
+    .projects li { color: var(--muted); }
+    .edu .job-head { margin-top: 4px; }
+    @media print {
+      @page { size: Letter; margin: 0; }
+      body { background: #fff; }
+      .sheet { margin: 0; box-shadow: none; width: auto; min-height: 0; }
+      .toolbar { display: none; }
+    }
+    @media screen and (max-width: 860px) {
+      .sheet, .toolbar { width: auto; margin: 12px; }
+      .sheet { padding: 24px 18px; }
+      header { flex-direction: column; align-items: flex-start; }
+      .contact { text-align: left; }
+      .skills { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="toolbar"><a href="/">← nitesh.fyi</a><a href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download PDF ↓</a></nav>
+  <main class="sheet">
+    <header>
+      <div>
+        <h1>Nitesh Shantha Kumar</h1>
+        <div class="role">Software Engineer · Distributed systems, data &amp; reliability</div>
+      </div>
+      <div class="contact">
+        Seattle, WA<br>
+        <a href="mailto:nithesh1001@gmail.com">nithesh1001@gmail.com</a><br>
+        <a href="https://nitesh.fyi">nitesh.fyi</a> · <a href="https://github.com/nshantha">github.com/nshantha</a>
+      </div>
+    </header>
+
+    <p class="summary">Software engineer who designs event-driven backend systems: Kafka pipelines, PostgreSQL that stays fast under load, and the reliability work that keeps both running. Technical lead on a retail pricing and promotions platform, and builder of agentic tooling for engineering teams. Background in robotics and safety-critical avionics software.</p>
+
+    <h2>Experience</h2>
+    <div class="job">
+      <div class="job-head"><b>Nordstrom</b><span>Seattle, WA · Aug 2021 – Present</span></div>
+      <div class="job-title">Software Engineer — Pricing and Promotions Platform</div>
+      <ul>
+        <li>Technical lead for a clearance and promotions platform with REST and Kafka ingestion; split delivery into parallel workstreams and own design review and integration.</li>
+        <li>Move legacy batch pipelines to event-driven publishing on Kafka with the transactional outbox pattern, using feature-flagged, shadow-mode cutovers with rollback plans.</li>
+        <li>Design for scale and resilience: asynchronous processing, rate limiting, event-fed read stores, and fallbacks to upstream services.</li>
+        <li>Diagnose database and throughput problems, lead incident investigations, and write root-cause analyses with prioritised follow-ups.</li>
+        <li>Build alerting and runbooks, plus agentic tooling (skills and subagents) that automates incident triage, used across teams.</li>
+      </ul>
+    </div>
+    <div class="job">
+      <div class="job-head"><b>Ak Aerotek</b><span>Bengaluru, India · May 2016 – May 2019</span></div>
+      <div class="job-title">Software Engineer</div>
+      <ul>
+        <li>Verification and validation of safety-critical avionics software to DO-178B/C, writing Ada test harnesses and running them on target hardware.</li>
+        <li>Led a small team through code and audit reviews.</li>
+      </ul>
+    </div>
+
+    <h2>Skills</h2>
+    <dl class="skills">
+      <dt>Languages</dt><dd>Java, Python, SQL, C++</dd>
+      <dt>Distributed systems</dt><dd>Apache Kafka (Avro, log compaction, ACLs, Confluent Cloud), transactional outbox, event-driven and service-oriented design, REST APIs, concurrency, fault tolerance</dd>
+      <dt>Data</dt><dd>PostgreSQL (query plans, indexing, MVCC), Oracle, DynamoDB, Neo4j, Redis / Valkey, Flyway</dd>
+      <dt>Cloud &amp; operations</dt><dd>AWS (EKS, S3, RDS, Aurora), Kubernetes, Docker, New Relic, Splunk, JMeter, incident response and on-call</dd>
+      <dt>AI &amp; tooling</dt><dd>Agents, skills and subagents, Model Context Protocol (MCP), LangGraph, retrieval over code and knowledge graphs</dd>
+    </dl>
+
+    <h2>Selected projects</h2>
+    <ul class="projects">
+      <li><b>Universal MCP Manager</b> — Electron app for installing and managing MCP servers across Claude Code, VS Code and Cursor.</li>
+      <li><b>AlgoMentor</b> — local-first interview-prep desktop app with a Socratic tutor running on local Claude Code or Codex CLIs.</li>
+      <li><b>Neo4jAI / SqlAI</b> — natural-language interfaces to Neo4j and PostgreSQL through LangGraph agents and MCP servers.</li>
+      <li><b>Bug2 &amp; FireBot</b> — robot motion planning and a ROS firefighting robot from graduate robotics work.</li>
+    </ul>
+
+    <h2>Education</h2>
+    <div class="edu">
+      <div class="job-head"><b>M.S., Engineering Sciences (Robotics) — University at Buffalo, NY</b><span>2019 – 2021</span></div>
+      <div class="job-title">Graduate Research Assistant, autonomous-vehicle perception and sensor fusion (LANDR Lab)</div>
+      <div class="job-head"><b>B.E., Electronics &amp; Communication — Visvesvaraya Technological University</b><span>2011 – 2015</span></div>
+    </div>
+  </main>
+</body>
+</html>

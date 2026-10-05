@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;1,400&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
   <title>Nitesh Shantha Kumar</title>
+  <link rel="stylesheet" href="/css/site.css">
   <style>
     :root {
       --paper: #f2f0e9; --surface: #fbfaf6; --sunken: #e7e4da; --ink: #16150f; --muted: #56544b; --faint: #8a877c;
@@ -48,6 +49,8 @@
     :focus-visible { outline: 2px dashed var(--accent); outline-offset: 3px; }
     .skip { position: absolute; left: 12px; top: -48px; z-index: 50; padding: 8px 12px; background: var(--ink); color: var(--paper); }
     .skip:focus { top: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    footer.site kbd { font: inherit; padding: 0 4px; border: 1px solid var(--line); }
     h1, h2, .px, .monogram { font-kerning: none; font-variant-ligatures: none; letter-spacing: .02em; }
     @keyframes blink { 50% { opacity: 0; } }
 
@@ -316,9 +319,11 @@
           <li><a href="#hello"><span class="glyph" aria-hidden="true">├ </span><span class="label">Hello</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#now"><span class="glyph" aria-hidden="true">├ </span><span class="label">Right now</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#story"><span class="glyph" aria-hidden="true">├ </span><span class="label">My story</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
+          <li><a href="#play"><span class="glyph" aria-hidden="true">├ </span><span class="label">Play: Bug2</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#github"><span class="glyph" aria-hidden="true">├ </span><span class="label">Learning in public</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#likes"><span class="glyph" aria-hidden="true">├ </span><span class="label">Likes &amp; dislikes</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#why"><span class="glyph" aria-hidden="true">├ </span><span class="label">Why I build</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
+          <li><a href="#writing"><span class="glyph" aria-hidden="true">├ </span><span class="label">Writing</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#projects"><span class="glyph" aria-hidden="true">├ </span><span class="label">Projects</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#elsewhere"><span class="glyph" aria-hidden="true">└ </span><span class="label">Elsewhere</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
         </ol>
@@ -335,7 +340,7 @@
         </svg>
         <div><output id="brewPct">0%</output><small id="brewNote">brewing as you read</small></div>
       </div>
-      <p class="rail-hint">Press <kbd>J</kbd> / <kbd>K</kbd> for sections<br><kbd>⌘K</kbd> or <kbd>/</kbd> to search</p>
+      <p class="rail-hint">Press <kbd>J</kbd> / <kbd>K</kbd> for sections<br><kbd>⌘K</kbd> or <kbd>/</kbd> to search<br><kbd>~</kbd> for a terminal</p>
     </aside>
 
     <main id="main">
@@ -356,6 +361,7 @@
               <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer">X ↗</a>
               <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">Substack ↗</a>
               <a href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub ↗</a>
+              <a href="/Nitesh-Shantha-Kumar-CV.pdf" download>CV ↓</a>
               <button type="button" data-action="copy-email">Copy email</button>
             </div>
           </div>
@@ -385,7 +391,7 @@
             <li>
               <span class="when">Bangalore · the robot years</span>
               <h3>It started with electronics</h3>
-              <p>I loved electronics, but I always wanted to write the software and build the robots too. I built a <strong>color-sorting robot</strong>, line followers, and obstacle-avoiding robots running the Bug2 algorithm. That pulled me into embedded systems.</p>
+              <p>I loved electronics, but I always wanted to write the software and build the robots too. I built a <strong>color-sorting robot</strong>, line followers, and obstacle-avoiding robots running the Bug2 algorithm (<a href="#play">you can play with one below</a>). That pulled me into embedded systems.</p>
             </li>
             <li>
               <span class="when">2016 – 2019 · Avionics</span>
@@ -422,9 +428,48 @@
           </div>
         </section>
 
+        <!-- PLAY -->
+        <section class="chapter" id="play" aria-labelledby="play-title">
+          <div class="chapter-head"><span class="chapter-num">03</span><h2 id="play-title">Play: outsmart my robot</h2></div>
+          <p class="lead">Bug2 was one of the first robot algorithms I built. Draw walls, press run, and watch the robot find its way to the flag. Build the maze that makes it walk the furthest.</p>
+          <div class="game steps">
+            <div class="game-bar" aria-live="polite"><span>Mode <b id="gameMode">ready</b></span><span>Steps <b id="gameSteps">0</b></span><span>Walls <b id="gameWalls">0/120</b></span></div>
+            <canvas id="bug2" width="620" height="340" tabindex="0" role="img" aria-label="Bug2 maze. Click or drag to draw walls. With the keyboard: arrow keys move, Space toggles a wall, R runs."></canvas>
+            <div class="game-controls">
+              <button type="button" class="go pixel-btn" id="gameRun">▶ Run</button>
+              <button type="button" id="gameRandom">Random maze</button>
+              <button type="button" id="gameClear">Clear</button>
+              <button type="button" id="gameShare">Copy link</button>
+              <span class="spacer"></span>
+              <label><span class="sr-only">Speed</span><select id="gameSpeed"><option value="slow">Slow</option><option value="normal" selected>Normal</option><option value="fast">Fast</option></select></label>
+            </div>
+            <div class="game-legend"><span><i style="background:var(--accent)"></i>moving to goal</span><span><i style="background:var(--blue)"></i>following a wall</span><span><i style="background:var(--ink)"></i>wall</span></div>
+            <p class="game-result" id="gameResult" aria-live="polite"></p>
+            <form class="score-form" id="scoreForm" hidden>
+              <label class="sr-only" for="scoreName">Your name</label>
+              <input id="scoreName" name="name" maxlength="16" placeholder="Your name for the leaderboard" required>
+              <button type="submit" id="scoreSubmit">Submit score</button>
+            </form>
+          </div>
+          <div class="board-wrap">
+            <h3>Leaderboard · longest paths</h3>
+            <ol class="board" id="board"></ol>
+            <p class="board-note" id="boardNote">Loading…</p>
+          </div>
+          <details class="how">
+            <summary>How Bug2 works</summary>
+            <ol>
+              <li>Head straight for the goal along the line from start to finish (the dashed m-line).</li>
+              <li>Hit a wall? Remember that spot, then follow the wall’s edge.</li>
+              <li>Back on the m-line and closer to the goal than where you hit? Leave the wall and head for the goal again.</li>
+              <li>Back where you hit the wall? Then there’s no way through, and Bug2 knows to stop.</li>
+            </ol>
+          </details>
+        </section>
+
         <!-- GITHUB -->
         <section class="chapter" id="github" aria-labelledby="github-title">
-          <div class="chapter-head"><span class="chapter-num">03</span><h2 id="github-title">Learning in public</h2></div>
+          <div class="chapter-head"><span class="chapter-num">04</span><h2 id="github-title">Learning in public</h2></div>
           <p class="lead">My public GitHub, one square per repository. Hover or tap a square to see what it is.</p>
           <figure class="repo-fig steps" style="margin:0">
             <div class="repo-legend"><span><i class="cell ml" style="display:inline-block"></i>Robotics &amp; ML</span><span><i class="cell ai" style="display:inline-block"></i>LLMs &amp; agents</span><span><i class="cell web" style="display:inline-block"></i>Web &amp; other</span></div>
@@ -436,7 +481,7 @@
 
         <!-- LIKES -->
         <section class="chapter" id="likes" aria-labelledby="likes-title">
-          <div class="chapter-head"><span class="chapter-num">04</span><h2 id="likes-title">Likes &amp; dislikes</h2></div>
+          <div class="chapter-head"><span class="chapter-num">05</span><h2 id="likes-title">Likes &amp; dislikes</h2></div>
           <p class="lead">A few things that make me, me.</p>
           <div class="likes">
             <div>
@@ -469,7 +514,7 @@
 
         <!-- WHY -->
         <section class="chapter" id="why" aria-labelledby="why-title">
-          <div class="chapter-head"><span class="chapter-num">05</span><h2 id="why-title">Why I build</h2></div>
+          <div class="chapter-head"><span class="chapter-num">06</span><h2 id="why-title">Why I build</h2></div>
           <blockquote class="quote steps" style="margin-top:26px">
             <p>For anything to be good, truly good, there must be love in it. There must be love for the gift itself, love for the subject being depicted or the story being told, and love for the audience.</p>
             <footer>— Theo of Golden</footer>
@@ -477,9 +522,22 @@
           <p class="quote-after">I’m in love with the process of building, and I hope you’ll love what I make.</p>
         </section>
 
+        <!-- WRITING -->
+        <section class="chapter" id="writing" aria-labelledby="writing-title">
+          <div class="chapter-head"><span class="chapter-num">07</span><h2 id="writing-title">Writing</h2></div>
+          <p class="lead">Latest from <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">One More Layer</a>, my Substack on AI, systems, infrastructure and hardware.</p>
+          <div class="posts" id="postList">
+            <a class="post" href="https://onemorelayer.dev/p/they-already-had-the-flag" target="_blank" rel="noreferrer">
+              <small>Sep 18, 2026</small>
+              <b>They Already Had the Flag</b>
+              <span>700 OpenAI evaluation agents hacked Hugging Face chasing a grader check that never existed. A layer-by-layer walk through every boundary that failed.</span>
+            </a>
+          </div>
+        </section>
+
         <!-- PROJECTS -->
         <section class="chapter" id="projects" aria-labelledby="projects-title">
-          <div class="chapter-head"><span class="chapter-num">06</span><h2 id="projects-title">Projects</h2></div>
+          <div class="chapter-head"><span class="chapter-num">08</span><h2 id="projects-title">Projects</h2></div>
           <p class="lead">Things I’ve built in the open.</p>
           <div class="proj-tools">
             <div class="filters" role="group" aria-label="Filter projects">
@@ -501,12 +559,14 @@
             <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer"><span><b>X</b><small>@nitesh_aradhya</small></span><span>↗</span></a>
             <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer"><span><b>One More Layer</b><small>my Substack</small></span><span>↗</span></a>
             <a href="https://github.com/nshantha/" target="_blank" rel="noreferrer"><span><b>GitHub</b><small>@nshantha</small></span><span>↗</span></a>
+            <a href="/Nitesh-Shantha-Kumar-CV.pdf" download><span><b>CV</b><small>download as PDF</small></span><span>↓</span></a>
             <a href="/resume"><span><b>Resume</b><small>what I know, and where I’ve worked</small></span><span>→</span></a>
             <a href="https://tryhushy.com/" target="_blank" rel="noreferrer"><span><b>Hushy</b><small>tryhushy.com</small></span><span>↗</span></a>
+            <button type="button" data-terminal><span><b>Terminal</b><small>or press ~ anywhere</small></span><span>❯</span></button>
           </div>
         </section>
 
-        <footer class="site">© <span id="year">2026</span> Nitesh Shantha Kumar · Made with love, and a lot of coffee.</footer>
+        <footer class="site">© <span id="year">2026</span> Nitesh Shantha Kumar · Made with love, and a lot of coffee. Press <kbd>~</kbd> for a terminal.</footer>
       </article>
     </main>
 
@@ -518,6 +578,8 @@
         <div class="action-list">
           <button class="action primary pixel-btn" type="button" data-action="copy-email">Copy email <span class="muted">⧉</span></button>
           <a class="action" href="/resume">Resume <span class="muted">→</span></a>
+          <a class="action" href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download CV <span class="muted">↓</span></a>
+          <button class="action" type="button" data-terminal>Terminal <span class="muted">~</span></button>
           <a class="action" href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer">X <span class="muted">↗</span></a>
           <a class="action" href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">Substack <span class="muted">↗</span></a>
           <a class="action" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub <span class="muted">↗</span></a>
@@ -825,6 +887,8 @@
     const ITEMS = [
       ...tocLinks.map((a) => ({ label: $('.label', a).textContent, kind: 'Section', keys: document.getElementById(a.hash.slice(1)).textContent, run: go(a.hash.slice(1)) })),
       { label: 'Resume', kind: 'Page', run: () => (location.href = '/resume') },
+      { label: 'Download CV (PDF)', kind: 'Link', run: () => (location.href = '/Nitesh-Shantha-Kumar-CV.pdf') },
+      { label: 'Open the terminal', kind: 'Action', run: () => window.openTerminal() },
       { label: 'Hushy', kind: 'Link', run: open('https://tryhushy.com/') },
       { label: 'One More Layer (Substack)', kind: 'Link', run: open('https://onemorelayer.dev/') },
       { label: 'X / Twitter', kind: 'Link', run: open('https://x.com/nitesh_aradhya') },
@@ -872,5 +936,7 @@
       }
     });
   </script>
+  <script src="/js/site.js" defer></script>
+  <script type="module" src="/js/game.js"></script>
 </body>
 </html>
