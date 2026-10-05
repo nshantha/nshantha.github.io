@@ -1,7 +1,7 @@
 // Serves ./public, and sends every other hostname (www, the old onemorelayer.dev
 // subdomain) and any plain-http request to https://nitesh.fyi with a permanent redirect.
-// Also hosts a small API: the Bug2 leaderboard (D1) and the latest Substack posts.
-import { COLS, parseWalls, runBug2 } from '../public/js/bug2.js';
+// Also hosts a small API: the coffee-run leaderboard (D1) and the latest Substack posts.
+import { levelById, playLevel } from '../public/js/levels.js';
 
 const CANONICAL_HOST = 'nitesh.fyi';
 const FEED_URL = 'https://onemorelayer.dev/feed';
@@ -47,7 +47,7 @@ async function handleApi(request, url, env, ctx) {
   }
 }
 
-// ---- Leaderboard -----------------------------------------------------------
+// ---- Leaderboard (coffee run) -----------------------------------------------------
 
 const NAME_RE = /^[A-Za-z0-9 _.-]{2,16}$/;
 const BLOCKED = ['fuck', 'shit', 'cunt', 'nigg', 'fag', 'rape', 'nazi', 'bitch', 'dick', 'cock', 'pussy', 'whore', 'slut'];
@@ -61,9 +61,9 @@ const cleanName = (raw) => {
 async function topScores(env) {
   if (!env.DB) return json({ error: 'Leaderboard is offline' }, 503);
   const { results } = await env.DB.prepare(
-    'SELECT name, steps, wall_count, walls, created_at FROM scores ORDER BY steps DESC, wall_count ASC, created_at ASC LIMIT 10'
+    'SELECT name, stars, levels, walls, updated_at FROM players ORDER BY stars DESC, walls ASC, updated_at ASC LIMIT 10'
   ).all();
-  return json({ scores: results.map((r) => ({ ...r, walls: r.walls ? r.walls.split(',').map(Number) : [] })) });
+  return json({ scores: results });
 }
 
 async function submitScore(request, env) {
@@ -73,31 +73,42 @@ async function submitScore(request, env) {
     if (!success) return json({ error: 'Too many submissions. Try again in a minute.' }, 429);
   }
   const body = await request.text();
-  if (body.length > 4096) return json({ error: 'Maze too large' }, 413);
+  if (body.length > 8192) return json({ error: 'Submission too large' }, 413);
   let data;
   try { data = JSON.parse(body); } catch { return json({ error: 'Invalid JSON' }, 400); }
 
   const name = cleanName(data.name);
   if (!name) return json({ error: 'Names are 2–16 letters, numbers, spaces, dots, dashes or underscores.' }, 400);
-  const parsed = parseWalls(data.walls);
-  if (parsed.error) return json({ error: parsed.error }, 400);
+  if (!data.solutions || typeof data.solutions !== 'object') return json({ error: 'No solutions sent' }, 400);
 
-  // Never trust the client's score: re-run Bug2 on the submitted maze.
-  const result = runBug2(parsed.walls);
-  if (!result.reached) return json({ error: 'The robot never reached the goal in that maze.' }, 400);
-  if (result.steps <= COLS - 3) return json({ error: 'Draw some walls in the robot’s way first.' }, 400);
+  // Never trust the client's stars: re-play every level it claims to have solved.
+  let stars = 0, levels = 0, walls = 0;
+  const verified = {};
+  for (const [id, sol] of Object.entries(data.solutions)) {
+    const level = levelById(id);
+    if (!level || !sol) continue;
+    const result = playLevel(level, sol.walls, sol.side);
+    if (result.error || !result.win) continue;
+    stars += result.stars; levels += 1; walls += result.wallsUsed;
+    verified[id] = { walls: [...new Set(sol.walls)], side: sol.side };
+  }
+  if (!levels) return json({ error: 'None of those levels check out. Clear a level first.' }, 400);
 
-  const key = [...parsed.walls].sort((a, b) => a - b).join(',');
-  const existing = await env.DB.prepare('SELECT name, steps FROM scores WHERE walls = ?').bind(key).first();
-  if (existing) return json({ duplicate: true, name: existing.name, steps: existing.steps, rank: await rankOf(env, existing.steps) });
-
-  await env.DB.prepare('INSERT INTO scores (name, steps, wall_count, walls) VALUES (?, ?, ?, ?)')
-    .bind(name, result.steps, parsed.walls.size, key).run();
-  return json({ name, steps: result.steps, rank: await rankOf(env, result.steps) }, 201);
+  const existing = await env.DB.prepare('SELECT name, stars, walls FROM players WHERE name = ?').bind(name).first();
+  if (existing && (existing.stars > stars || (existing.stars === stars && existing.walls <= walls))) {
+    return json({ improved: false, name: existing.name, stars: existing.stars, rank: await rankOf(env, existing.stars, existing.walls) });
+  }
+  await env.DB.prepare(
+    `INSERT INTO players (name, stars, levels, walls, solutions) VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(name) DO UPDATE SET stars = excluded.stars, levels = excluded.levels, walls = excluded.walls,
+       solutions = excluded.solutions, updated_at = datetime('now')`
+  ).bind(name, stars, levels, walls, JSON.stringify(verified)).run();
+  return json({ improved: true, name, stars, levels, rank: await rankOf(env, stars, walls) }, 201);
 }
 
-async function rankOf(env, steps) {
-  const row = await env.DB.prepare('SELECT COUNT(*) AS better FROM scores WHERE steps > ?').bind(steps).first();
+async function rankOf(env, stars, walls) {
+  const row = await env.DB.prepare('SELECT COUNT(*) AS better FROM players WHERE stars > ? OR (stars = ? AND walls < ?)')
+    .bind(stars, stars, walls).first();
   return row.better + 1;
 }
 

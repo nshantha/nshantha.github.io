@@ -1,47 +1,35 @@
 // Bug2 on a grid. Shared by the browser game and the Worker, which re-runs it to
-// verify leaderboard scores, so both always agree on the result.
+// verify leaderboard entries, so both always agree on the result.
 //
 // The robot starts on the left, the goal is on the right, and the "m-line" is the
 // straight row between them. Bug2:
 //   1. Move along the m-line toward the goal.
-//   2. On hitting a wall, remember the hit point and follow the wall's boundary
-//      (keeping the wall on the robot's right).
+//   2. On hitting a wall, remember the hit point and follow the wall's boundary,
+//      keeping the wall on the robot's right (clockwise) or left (counter-clockwise).
 //   3. Leave the wall when the robot is back on the m-line, closer to the goal than
 //      where it hit. If it returns to the hit point instead, the goal is unreachable.
 
-export const COLS = 31;
-export const ROWS = 17;
-export const MID = Math.floor(ROWS / 2);
-export const START = { x: 1, y: MID };
-export const GOAL = { x: COLS - 2, y: MID };
-export const MAX_WALLS = 120;
-const MAX_STEPS = COLS * ROWS * 8;
+export function createGrid(cols, rows) {
+  const mid = Math.floor(rows / 2);
+  return { cols, rows, mid, start: { x: 1, y: mid }, goal: { x: cols - 2, y: mid } };
+}
+
+export const cellIndex = (grid, x, y) => y * grid.cols + x;
 
 // Headings, clockwise: north, east, south, west.
 const DX = [0, 1, 0, -1];
 const DY = [-1, 0, 1, 0];
 
-export const index = (x, y) => y * COLS + x;
-const isReserved = (i) => i === index(START.x, START.y) || i === index(GOAL.x, GOAL.y);
-
-// Turns a list of wall indices into a validated Set, or returns an error message.
-export function parseWalls(list) {
-  if (!Array.isArray(list)) return { error: 'walls must be a list' };
-  if (list.length > MAX_WALLS) return { error: `at most ${MAX_WALLS} walls` };
-  const walls = new Set();
-  for (const i of list) {
-    if (!Number.isInteger(i) || i < 0 || i >= COLS * ROWS) return { error: 'wall out of range' };
-    if (isReserved(i)) return { error: 'walls cannot cover the start or goal' };
-    walls.add(i);
-  }
-  return { walls };
-}
-
-// Runs Bug2 and returns { reached, steps, path, hits }.
-// `path` is a list of { x, y, mode } where mode is 'goal' (motion to goal) or 'wall'.
-export function runBug2(walls) {
-  const blocked = (x, y) => x < 0 || y < 0 || x >= COLS || y >= ROWS || walls.has(index(x, y));
-  let x = START.x, y = START.y;
+// Runs Bug2 with a Set of blocked cell indices. `side` is which hand stays on the wall:
+// 'right' goes over obstacles (clockwise), 'left' goes under them (counter-clockwise).
+// Returns { reached, steps, path, hits }; `path` is a list of { x, y, mode } where
+// mode is 'goal' (motion to goal) or 'wall' (following a wall).
+export function runBug2(grid, walls, side = 'right') {
+  const turns = side === 'left' ? [3, 0, 1, 2] : [1, 0, 3, 2];
+  const { cols, rows, mid, start, goal } = grid;
+  const maxSteps = cols * rows * 8;
+  const blocked = (x, y) => x < 0 || y < 0 || x >= cols || y >= rows || walls.has(y * cols + x);
+  let x = start.x, y = start.y;
   let mode = 'goal';
   let heading = 1;
   let hit = null;
@@ -49,22 +37,23 @@ export function runBug2(walls) {
   const path = [{ x, y, mode }];
   const hits = [];
 
-  for (let step = 0; step < MAX_STEPS; step++) {
-    if (x === GOAL.x && y === GOAL.y) return { reached: true, steps: path.length - 1, path, hits };
+  for (let step = 0; step < maxSteps; step++) {
+    if (x === goal.x && y === goal.y) return { reached: true, steps: path.length - 1, path, hits };
 
     if (mode === 'goal') {
       if (!blocked(x + 1, y)) { x += 1; path.push({ x, y, mode }); continue; }
-      // Hit a wall: start following its boundary, facing north so the wall is on the right.
+      // Hit a wall: start following its boundary, facing north (wall on the right)
+      // or south (wall on the left).
       hit = { x, y };
       hits.push(hit);
       mode = 'wall';
-      heading = 0;
+      heading = side === 'left' ? 2 : 0;
       leftHit = false;
     }
 
-    // Wall following with the wall on the right: try right, straight, left, then back.
+    // Wall following: turn toward the wall first, then straight, away, and back.
     let moved = false;
-    for (const turn of [1, 0, 3, 2]) {
+    for (const turn of turns) {
       const h = (heading + turn) % 4;
       if (!blocked(x + DX[h], y + DY[h])) {
         heading = h; x += DX[h]; y += DY[h]; moved = true;
@@ -80,7 +69,7 @@ export function runBug2(walls) {
       leftHit = true;
     }
     // Back on the m-line and closer to the goal than the hit point: leave the wall.
-    if (y === MID && x > hit.x) mode = 'goal';
+    if (y === mid && x > hit.x) mode = 'goal';
   }
   return { reached: false, steps: path.length - 1, path, hits };
 }

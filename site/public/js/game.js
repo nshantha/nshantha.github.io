@@ -1,5 +1,7 @@
-// "Outsmart my robot": draw walls, watch Bug2 find the goal, chase the longest path.
-import { COLS, ROWS, MID, START, GOAL, MAX_WALLS, index, runBug2 } from './bug2.js';
+// "Coffee run": a puzzle for the Bug2 robot. Place a few walls and pick which side the
+// robot keeps on the wall, so it collects every coffee bean on its way to the flag.
+import { cellIndex } from './bug2.js';
+import { GRID, LEVELS, MAX_STARS, playLevel } from './levels.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const canvas = $('#bug2');
@@ -7,240 +9,218 @@ if (canvas) init();
 
 function init() {
   const ctx = canvas.getContext('2d');
-  const CELL = 20;
-  canvas.width = COLS * CELL;
-  canvas.height = ROWS * CELL;
+  const CELL = 40;
+  const { cols, rows, start, goal } = GRID;
+  canvas.width = cols * CELL;
+  canvas.height = rows * CELL;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
-
   const ui = {
-    mode: $('#gameMode'), steps: $('#gameSteps'), walls: $('#gameWalls'), result: $('#gameResult'),
-    run: $('#gameRun'), random: $('#gameRandom'), clear: $('#gameClear'), share: $('#gameShare'), speed: $('#gameSpeed'),
+    levels: $('#levelStrip'), title: $('#levelTitle'), hint: $('#levelHint'),
+    beans: $('#gameBeans'), walls: $('#gameWalls'), par: $('#gamePar'), side: $('#gameSide'), total: $('#gameStars'),
+    run: $('#gameRun'), reset: $('#gameReset'), speed: $('#gameSpeed'), result: $('#gameResult'), next: $('#gameNext'),
     form: $('#scoreForm'), name: $('#scoreName'), submit: $('#scoreSubmit'), board: $('#board'), boardNote: $('#boardNote')
   };
 
-  let walls = new Set();
-  let trail = [];       // cells drawn so far during a run
-  let hits = [];
-  let robot = { ...START };
-  let running = false;
-  let lastResult = null; // result of the last finished run, for the leaderboard
-  let cursor = { x: 5, y: MID }; // keyboard cursor
-  let showCursor = false;
-  let timer = null;
+  // progress: { [levelId]: { stars, walls: [...], side } } — your best solution per level
+  let progress = store.get('coffee-run') || {};
+  let level = LEVELS[0];
+  let placed = new Set();
+  let side = 'right';
+  let trail = [], eaten = new Set(), robot = { ...start };
+  let running = false, timer = null, cursor = { x: 4, y: GRID.mid }, showCursor = false;
 
-  // ---- Drawing -------------------------------------------------------------
+  const idx = (x, y) => cellIndex(GRID, x, y);
+  const fixedSet = () => new Set(level.fixed.map(([x, y]) => idx(x, y)));
+  const beanSet = () => new Set(level.beans.map(([x, y]) => idx(x, y)));
+  const totalStars = () => LEVELS.reduce((s, l) => s + (progress[l.id]?.stars || 0), 0);
+
+  // ---- Drawing -----------------------------------------------------------------
   const color = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   function draw() {
-    const c = {
-      bg: color('--surface'), grid: color('--line'), ink: color('--ink'), accent: color('--accent'),
-      blue: color('--blue'), soft: color('--accent-soft'), faint: color('--faint'), paper: color('--paper')
-    };
+    const c = { bg: color('--surface'), grid: color('--line'), ink: color('--ink'), accent: color('--accent'), blue: color('--blue'),
+      soft: color('--accent-soft'), paper: color('--paper'), coffee: color('--coffee') || '#6b3b22', crema: color('--crema') || '#c08a5a' };
     ctx.fillStyle = c.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
-    // grid dots
     ctx.fillStyle = c.grid;
-    for (let y = 0; y <= ROWS; y++) for (let x = 0; x <= COLS; x++) ctx.fillRect(x * CELL - 1, y * CELL - 1, 2, 2);
+    for (let y = 0; y <= rows; y++) for (let x = 0; x <= cols; x++) ctx.fillRect(x * CELL - 1, y * CELL - 1, 3, 3);
     // m-line
     ctx.fillStyle = c.soft;
-    for (let x = START.x; x <= GOAL.x; x += 1) if (x % 2 === 0) ctx.fillRect(x * CELL + 6, MID * CELL + 9, 8, 2);
+    for (let x = start.x; x <= goal.x; x++) ctx.fillRect(x * CELL + 14, GRID.mid * CELL + 18, 12, 4);
     // trail
-    for (const p of trail) {
-      ctx.fillStyle = p.mode === 'wall' ? c.blue : c.accent;
-      ctx.fillRect(p.x * CELL + 7, p.y * CELL + 7, 6, 6);
+    for (const p of trail) { ctx.fillStyle = p.mode === 'wall' ? c.blue : c.accent; ctx.fillRect(p.x * CELL + 15, p.y * CELL + 15, 10, 10); }
+    // fixed walls, then your walls
+    ctx.fillStyle = c.ink;
+    for (const [x, y] of level.fixed) ctx.fillRect(x * CELL + 2, y * CELL + 2, CELL - 4, CELL - 4);
+    for (const i of placed) {
+      const x = i % cols, y = Math.floor(i / cols);
+      ctx.fillStyle = c.accent; ctx.fillRect(x * CELL + 2, y * CELL + 2, CELL - 4, CELL - 4);
+      ctx.fillStyle = c.paper; ctx.fillRect(x * CELL + 8, y * CELL + 8, 8, 4); ctx.fillRect(x * CELL + 8, y * CELL + 12, 4, 4);
     }
-    // hit points
-    ctx.fillStyle = c.ink;
-    for (const h of hits) { ctx.fillRect(h.x * CELL + 4, h.y * CELL + 4, 4, 4); ctx.fillRect(h.x * CELL + 12, h.y * CELL + 12, 4, 4); ctx.fillRect(h.x * CELL + 12, h.y * CELL + 4, 4, 4); ctx.fillRect(h.x * CELL + 4, h.y * CELL + 12, 4, 4); }
-    // walls
-    ctx.fillStyle = c.ink;
-    for (const i of walls) ctx.fillRect((i % COLS) * CELL + 1, Math.floor(i / COLS) * CELL + 1, CELL - 2, CELL - 2);
-    // start pad and goal flag
-    ctx.fillStyle = c.blue; ctx.fillRect(START.x * CELL + 2, START.y * CELL + 2, CELL - 4, CELL - 4);
-    ctx.fillStyle = c.ink; ctx.fillRect(GOAL.x * CELL + 5, GOAL.y * CELL + 2, 2, 16);
-    ctx.fillStyle = c.accent; ctx.fillRect(GOAL.x * CELL + 7, GOAL.y * CELL + 2, 9, 7);
-    // robot: a little pixel bot
+    // coffee beans
+    for (const [x, y] of level.beans) {
+      if (eaten.has(idx(x, y))) continue;
+      const bx = x * CELL + 10, by = y * CELL + 8;
+      ctx.fillStyle = c.coffee;
+      ctx.fillRect(bx + 6, by, 8, 4); ctx.fillRect(bx + 2, by + 4, 16, 16); ctx.fillRect(bx, by + 8, 20, 8); ctx.fillRect(bx + 6, by + 20, 8, 4);
+      ctx.fillStyle = c.crema; ctx.fillRect(bx + 9, by + 4, 2, 4); ctx.fillRect(bx + 8, by + 8, 2, 8); ctx.fillRect(bx + 9, by + 16, 2, 4);
+    }
+    // start pad and flag
+    ctx.fillStyle = c.blue; ctx.fillRect(start.x * CELL + 4, start.y * CELL + 4, CELL - 8, CELL - 8);
+    ctx.fillStyle = c.ink; ctx.fillRect(goal.x * CELL + 10, goal.y * CELL + 4, 4, 32);
+    ctx.fillStyle = c.accent; ctx.fillRect(goal.x * CELL + 14, goal.y * CELL + 4, 18, 14);
+    // robot
     const rx = robot.x * CELL, ry = robot.y * CELL;
-    ctx.fillStyle = c.ink; ctx.fillRect(rx + 4, ry + 5, 12, 10); ctx.fillRect(rx + 9, ry + 2, 2, 3);
-    ctx.fillStyle = c.paper; ctx.fillRect(rx + 6, ry + 8, 3, 3); ctx.fillRect(rx + 11, ry + 8, 3, 3);
-    ctx.fillStyle = c.accent; ctx.fillRect(rx + 9, ry + 1, 2, 2); ctx.fillRect(rx + 6, ry + 15, 3, 3); ctx.fillRect(rx + 11, ry + 15, 3, 3);
-    // keyboard cursor
-    if (showCursor && !running) { ctx.strokeStyle = c.accent; ctx.lineWidth = 2; ctx.strokeRect(cursor.x * CELL + 1, cursor.y * CELL + 1, CELL - 2, CELL - 2); }
+    ctx.fillStyle = c.ink; ctx.fillRect(rx + 8, ry + 10, 24, 20); ctx.fillRect(rx + 18, ry + 4, 4, 6);
+    ctx.fillStyle = c.paper; ctx.fillRect(rx + 12, ry + 16, 6, 6); ctx.fillRect(rx + 22, ry + 16, 6, 6);
+    ctx.fillStyle = c.accent; ctx.fillRect(rx + 18, ry + 2, 4, 4); ctx.fillRect(rx + 12, ry + 30, 6, 6); ctx.fillRect(rx + 22, ry + 30, 6, 6);
+    if (showCursor && !running) { ctx.strokeStyle = c.accent; ctx.lineWidth = 3; ctx.strokeRect(cursor.x * CELL + 2, cursor.y * CELL + 2, CELL - 4, CELL - 4); }
   }
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
 
-  function updateReadout(mode = 'ready', steps = 0) {
-    ui.mode.textContent = mode;
-    ui.steps.textContent = steps;
-    ui.walls.textContent = `${walls.size}/${MAX_WALLS}`;
+  // ---- Level select and status ---------------------------------------------------
+  const starText = (n) => '★'.repeat(n) + '☆'.repeat(3 - n);
+  function renderStrip() {
+    ui.levels.innerHTML = LEVELS.map((l, i) => {
+      const s = progress[l.id]?.stars || 0;
+      return `<button type="button" class="lvl${l === level ? ' is-on' : ''}${s ? ' is-done' : ''}" data-level="${i}" aria-pressed="${l === level}" aria-label="Level ${i + 1}: ${l.title}, ${s} of 3 stars">
+        <b>${String(i + 1).padStart(2, '0')}</b><span>${starText(s)}</span></button>`;
+    }).join('');
+    ui.levels.querySelectorAll('[data-level]').forEach((b) => b.addEventListener('click', () => loadLevel(LEVELS[Number(b.dataset.level)])));
+    ui.total.textContent = `${totalStars()}/${MAX_STARS}`;
   }
-
-  // ---- Editing ---------------------------------------------------------------
-  const reserved = (x, y) => (x === START.x && y === START.y) || (x === GOAL.x && y === GOAL.y);
+  function status(beansGot = 0) {
+    ui.beans.textContent = `${beansGot}/${level.beans.length}`;
+    ui.walls.textContent = `${placed.size}/${level.budget}`;
+    ui.par.textContent = `${level.par}`;
+    ui.side.textContent = side === 'right' ? 'Wall on right · goes over ↻' : 'Wall on left · goes under ↺';
+    ui.side.setAttribute('aria-pressed', String(side === 'left'));
+  }
   function resetRun() {
-    clearInterval(timer); running = false; trail = []; hits = []; robot = { ...START }; lastResult = null;
-    ui.form.hidden = true; ui.result.textContent = ''; ui.run.textContent = '▶ Run';
-    updateReadout();
+    clearInterval(timer); running = false; trail = []; eaten = new Set(); robot = { ...start };
+    ui.run.textContent = '▶ Run'; ui.next.hidden = true; ui.result.textContent = '';
+    status();
   }
-  function setWall(x, y, on) {
-    if (reserved(x, y) || x < 0 || y < 0 || x >= COLS || y >= ROWS) return;
-    const i = index(x, y);
-    if (on && !walls.has(i)) {
-      if (walls.size >= MAX_WALLS) { ui.result.textContent = `That’s all ${MAX_WALLS} walls. Erase some to move them.`; return; }
-      walls.add(i);
-    } else if (!on) walls.delete(i);
+  function loadLevel(l) {
+    level = l;
+    placed = new Set(); side = 'right';
+    ui.title.textContent = `Level ${LEVELS.indexOf(l) + 1} · ${l.title}`;
+    ui.hint.textContent = l.hint;
+    resetRun(); renderStrip(); draw();
   }
-  const cellAt = (e) => {
-    const r = canvas.getBoundingClientRect();
-    return { x: Math.floor((e.clientX - r.left) / r.width * COLS), y: Math.floor((e.clientY - r.top) / r.height * ROWS) };
-  };
-  let painting = null; // true = adding walls, false = erasing
-  canvas.addEventListener('pointerdown', (e) => {
-    if (running) return;
-    const { x, y } = cellAt(e);
-    if (reserved(x, y)) return;
-    if (trail.length) resetRun();
-    painting = !walls.has(index(x, y));
-    setWall(x, y, painting);
-    canvas.setPointerCapture(e.pointerId);
-    updateReadout(); draw();
-  });
-  canvas.addEventListener('pointermove', (e) => {
-    if (painting === null) return;
-    const { x, y } = cellAt(e);
-    setWall(x, y, painting); updateReadout(); draw();
-  });
-  const stopPaint = () => { painting = null; };
-  canvas.addEventListener('pointerup', stopPaint);
-  canvas.addEventListener('pointercancel', stopPaint);
 
-  // Keyboard: arrows move a cursor, Space or Enter toggles a wall, R runs.
+  // ---- Placing walls ---------------------------------------------------------------
+  function toggleWall(x, y) {
+    if (running || x < 0 || y < 0 || x >= cols || y >= rows) return;
+    const i = idx(x, y);
+    if (fixedSet().has(i) || beanSet().has(i) || (x === start.x && y === start.y) || (x === goal.x && y === goal.y)) return;
+    if (trail.length) resetRun();
+    if (placed.has(i)) placed.delete(i);
+    else if (placed.size >= level.budget) { ui.result.textContent = `That’s all ${level.budget} walls for this level. Click one to remove it.`; return; }
+    else placed.add(i);
+    status(); draw();
+  }
+  canvas.addEventListener('click', (e) => {
+    const r = canvas.getBoundingClientRect();
+    toggleWall(Math.floor((e.clientX - r.left) / r.width * cols), Math.floor((e.clientY - r.top) / r.height * rows));
+  });
   canvas.addEventListener('focus', () => { showCursor = true; draw(); });
   canvas.addEventListener('blur', () => { showCursor = false; draw(); });
   canvas.addEventListener('keydown', (e) => {
     const moves = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] };
     if (moves[e.key]) {
       e.preventDefault();
-      cursor.x = Math.min(COLS - 1, Math.max(0, cursor.x + moves[e.key][0]));
-      cursor.y = Math.min(ROWS - 1, Math.max(0, cursor.y + moves[e.key][1]));
+      cursor.x = Math.min(cols - 1, Math.max(0, cursor.x + moves[e.key][0]));
+      cursor.y = Math.min(rows - 1, Math.max(0, cursor.y + moves[e.key][1]));
       draw();
-    } else if ((e.key === ' ' || e.key === 'Enter') && !running) {
-      e.preventDefault();
-      if (trail.length) resetRun();
-      setWall(cursor.x, cursor.y, !walls.has(index(cursor.x, cursor.y)));
-      updateReadout(); draw();
-    } else if (e.key.toLowerCase() === 'r') { e.preventDefault(); ui.run.click(); }
+    } else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleWall(cursor.x, cursor.y); }
+    else if (e.key.toLowerCase() === 'r') { e.preventDefault(); ui.run.click(); }
+    else if (e.key.toLowerCase() === 'f') { e.preventDefault(); ui.side.click(); }
   });
+  ui.side.addEventListener('click', () => { if (running) return; side = side === 'right' ? 'left' : 'right'; resetRun(); draw(); });
+  ui.reset.addEventListener('click', () => { placed = new Set(); resetRun(); draw(); });
 
-  // ---- Running --------------------------------------------------------------
-  const SPEED = { slow: 90, normal: 40, fast: 12 };
-  function finish(result) {
-    running = false; lastResult = result;
+  // ---- Running ------------------------------------------------------------------------
+  const SPEED = { slow: 140, normal: 70, fast: 25 };
+  function finish(res) {
+    running = false;
     ui.run.textContent = '↺ Run again';
-    if (result.reached) {
-      ui.result.innerHTML = `Reached the goal in <b>${result.steps}</b> steps with ${walls.size} walls.` +
-        (result.steps > 28 ? '' : ' Draw some walls to make it work harder!');
-      ui.form.hidden = result.steps <= 28 || leaderboardOffline;
+    status(res.collected.length);
+    if (res.win) {
+      const best = progress[level.id];
+      if (!best || res.stars > best.stars || (res.stars === best.stars && res.wallsUsed < best.walls.length)) {
+        progress[level.id] = { stars: res.stars, walls: [...placed], side };
+        store.set('coffee-run', progress);
+      }
+      ui.result.innerHTML = `☕ Every bean collected! <b>${starText(res.stars)}</b> ` +
+        (res.stars === 3 ? 'Perfect, that’s par.' : `Par is ${level.par} wall${level.par > 1 ? 's' : ''}. Can you do it with fewer?`);
+      ui.next.hidden = LEVELS.indexOf(level) === LEVELS.length - 1;
+      ui.form.hidden = leaderboardOffline;
+      renderStrip();
+    } else if (!res.run.reached) {
+      ui.result.textContent = 'The robot couldn’t reach the flag: it circled back to where it hit the wall, so it gave up. Try moving a wall.';
     } else {
-      ui.result.innerHTML = `No way through. Bug2 circled back to where it hit the wall, so it knows the goal is unreachable, and gave up after <b>${result.steps}</b> steps.`;
-      ui.form.hidden = true;
+      const missed = res.total - res.collected.length;
+      ui.result.textContent = `Missed ${missed} bean${missed > 1 ? 's' : ''}. Try another wall, or flip which side the robot hugs.`;
     }
-    updateReadout(result.reached ? 'goal reached' : 'unreachable', result.steps);
     draw();
   }
   ui.run.addEventListener('click', () => {
     if (running) return;
     resetRun();
-    const result = runBug2(walls);
-    if (reduceMotion) { trail = result.path; hits = result.hits; robot = result.path.at(-1); return finish(result); }
+    const res = playLevel(level, [...placed], side);
+    const beans = beanSet();
+    if (reduceMotion) { trail = res.run.path; res.run.path.forEach((p) => beans.has(idx(p.x, p.y)) && eaten.add(idx(p.x, p.y))); robot = res.run.path.at(-1); return finish(res); }
     running = true; ui.run.textContent = 'Running…';
     let k = 0;
     timer = setInterval(() => {
-      const p = result.path[k];
-      robot = { x: p.x, y: p.y };
-      trail.push(p);
-      if (p.mode === 'wall' && k > 0 && result.path[k - 1].mode === 'goal') hits.push(result.path[k - 1]);
-      updateReadout(p.mode === 'wall' ? 'following wall' : 'motion to goal', k);
+      const p = res.run.path[k];
+      robot = { x: p.x, y: p.y }; trail.push(p);
+      if (beans.has(idx(p.x, p.y))) eaten.add(idx(p.x, p.y));
+      ui.beans.textContent = `${eaten.size}/${level.beans.length}`;
       draw();
-      k++;
-      if (k >= result.path.length) { clearInterval(timer); finish(result); }
+      if (++k >= res.run.path.length) { clearInterval(timer); finish(res); }
     }, SPEED[ui.speed.value] || SPEED.normal);
   });
+  ui.next.addEventListener('click', () => loadLevel(LEVELS[LEVELS.indexOf(level) + 1]));
 
-  // ---- Mazes: random, clear, share -------------------------------------------
-  ui.clear.addEventListener('click', () => { walls = new Set(); resetRun(); draw(); });
-  ui.random.addEventListener('click', () => {
-    for (let attempt = 0; attempt < 30; attempt++) {
-      const w = new Set();
-      // A few random wall segments, so the maze has real obstacles to follow.
-      while (w.size < 90) {
-        const vertical = Math.random() < 0.6;
-        let x = 3 + Math.floor(Math.random() * (COLS - 6)), y = Math.floor(Math.random() * ROWS);
-        const len = 3 + Math.floor(Math.random() * 7);
-        for (let s = 0; s < len && w.size < 90; s++) {
-          if (!reserved(x, y) && x >= 0 && y >= 0 && x < COLS && y < ROWS) w.add(index(x, y));
-          vertical ? y++ : x++;
-        }
-      }
-      if (runBug2(w).reached) { walls = w; break; }
-    }
-    resetRun(); draw();
-  });
-  const encode = () => [...walls].sort((a, b) => a - b).map((i) => i.toString(36)).join('.');
-  const decode = (s) => s.split('.').map((t) => parseInt(t, 36)).filter((i) => Number.isInteger(i) && i >= 0 && i < COLS * ROWS && !reserved(i % COLS, Math.floor(i / COLS)));
-  ui.share.addEventListener('click', async () => {
-    const url = `${location.origin}${location.pathname}#maze=${encode()}`;
-    try { await navigator.clipboard.writeText(url); ui.result.textContent = 'Link to this maze copied. Send it to a friend.'; }
-    catch (e) { ui.result.textContent = url; }
-  });
-  function loadMaze(list) {
-    walls = new Set(list.slice(0, MAX_WALLS));
-    resetRun(); draw();
-  }
-  const fromHash = location.hash.match(/^#maze=([0-9a-z.]+)$/);
-  if (fromHash) { loadMaze(decode(fromHash[1])); requestAnimationFrame(() => $('#play').scrollIntoView()); }
-
-  // ---- Leaderboard ------------------------------------------------------------
+  // ---- Leaderboard ----------------------------------------------------------------------
   let leaderboardOffline = false;
-  const esc = (v) => String(v).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[c]);
+  const esc = (v) => String(v).replace(/[&<>'"]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[ch]);
   async function loadBoard() {
     try {
       const res = await fetch('/api/scores');
       if (!res.ok) throw new Error(res.status);
       const { scores } = await res.json();
       leaderboardOffline = false;
-      ui.boardNote.textContent = scores.length ? '' : 'No scores yet. Be the first.';
+      ui.boardNote.textContent = scores.length ? '' : 'No one’s on the board yet. Clear a level and be the first.';
       ui.board.innerHTML = scores.map((s, i) => `
         <li><span class="rank">${String(i + 1).padStart(2, '0')}</span><span class="who">${esc(s.name)}</span>
-        <span class="pts">${s.steps} steps · ${s.wall_count} walls</span>
-        <button type="button" class="chip" data-load="${i}">Try it</button></li>`).join('');
-      ui.board.querySelectorAll('[data-load]').forEach((b) => b.addEventListener('click', () => {
-        loadMaze(scores[Number(b.dataset.load)].walls);
-        ui.result.textContent = `Loaded ${scores[Number(b.dataset.load)].name}’s maze. Run it, then try to beat it.`;
-        canvas.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
-      }));
+        <span class="pts">★ ${s.stars}/${MAX_STARS} · ${s.levels} level${s.levels === 1 ? '' : 's'}</span></li>`).join('');
     } catch (e) {
       leaderboardOffline = true;
       ui.board.innerHTML = '';
-      ui.boardNote.textContent = 'The leaderboard is offline right now. You can still play.';
+      ui.boardNote.textContent = 'The leaderboard is offline right now. Your progress is still saved in this browser.';
     }
   }
-  ui.name.value = store.get('bug2-name') || '';
+  ui.name.value = store.get('coffee-run-name') || '';
   ui.form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!lastResult || !lastResult.reached) return;
+    const name = ui.name.value.trim();
+    if (!name) { ui.result.textContent = 'Add a name for the leaderboard first.'; ui.name.focus(); return; }
     ui.submit.disabled = true;
     try {
-      const res = await fetch('/api/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: ui.name.value, walls: [...walls] }) });
+      const solutions = Object.fromEntries(Object.entries(progress).map(([id, p]) => [id, { walls: p.walls, side: p.side }]));
+      const res = await fetch('/api/scores', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, solutions }) });
       const data = await res.json();
       if (!res.ok) { ui.result.textContent = data.error || 'Could not save your score.'; return; }
-      store.set('bug2-name', ui.name.value.trim());
-      ui.result.innerHTML = data.duplicate
-        ? `That exact maze is already on the board, by <b>${esc(data.name)}</b> at #${data.rank}. Change a wall and try again.`
-        : `Saved! <b>${data.steps}</b> steps puts you at <b>#${data.rank}</b>.`;
+      store.set('coffee-run-name', name);
+      ui.result.innerHTML = data.improved === false
+        ? `You already have <b>★ ${data.stars}</b> on the board as ${esc(data.name)}, at #${data.rank}. Beat it to move up.`
+        : `Saved! <b>★ ${data.stars}</b> puts you at <b>#${data.rank}</b>.`;
       ui.form.hidden = true;
       loadBoard();
     } catch (err) {
@@ -248,7 +228,8 @@ function init() {
     } finally { ui.submit.disabled = false; }
   });
 
-  updateReadout();
-  draw();
+  // Start on the first level you haven't three-starred yet.
+  loadLevel(LEVELS.find((l) => (progress[l.id]?.stars || 0) < 3) || LEVELS[0]);
+  if (totalStars() > 0) ui.form.hidden = false;
   loadBoard();
 }

@@ -10,8 +10,9 @@ Static pages with no build step, served by a Cloudflare Worker with static asset
 site/
 ├── wrangler.jsonc        Worker config: assets, custom domains, D1, rate limit
 ├── src/worker.js         redirects to https://nitesh.fyi, security headers, /api/*
-├── migrations/           D1 schema for the Bug2 leaderboard
+├── migrations/           D1 schema for the coffee-run leaderboard
 ├── tools/build-cv.mjs    regenerates the CV PDF from /cv
+├── tools/check-levels.mjs proves every level's par with an exhaustive solver
 └── public/               everything that gets served
     ├── index.html        home
     ├── resume.html       resume (served at /resume)
@@ -21,14 +22,15 @@ site/
     ├── css/site.css      shared: transitions, scroll-in, terminal, game, posts
     ├── js/site.js        shared: ~ terminal, scroll-in, latest posts
     ├── js/bug2.js        Bug2 engine (used by the game and the Worker)
-    ├── js/game.js        the "outsmart my robot" game
+    ├── js/levels.js      coffee-run levels and scoring (shared with the Worker)
+    ├── js/game.js        the coffee-run puzzle
     └── assets/portrait.jpg
 ```
 
 ## API
 
-- `GET /api/scores`: the top 10 Bug2 mazes.
-- `POST /api/scores` with `{ name, walls }`: the Worker re-runs Bug2 on the maze, so scores can't be faked. It limits each visitor to 5 submissions a minute, filters names, and lets each maze appear on the board only once.
+- `GET /api/scores`: the top 10 coffee-run players, by stars.
+- `POST /api/scores` with `{ name, solutions: { levelId: { walls, side } } }`: the Worker re-plays every solution with the shared engine, so stars can't be faked. It limits each visitor to 5 submissions a minute, filters names, and keeps each name's best result.
 - `GET /api/posts`: the latest posts from One More Layer's RSS feed, cached for an hour.
 
 ## Deploying
@@ -36,6 +38,7 @@ site/
 - **Database:** the `nitesh-fyi` D1 database already exists and is set in `wrangler.jsonc`. After adding a migration, run `npx wrangler d1 migrations apply nitesh-fyi --remote`.
 - **Deploy:** run `npx wrangler deploy` from `site/`. To deploy automatically, connect the repo in Cloudflare (**Workers & Pages → Create → Import a repository**) with root directory `site` and deploy command `npx wrangler deploy`.
 - **Local dev:** run `npx wrangler d1 migrations apply nitesh-fyi --local`, then `npx wrangler dev --host localhost`.
+- **Levels:** edit `public/js/levels.js`, then run `node tools/check-levels.mjs` to confirm each par is right.
 - **The CV:** edit `public/cv.html`, start `wrangler dev`, then run `node tools/build-cv.mjs http://localhost:8787/cv`.
 - **Custom domains** are declared in `wrangler.jsonc`, so Cloudflare creates the DNS records and certificates for them. `www.nitesh.fyi` and `nitesh.onemorelayer.dev` redirect to `nitesh.fyi`.
 
@@ -53,7 +56,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 - `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.
 - `~` opens a terminal (`help`, `whoami`, `cat story`, `play`, `cv`, `coffee` and more).
-- The home page has a Bug2 game with a global leaderboard, and pulls the latest Substack posts.
+- The home page has "coffee run", a Bug2 puzzle: 8 levels where you place a few walls and pick which side the robot hugs, so it collects every coffee bean. It awards stars against par and has a global leaderboard. The page also pulls the latest Substack posts.
 - Pages cross-fade with View Transitions, and sections step in as you scroll (off when reduced motion is set).
 - Dark mode follows the system setting, and the toggle remembers your choice.
 

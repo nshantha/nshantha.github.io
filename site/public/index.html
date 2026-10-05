@@ -319,7 +319,7 @@
           <li><a href="#hello"><span class="glyph" aria-hidden="true">├ </span><span class="label">Hello</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#now"><span class="glyph" aria-hidden="true">├ </span><span class="label">Right now</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#story"><span class="glyph" aria-hidden="true">├ </span><span class="label">My story</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
-          <li><a href="#play"><span class="glyph" aria-hidden="true">├ </span><span class="label">Play: Bug2</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
+          <li><a href="#play"><span class="glyph" aria-hidden="true">├ </span><span class="label">Play: coffee run</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#github"><span class="glyph" aria-hidden="true">├ </span><span class="label">Learning in public</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#likes"><span class="glyph" aria-hidden="true">├ </span><span class="label">Likes &amp; dislikes</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
           <li><a href="#why"><span class="glyph" aria-hidden="true">├ </span><span class="label">Why I build</span><span class="meter" aria-hidden="true"><i></i></span></a></li>
@@ -430,29 +430,34 @@
 
         <!-- PLAY -->
         <section class="chapter" id="play" aria-labelledby="play-title">
-          <div class="chapter-head"><span class="chapter-num">03</span><h2 id="play-title">Play: outsmart my robot</h2></div>
-          <p class="lead">Bug2 was one of the first robot algorithms I built. Draw walls, press run, and watch the robot find its way to the flag. Build the maze that makes it walk the furthest.</p>
+          <div class="chapter-head"><span class="chapter-num">03</span><h2 id="play-title">Play: coffee run</h2></div>
+          <p class="lead">My robot runs Bug2, one of the first algorithms I built: it heads straight for the flag and hugs any wall in its way. Place a few walls, and choose which side it hugs, so it grabs every coffee bean on the way.</p>
           <div class="game steps">
-            <div class="game-bar" aria-live="polite"><span>Mode <b id="gameMode">ready</b></span><span>Steps <b id="gameSteps">0</b></span><span>Walls <b id="gameWalls">0/120</b></span></div>
-            <canvas id="bug2" width="620" height="340" tabindex="0" role="img" aria-label="Bug2 maze. Click or drag to draw walls. With the keyboard: arrow keys move, Space toggles a wall, R runs."></canvas>
+            <div class="level-strip" id="levelStrip" role="group" aria-label="Levels"></div>
+            <div class="level-head">
+              <h3 id="levelTitle">Level 1</h3>
+              <p id="levelHint"></p>
+            </div>
+            <div class="game-bar" aria-live="polite"><span>Beans <b id="gameBeans">0/1</b></span><span>Walls <b id="gameWalls">0/3</b></span><span>Par <b id="gamePar">1</b></span><span>Stars <b id="gameStars">0/24</b></span></div>
+            <canvas id="bug2" width="600" height="360" tabindex="0" role="img" aria-label="Puzzle grid. Click a cell to place or remove a wall. With the keyboard: arrow keys move, Space places a wall, F flips the side, R runs."></canvas>
             <div class="game-controls">
               <button type="button" class="go pixel-btn" id="gameRun">▶ Run</button>
-              <button type="button" id="gameRandom">Random maze</button>
-              <button type="button" id="gameClear">Clear</button>
-              <button type="button" id="gameShare">Copy link</button>
+              <button type="button" class="side-btn" id="gameSide" aria-pressed="false">Wall on right · goes over ↻</button>
+              <button type="button" id="gameReset">Reset</button>
               <span class="spacer"></span>
               <label><span class="sr-only">Speed</span><select id="gameSpeed"><option value="slow">Slow</option><option value="normal" selected>Normal</option><option value="fast">Fast</option></select></label>
             </div>
-            <div class="game-legend"><span><i style="background:var(--accent)"></i>moving to goal</span><span><i style="background:var(--blue)"></i>following a wall</span><span><i style="background:var(--ink)"></i>wall</span></div>
+            <div class="game-legend"><span><i class="lg-bean"></i>coffee bean</span><span><i style="background:var(--accent)"></i>your wall</span><span><i style="background:var(--ink)"></i>fixed wall</span><span><i style="background:var(--blue)"></i>hugging a wall</span></div>
             <p class="game-result" id="gameResult" aria-live="polite"></p>
-            <form class="score-form" id="scoreForm" hidden>
+            <div class="game-next"><button type="button" class="chip" id="gameNext" hidden>Next level →</button></div>
+            <form class="score-form" id="scoreForm" hidden novalidate>
               <label class="sr-only" for="scoreName">Your name</label>
-              <input id="scoreName" name="name" maxlength="16" placeholder="Your name for the leaderboard" required>
-              <button type="submit" id="scoreSubmit">Submit score</button>
+              <input id="scoreName" name="name" maxlength="16" placeholder="Your name for the leaderboard">
+              <button type="submit" id="scoreSubmit">Save my stars</button>
             </form>
           </div>
           <div class="board-wrap">
-            <h3>Leaderboard · longest paths</h3>
+            <h3>Leaderboard · most stars</h3>
             <ol class="board" id="board"></ol>
             <p class="board-note" id="boardNote">Loading…</p>
           </div>
@@ -460,7 +465,7 @@
             <summary>How Bug2 works</summary>
             <ol>
               <li>Head straight for the goal along the line from start to finish (the dashed m-line).</li>
-              <li>Hit a wall? Remember that spot, then follow the wall’s edge.</li>
+              <li>Hit a wall? Remember that spot, then follow the wall’s edge, keeping it on your right (over the top) or your left (underneath).</li>
               <li>Back on the m-line and closer to the goal than where you hit? Leave the wall and head for the goal again.</li>
               <li>Back where you hit the wall? Then there’s no way through, and Bug2 knows to stop.</li>
             </ol>

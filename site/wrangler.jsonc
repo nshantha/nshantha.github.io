@@ -1,6 +1,6 @@
 // Cloudflare Worker that serves the static site in ./public.
 // Deploy from this folder with `npx wrangler deploy` (or Workers Builds, root directory "site").
-// The Worker also serves /api/scores (Bug2 leaderboard) and /api/posts (latest Substack posts).
+// The Worker also serves /api/scores (coffee-run leaderboard) and /api/posts (latest Substack posts).
 {
   "name": "nitesh-fyi",
   "main": "src/worker.js",
@@ -19,7 +19,7 @@
     { "pattern": "www.nitesh.fyi", "custom_domain": true },
     { "pattern": "nitesh.onemorelayer.dev", "custom_domain": true }
   ],
-  // Bug2 leaderboard. Apply schema changes with `npx wrangler d1 migrations apply nitesh-fyi --remote`.
+  // Coffee-run leaderboard. Apply schema changes with `npx wrangler d1 migrations apply nitesh-fyi --remote`.
   "d1_databases": [
     {
       "binding": "DB",
