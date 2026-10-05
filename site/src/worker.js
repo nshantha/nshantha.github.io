@@ -1,5 +1,5 @@
 // Serves ./public, and sends every other hostname (www, the old onemorelayer.dev
-// subdomain) to https://nitesh.fyi with a permanent redirect.
+// subdomain) and any plain-http request to https://nitesh.fyi with a permanent redirect.
 const CANONICAL_HOST = 'nitesh.fyi';
 
 // Hostnames that should be served as-is: local dev and *.workers.dev previews.
@@ -9,7 +9,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    if (url.hostname !== CANONICAL_HOST && !isDevHost(url.hostname)) {
+    const wrongHost = url.hostname !== CANONICAL_HOST && !isDevHost(url.hostname);
+    const insecure = url.protocol === 'http:' && !isDevHost(url.hostname);
+    if (wrongHost || insecure) {
       return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
     }
 
