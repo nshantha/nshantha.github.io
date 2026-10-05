@@ -128,7 +128,7 @@ const tag = (xml, name) => { const m = xml.match(new RegExp(`<${name}>([\\s\\S]*
 
 async function latestPosts(ctx) {
   const cache = caches.default;
-  const cacheKey = new Request(`https://${CANONICAL_HOST}/api/posts`);
+  const cacheKey = new Request(`https://${CANONICAL_HOST}/api/posts?v=2`);
   const cached = await cache.match(cacheKey);
   if (cached) return cached;
 
@@ -139,6 +139,7 @@ async function latestPosts(ctx) {
     title: tag(item, 'title'),
     description: tag(item, 'description'),
     url: tag(item, 'link'),
+    image: (item.match(/<enclosure url="(https:\/\/substackcdn\.com\/[^"]+)"/) || [])[1] || '',
     date: toIsoDate(tag(item, 'pubDate'))
   })).filter((p) => p.url.startsWith('https://onemorelayer.dev/'));
 

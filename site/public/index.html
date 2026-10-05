@@ -312,6 +312,7 @@
       </nav>
       <div class="top-actions">
         <button class="icon-btn pixel-btn" id="paletteOpen" type="button" aria-label="Open command menu"><span class="kbd-hint">Jump to</span> <kbd>⌘K</kbd></button>
+        <button class="icon-btn term-btn" type="button" data-terminal aria-label="Open terminal"><span aria-hidden="true">❯_</span><span class="kbd-hint">Terminal</span></button>
         <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
       </div>
     </div>
@@ -360,21 +361,20 @@
             <button type="button" id="enhance" class="pixel-btn">Enhance</button>
           </figure>
           <div>
-            <p class="kicker"><b>Hello</b><span>Bangalore → Seattle</span></p>
             <h1>Hi, I’m Nitesh.</h1>
-            <p class="dek">I’m a curious engineer who’s <strong>in love with the process of building</strong>. By day I build high-traffic systems at Nordstrom. The rest of the time I’m building <a href="https://tryhushy.com/" target="_blank" rel="noreferrer">Hushy</a>, a dictation and voice assistant app, writing <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">One More Layer</a>, or making coffee.</p>
+            <p class="dek">I’m a curious engineer who’s <strong>in love with the process of building</strong>. By day I build high-traffic systems at Nordstrom. The rest of the time I’m building <a href="https://tryhushy.com/" target="_blank" rel="noreferrer" data-kind="◆ App">Hushy</a>, a dictation and voice assistant app, writing <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer" data-kind="✉ Newsletter">One More Layer</a>, or making coffee.</p>
             <div class="links">
               <a class="primary pixel-btn" href="/resume">Resume →</a>
               <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer">X ↗</a>
               <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">Substack ↗</a>
               <a href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub ↗</a>
-              <a href="/Nitesh-Shantha-Kumar-CV.pdf" download>CV ↓</a>
+              <a href="/Nitesh-Shantha-Kumar-CV.pdf" download>CV · PDF ↓</a>
               <button type="button" data-action="copy-email">Copy email</button>
             </div>
             <a class="play-teaser pixel-btn" href="#play">
               <span class="pt-track" aria-hidden="true"><i class="pt-bean"></i><i class="pt-bot"></i><i class="pt-flag"></i></span>
-              <span class="pt-text"><b>☕ Play coffee run</b><small>A tiny robot puzzle hidden in this site · <span data-stars>8 levels, 24 stars</span></small></span>
-              <span class="pt-go" aria-hidden="true">→</span>
+              <span class="pt-text"><i class="kind kind-game">▶ Game</i><b>☕ Play coffee run</b><small>A tiny robot puzzle hidden in this site · <span data-stars>8 levels, 24 stars</span></small></span>
+              <span class="pt-go" aria-hidden="true">▶</span>
             </a>
           </div>
         </header>
@@ -384,12 +384,12 @@
           <div class="chapter-head"><span class="chapter-num">01</span><h2 id="now-title">Right now</h2></div>
           <p class="lead">What fills my days at the moment.</p>
           <div class="now">
-            <a href="https://tryhushy.com/" target="_blank" rel="noreferrer"><span class="k">Building</span><span class="v"><b>Hushy</b><span>A dictation and voice assistant app.</span></span></a>
-            <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer"><span class="k">Writing</span><span class="v"><b>One More Layer</b><span>AI, systems, infrastructure and hardware, one layer below where most writing stops.</span></span></a>
-            <a href="#shelf"><span class="k">Reading</span><span class="v"><b>Hamnet</b><span>Hoping to finish it soon.</span></span></a>
+            <a href="https://tryhushy.com/" target="_blank" rel="noreferrer"><span class="k">Building <i class="kind kind-app">◆ App</i></span><span class="v"><b>Hushy</b><span>A dictation and voice assistant app.</span></span><span class="cta">Visit tryhushy.com ↗</span></a>
+            <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer"><span class="k">Writing <i class="kind kind-article">✉ Newsletter</i></span><span class="v"><b>One More Layer</b><span>AI, systems, infrastructure and hardware, one layer below where most writing stops.</span></span><span class="cta">Subscribe on Substack ↗</span></a>
+            <a href="#shelf"><span class="k">Reading <i class="kind kind-book">▥ Book</i></span><span class="v"><b>Hamnet</b><span>Hoping to finish it soon.</span></span><span class="cta">See my bookshelf ↓</span></a>
             <div><span class="k">Drinking</span><span class="v"><b>Coffee</b><span>Grinding the beans is one of the best moments of my day.</span></span></div>
             <div><span class="k">At home</span><span class="v"><b>A 5-month-old</b><span>So, pretty busy. Happily.</span></span></div>
-            <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer"><span class="k">Posting</span><span class="v"><b>@nitesh_aradhya</b><span>Trying to be more vocal on X.</span></span></a>
+            <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer"><span class="k">Posting <i class="kind kind-link">@ Profile</i></span><span class="v"><b>@nitesh_aradhya</b><span>Trying to be more vocal on X.</span></span><span class="cta">Follow on X ↗</span></a>
           </div>
         </section>
 
@@ -414,7 +414,7 @@
             <li>
               <span class="when">2017 · The spark</span>
               <h3>Andrej Karpathy’s lectures</h3>
-              <p>I came across <a href="https://www.youtube.com/playlist?list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC" target="_blank" rel="noreferrer">Andrej Karpathy’s machine learning lectures</a> and got hooked on machine learning. That curiosity is still driving most of what I build.</p>
+              <p>I came across <a href="https://www.youtube.com/playlist?list=PLkt2uSq6rBVctENoVBg1TpCC7OQi31AlC" target="_blank" rel="noreferrer" data-kind="▶ Video">Andrej Karpathy’s machine learning lectures</a> and got hooked on machine learning. That curiosity is still driving most of what I build.</p>
             </li>
             <li>
               <span class="when">2019 – 2021 · Buffalo, NY</span>
@@ -551,9 +551,13 @@
           <p class="lead">Latest from <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">One More Layer</a>, my Substack on AI, systems, infrastructure and hardware.</p>
           <div class="posts" id="postList">
             <a class="post" href="https://onemorelayer.dev/p/they-already-had-the-flag" target="_blank" rel="noreferrer">
-              <small>Sep 18, 2026</small>
-              <b>They Already Had the Flag</b>
-              <span>700 OpenAI evaluation agents hacked Hugging Face chasing a grader check that never existed. A layer-by-layer walk through every boundary that failed.</span>
+              <img class="post-cover" src="https://substackcdn.com/image/fetch/$s_!3TKR!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F6003f63b-2933-41bd-946f-dffa37d40e04_1672x941.png" alt="" loading="lazy">
+              <span class="post-body">
+                <span class="meta-row"><span class="kind kind-article">¶ Article</span><small>One More Layer · Sep 18, 2026</small></span>
+                <b>They Already Had the Flag</b>
+                <span class="desc">700 OpenAI evaluation agents hacked Hugging Face chasing a grader check that never existed. A layer-by-layer walk through every boundary that failed.</span>
+                <span class="cta">Read the article ↗</span>
+              </span>
             </a>
           </div>
         </section>
@@ -905,10 +909,12 @@
         <a class="project" href="${escapeHTML(p.url)}" target="_blank" rel="noreferrer">
           <span class="project-num">${String(PROJECTS.indexOf(p) + 1).padStart(2, '0')}</span>
           <div>
+            <span class="meta-row"><span class="kind kind-project">&lt;/&gt; Project</span><small>Open source on GitHub</small></span>
             <h3>${escapeHTML(p.name)}</h3>
             <p>${escapeHTML(p.description)}</p>
             <div class="project-meta">${escapeHTML(p.year)} · ${escapeHTML(p.language)}${liveMeta(p)}</div>
             <div class="tags">${p.tags.map((t) => `<span class="tag">${escapeHTML(t)}</span>`).join('')}</div>
+            <span class="cta">View the code ↗</span>
           </div>
           <span class="project-arrow" aria-hidden="true">↗</span>
         </a>`).join('');

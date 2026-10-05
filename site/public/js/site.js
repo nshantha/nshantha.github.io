@@ -27,10 +27,14 @@
       if (!posts || !posts.length) return;
       const fmt = (d) => d ? new Date(d).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
       postList.innerHTML = posts.map((p) => `
-        <a class="post" href="${esc(p.url)}" target="_blank" rel="noreferrer">
-          <small>${esc(fmt(p.date))}</small>
-          <b>${esc(p.title)}</b>
-          <span>${esc(p.description)}</span>
+        <a class="post${p.image ? '' : ' no-cover'}" href="${esc(p.url)}" target="_blank" rel="noreferrer">
+          ${p.image ? `<img class="post-cover" src="${esc(p.image)}" alt="" loading="lazy">` : ''}
+          <span class="post-body">
+            <span class="meta-row"><span class="kind kind-article">¶ Article</span><small>One More Layer · ${esc(fmt(p.date))}</small></span>
+            <b>${esc(p.title)}</b>
+            <span class="desc">${esc(p.description)}</span>
+            <span class="cta">Read the article ↗</span>
+          </span>
         </a>`).join('');
     }).catch(() => { /* keep the static fallback */ });
   }
@@ -172,5 +176,27 @@
     if ((e.key === '`' || e.key === '~') && !typing && !e.metaKey && !e.ctrlKey) { e.preventDefault(); term?.classList.contains('open') ? close() : open(); }
   });
   $$('[data-terminal]').forEach((b) => b.addEventListener('click', open));
+
+  // Tell first-time visitors the terminal exists, once, after they start scrolling.
+  const seen = (() => { try { return localStorage.getItem('term-hint') === '1'; } catch (e) { return true; } })();
+  if (!seen) {
+    const onScroll = () => {
+      if (window.scrollY < window.innerHeight * 0.6) return;
+      window.removeEventListener('scroll', onScroll);
+      try { localStorage.setItem('term-hint', '1'); } catch (e) {}
+      const hint = document.createElement('button');
+      hint.type = 'button';
+      hint.className = 'term-hint';
+      const touch = window.matchMedia('(pointer: coarse)').matches;
+      hint.innerHTML = `<span class="ico" aria-hidden="true">❯_</span><span class="txt">${touch
+        ? 'Tip: this site has a terminal. Tap here, or the ❯_ button up top, to explore it.'
+        : 'Tip: press <kbd>~</kbd> anywhere, or click here, to explore this site from a terminal.'}</span>`;
+      hint.addEventListener('click', () => { hint.remove(); open(); });
+      document.body.appendChild(hint);
+      requestAnimationFrame(() => hint.classList.add('show'));
+      setTimeout(() => { hint.classList.remove('show'); setTimeout(() => hint.remove(), 400); }, 7000);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
   window.openTerminal = open;
 })();
