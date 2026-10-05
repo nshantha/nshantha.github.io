@@ -60,7 +60,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 ## Editing
 
 - **Projects** live in the `PROJECTS` array in `site/public/index.html`. It keeps the same format so the automated GitHub sync still works.
-- **The GitHub timeline** reads the `REPOS` array in `site/public/index.html`, where `year` is the year the repo was last updated.
+- **The GitHub timeline** reads the `REPOS` array in `site/public/index.html`, where `year` is the year the repo was last updated. Private repositories are counted per year in `PRIVATE_REPOS` and shown as hatched squares; `PRIVATE_NAMED` labels the ones you're happy to name, such as Hushy.
 - **Resume content** is plain HTML in `site/public/resume.html`. Set `LINKEDIN_URL` there to show LinkedIn links.
 - The resume stays generic on purpose: it shows concepts and tools, not internal work details.
 

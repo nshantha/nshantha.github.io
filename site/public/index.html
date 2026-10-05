@@ -181,8 +181,8 @@
     .cell.ml { background: var(--blue); }
     .cell.ai { background: var(--accent); }
     .cell.web { background: repeating-conic-gradient(var(--faint) 0 25%, transparent 0 50%) 0 0 / 4px 4px; }
+    .cell.private { background: repeating-linear-gradient(135deg, var(--muted) 0 2px, transparent 2px 5px); box-shadow: inset 0 0 0 1px var(--muted); cursor: default; }
     .cell:hover, .cell:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-    .gap-note { color: var(--faint); font: italic 400 13px/1.4 var(--serif); }
     .repo-fig figcaption { margin-top: 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
     .repo-list { margin-top: 10px; }
     .repo-list summary { cursor: pointer; color: var(--muted); font: 500 12px/1.6 var(--mono); }
@@ -470,11 +470,11 @@
         <!-- GITHUB -->
         <section class="chapter" id="github" aria-labelledby="github-title">
           <div class="chapter-head"><span class="chapter-num">04</span><h2 id="github-title">Learning in public</h2></div>
-          <p class="lead">My public GitHub, one square per repository. Hover or tap a square to see what it is.</p>
+          <p class="lead">My GitHub, one square per repository, private ideas included. Hover or tap a square to see what it is.</p>
           <figure class="repo-fig steps" style="margin:0">
-            <div class="repo-legend"><span><i class="cell ml" style="display:inline-block"></i>Robotics &amp; ML</span><span><i class="cell ai" style="display:inline-block"></i>LLMs &amp; agents</span><span><i class="cell web" style="display:inline-block"></i>Web &amp; other</span></div>
+            <div class="repo-legend"><span><i class="cell ml" style="display:inline-block"></i>Robotics &amp; ML</span><span><i class="cell ai" style="display:inline-block"></i>LLMs &amp; agents</span><span><i class="cell web" style="display:inline-block"></i>Web &amp; other</span><span><i class="cell private" style="display:inline-block"></i>Private ideas</span></div>
             <div class="years" id="years"></div>
-            <figcaption>Grouped by the year each repository was last updated. The quiet years were heads-down at Nordstrom; then LLMs and MCP arrived.</figcaption>
+            <figcaption>Grouped by the year each repository was last updated. Hatched squares are private repositories: ideas I’m still building, Hushy among them. The public side was quiet while I was heads-down at Nordstrom; then LLMs and MCP arrived.</figcaption>
             <details class="repo-list"><summary>Show as a list</summary><table id="repoTable"></table></details>
           </figure>
         </section>
@@ -702,6 +702,11 @@
       ['nshantha.github.io', 2026, 'web', 'This website']
     ];
 
+    // Private repositories per year: ideas still in progress. Shown as hatched squares
+    // without names. Edit the counts to match GitHub; named entries show their name.
+    const PRIVATE_REPOS = { 2022: 2, 2023: 3, 2024: 4, 2025: 6, 2026: 8 };
+    const PRIVATE_NAMED = { 2026: ['Hushy · dictation and voice assistant app'] };
+
     const $ = (s, el = document) => el.querySelector(s);
     const $$ = (s, el = document) => [...el.querySelectorAll(s)];
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -788,12 +793,14 @@
     const KIND = { ml: 'Robotics & ML', ai: 'LLMs & agents', web: 'Web & other' };
     $('#years').innerHTML = years.map((y) => {
       const rs = REPOS.filter((r) => r[1] === y);
-      const body = rs.length
-        ? rs.map((r) => `<a class="cell ${r[2]}" href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer" data-tip="${escapeHTML(r[0])} · ${escapeHTML(r[3])}" aria-label="${escapeHTML(r[0])}: ${escapeHTML(r[3])}"></a>`).join('')
-        : (y === 2023 ? '<span class="gap-note">heads-down at Nordstrom</span>' : '');
+      const named = PRIVATE_NAMED[y] || [];
+      const privates = Array.from({ length: Math.max(PRIVATE_REPOS[y] || 0, named.length) }, (_, i) => named[i] || 'Private repo · an idea in progress');
+      const body = rs.map((r) => `<a class="cell ${r[2]}" href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer" data-tip="${escapeHTML(r[0])} · ${escapeHTML(r[3])}" aria-label="${escapeHTML(r[0])}: ${escapeHTML(r[3])}"></a>`).join('')
+        + privates.map((label) => `<span class="cell private" tabindex="0" role="img" data-tip="🔒 ${escapeHTML(label)}" aria-label="Private: ${escapeHTML(label)}"></span>`).join('');
       return `<div class="year"><span>${y}</span><div class="cells">${body}</div></div>`;
     }).join('');
-    $('#repoTable').innerHTML = REPOS.map((r) => `<tr><td>${r[1]}</td><td><a href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer">${escapeHTML(r[0])}</a></td><td>${escapeHTML(r[3])}</td><td>${KIND[r[2]]}</td></tr>`).join('');
+    $('#repoTable').innerHTML = REPOS.map((r) => `<tr><td>${r[1]}</td><td><a href="https://github.com/nshantha/${r[0]}" target="_blank" rel="noreferrer">${escapeHTML(r[0])}</a></td><td>${escapeHTML(r[3])}</td><td>${KIND[r[2]]}</td></tr>`).join('')
+      + Object.entries(PRIVATE_REPOS).map(([y, n]) => `<tr><td>${y}</td><td>${n} private ${n === 1 ? 'repository' : 'repositories'}</td><td>${escapeHTML((PRIVATE_NAMED[y] || []).join(', ') || 'Ideas in progress')}</td><td>Private ideas</td></tr>`).join('');
     function showTip(el, x, y) { tip.textContent = el.dataset.tip; tip.style.left = x + 'px'; tip.style.top = y + 'px'; tip.classList.add('show'); }
     $$('[data-tip]').forEach((el) => {
       el.addEventListener('pointermove', (e) => showTip(el, e.clientX, e.clientY));
