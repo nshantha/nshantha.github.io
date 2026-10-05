@@ -30,6 +30,30 @@
 .term-prompt { color: #e07a55; }
 .term-line input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: inherit; font: inherit; caret-color: #e07a55; }
 
+/* ---- Making the game easy to find ---- */
+.nav-play { position: relative; }
+.nav-play i { position: absolute; top: -5px; right: -9px; width: 5px; height: 5px; background: var(--accent); animation: nav-blink 1.4s steps(1) infinite; }
+@keyframes nav-blink { 50% { opacity: 0; } }
+.play-teaser { display: grid; grid-template-columns: 112px 1fr auto; gap: 14px; align-items: center; margin-top: 18px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--ink); text-decoration: none; color: var(--ink); }
+.play-teaser:hover .pt-go { color: var(--accent-ink); transform: translateX(3px); }
+.pt-text b { display: block; font: 500 18px/1.2 "Pixelify Sans", monospace; font-kerning: none; letter-spacing: .02em; }
+.pt-text small { display: block; margin-top: 3px; color: var(--muted); font: 400 12px/1.4 "IBM Plex Mono", monospace; }
+.pt-go { font: 600 18px/1 "IBM Plex Mono", monospace; transition: transform .15s steps(2); }
+.pt-track { position: relative; height: 28px; border-bottom: 2px dashed var(--accent-soft); }
+.pt-track i { position: absolute; bottom: 2px; display: block; }
+.pt-bot { left: 0; width: 16px; height: 14px; background: var(--ink); box-shadow: inset 4px -4px 0 -2px var(--ink); animation: pt-drive 3.2s steps(16) infinite; }
+.pt-bot::before, .pt-bot::after { content: ""; position: absolute; top: 4px; width: 3px; height: 3px; background: var(--paper); }
+.pt-bot::before { left: 3px; } .pt-bot::after { right: 3px; }
+.pt-bean { left: 50px; bottom: 14px !important; width: 8px; height: 11px; border-radius: 4px; background: var(--coffee, #6b3b22); animation: pt-bean 3.2s steps(1) infinite; }
+.pt-flag { right: 0; width: 3px; height: 22px; background: var(--ink); }
+.pt-flag::after { content: ""; position: absolute; left: 3px; top: 0; width: 10px; height: 7px; background: var(--accent); }
+@keyframes pt-drive { 0% { transform: translate(0, 0); } 30% { transform: translate(42px, 0); } 40% { transform: translate(46px, -12px); } 55% { transform: translate(58px, -12px); } 62% { transform: translate(62px, 0); } 85%, 100% { transform: translate(92px, 0); } }
+@keyframes pt-bean { 0%, 44% { opacity: 1; } 45%, 100% { opacity: 0; } }
+.play-card h3 { font: 500 18px/1.2 "Pixelify Sans", monospace; }
+.play-card-stars { margin-top: 8px !important; color: var(--accent-ink) !important; font: 500 12px/1.4 "IBM Plex Mono", monospace !important; }
+@media (max-width: 640px) { .play-teaser { grid-template-columns: 1fr auto; } .pt-track { display: none; } }
+@media (prefers-reduced-motion: reduce) { .pt-bot, .pt-bean, .nav-play i { animation: none; } }
+
 /* ---- Coffee run (Bug2 puzzle) ---- */
 .game { background: var(--surface); border: 1px solid var(--line); }
 .level-strip { display: grid; grid-template-columns: repeat(8, 1fr); border-bottom: 1px dashed var(--line); }

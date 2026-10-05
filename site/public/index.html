@@ -299,6 +299,7 @@
       <a class="monogram" href="#top" aria-label="Back to top"><svg class="" viewBox="0 0 9 9" aria-hidden="true"><rect width="9" height="9" fill="var(--accent)"/><g fill="#fff"><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="1" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="7" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="7" y="5" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/></g></svg><span>Nitesh Shantha Kumar</span></a>
       <nav class="topnav" aria-label="Primary">
         <a href="#story">Story</a>
+        <a href="#play" class="nav-play">Play<i aria-hidden="true"></i></a>
         <a href="#projects">Projects</a>
         <a href="/resume">Resume</a>
         <a href="#elsewhere">Contact</a>
@@ -364,6 +365,11 @@
               <a href="/Nitesh-Shantha-Kumar-CV.pdf" download>CV ↓</a>
               <button type="button" data-action="copy-email">Copy email</button>
             </div>
+            <a class="play-teaser pixel-btn" href="#play">
+              <span class="pt-track" aria-hidden="true"><i class="pt-bean"></i><i class="pt-bot"></i><i class="pt-flag"></i></span>
+              <span class="pt-text"><b>☕ Play coffee run</b><small>A tiny robot puzzle hidden in this site · <span data-stars>8 levels, 24 stars</span></small></span>
+              <span class="pt-go" aria-hidden="true">→</span>
+            </a>
           </div>
         </header>
 
@@ -576,6 +582,12 @@
     </main>
 
     <aside class="rail rail-right" aria-label="Quick links">
+      <div class="card play-card">
+        <h3>☕ Coffee run</h3>
+        <p>A tiny puzzle: steer my robot so it grabs every coffee bean.</p>
+        <p class="play-card-stars"><span data-stars>8 levels, 24 stars</span></p>
+        <div class="action-list"><a class="action primary pixel-btn" href="#play">Play now <span class="muted">→</span></a></div>
+      </div>
       <div class="card">
         <h3>Nitesh Shantha Kumar</h3>
         <p>Software engineer · Seattle, WA</p>
@@ -901,6 +913,7 @@
       { label: 'Resume', kind: 'Page', run: () => (location.href = '/resume') },
       { label: 'Download CV (PDF)', kind: 'Link', run: () => (location.href = '/Nitesh-Shantha-Kumar-CV.pdf') },
       { label: 'Open the terminal', kind: 'Action', run: () => window.openTerminal() },
+      { label: 'Play coffee run (game)', kind: 'Game', run: go('play') },
       { label: 'Hushy', kind: 'Link', run: open('https://tryhushy.com/') },
       { label: 'One More Layer (Substack)', kind: 'Link', run: open('https://onemorelayer.dev/') },
       { label: 'X / Twitter', kind: 'Link', run: open('https://x.com/nitesh_aradhya') },

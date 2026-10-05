@@ -22,6 +22,8 @@ export default {
       return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
     }
 
+    // Short, shareable link straight to the game.
+    if (url.pathname === '/play') return Response.redirect(`${url.origin}/#play`, 302);
     if (url.pathname.startsWith('/api/')) return withSecurityHeaders(await handleApi(request, url, env, ctx));
     return withSecurityHeaders(await env.ASSETS.fetch(request));
   }

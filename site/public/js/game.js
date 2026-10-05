@@ -32,6 +32,7 @@ function init() {
   let side = 'right';
   let trail = [], eaten = new Set(), robot = { ...start };
   let running = false, timer = null, cursor = { x: 4, y: GRID.mid }, showCursor = false;
+  let party = null; // the win celebration: beans burst from the flag and brew into a cup
 
   const idx = (x, y) => cellIndex(GRID, x, y);
   const fixedSet = () => new Set(level.fixed.map(([x, y]) => idx(x, y)));
@@ -42,7 +43,7 @@ function init() {
   const color = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   function draw() {
     const c = { bg: color('--surface'), grid: color('--line'), ink: color('--ink'), accent: color('--accent'), blue: color('--blue'),
-      soft: color('--accent-soft'), paper: color('--paper'), coffee: color('--coffee') || '#6b3b22', crema: color('--crema') || '#c08a5a' };
+      soft: color('--accent-soft'), paper: color('--paper'), faint: color('--faint'), coffee: color('--coffee') || '#6b3b22', crema: color('--crema') || '#c08a5a' };
     ctx.fillStyle = c.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = c.grid;
     for (let y = 0; y <= rows; y++) for (let x = 0; x <= cols; x++) ctx.fillRect(x * CELL - 1, y * CELL - 1, 3, 3);
@@ -77,6 +78,73 @@ function init() {
     ctx.fillStyle = c.paper; ctx.fillRect(rx + 12, ry + 16, 6, 6); ctx.fillRect(rx + 22, ry + 16, 6, 6);
     ctx.fillStyle = c.accent; ctx.fillRect(rx + 18, ry + 2, 4, 4); ctx.fillRect(rx + 12, ry + 30, 6, 6); ctx.fillRect(rx + 22, ry + 30, 6, 6);
     if (showCursor && !running) { ctx.strokeStyle = c.accent; ctx.lineWidth = 3; ctx.strokeRect(cursor.x * CELL + 2, cursor.y * CELL + 2, CELL - 4, CELL - 4); }
+    if (party) drawParty(c, performance.now());
+  }
+
+  // ---- Celebration: beans burst out of the flag, fly into a cup, and brew ----------------
+  const BURST = 650, POUR = 700, BREW = 600;
+  const cup = () => ({ x: canvas.width / 2, y: canvas.height / 2 + 30 });
+  function bean(x, y, s, col, crema) {
+    ctx.fillStyle = col;
+    ctx.fillRect(x - 2 * s, y - 3 * s, 4 * s, s); ctx.fillRect(x - 3 * s, y - 2 * s, 6 * s, 4 * s); ctx.fillRect(x - 2 * s, y + 2 * s, 4 * s, s);
+    ctx.fillStyle = crema; ctx.fillRect(x - s / 2, y - 2 * s, s, 4 * s);
+  }
+  function celebrate(stars) {
+    const fx = goal.x * CELL + 20, fy = goal.y * CELL + 10;
+    const n = 22 + level.beans.length * 4;
+    party = {
+      t0: performance.now(), stars,
+      beans: Array.from({ length: n }, (_, i) => {
+        const a = -Math.PI / 2 + (Math.random() - 0.5) * 2.4;
+        const v = 260 + Math.random() * 320;
+        return { x0: fx, y0: fy, vx: Math.cos(a) * v, vy: Math.sin(a) * v, delay: (i / n) * 260, s: 2 + Math.round(Math.random()) };
+      })
+    };
+    if (reduceMotion) party.t0 -= BURST + POUR + BREW + 400;
+    cancelAnimationFrame(party.raf);
+    (function loop() { draw(); if (party && performance.now() - party.t0 < BURST + POUR + BREW + 1600) party.raf = requestAnimationFrame(loop); })();
+  }
+  function drawParty(c, now) {
+    const t = now - party.t0;
+    const { x: cx, y: cy } = cup();
+    // dim the board so the cup stands out
+    const fade = Math.min(1, t / 500);
+    ctx.globalAlpha = 0.55 * fade; ctx.fillStyle = c.bg; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.globalAlpha = 1;
+    // beans: burst with gravity, then pour into the cup
+    let landed = 0;
+    for (const b of party.beans) {
+      const bt = Math.max(0, t - b.delay) / 1000;
+      const burstT = Math.min(bt, BURST / 1000);
+      const bx = b.x0 + b.vx * burstT, by = b.y0 + b.vy * burstT + 900 * burstT * burstT;
+      const pourK = Math.min(1, Math.max(0, (t - b.delay - BURST) / POUR));
+      if (pourK >= 1) { landed++; continue; }
+      const e = pourK * pourK * (3 - 2 * pourK); // ease in-out
+      const x = bx + (cx - bx) * e, y = by + (cy - 34 - by) * e;
+      bean(Math.round(x / 2) * 2, Math.round(y / 2) * 2, b.s, c.coffee, c.crema);
+    }
+    const fill = landed / party.beans.length;
+    // the cup (pixel style): saucer, body, handle, coffee rising with each bean
+    const w = 96, h = 72, left = cx - w / 2, top = cy - h / 2;
+    ctx.fillStyle = c.ink;
+    ctx.fillRect(left - 18, top + h + 6, w + 36, 8);                 // saucer
+    ctx.fillRect(left - 6, top - 6, w + 12, 6);                       // rim
+    ctx.fillRect(left - 6, top, 6, h); ctx.fillRect(left + w, top, 6, h); ctx.fillRect(left - 6, top + h, w + 12, 6); // body
+    ctx.fillRect(left + w + 6, top + 12, 16, 6); ctx.fillRect(left + w + 18, top + 18, 6, 24); ctx.fillRect(left + w + 6, top + 42, 16, 6); // handle
+    ctx.fillStyle = c.paper; ctx.fillRect(left, top, w, h);
+    const level_h = Math.round((h - 6) * fill / 6) * 6;
+    ctx.fillStyle = c.coffee; ctx.fillRect(left, top + h - level_h, w, level_h);
+    if (level_h) { ctx.fillStyle = c.crema; ctx.fillRect(left, top + h - level_h, w, 6); }
+    // steam and stars once it's brewed
+    if (t > BURST + POUR + 200) {
+      const on = Math.floor(now / 300) % 2;
+      ctx.fillStyle = c.faint || c.ink;
+      for (const sx of [left + 26, left + 48, left + 70]) for (let k = 0; k < 3; k++) ctx.fillRect(sx + ((k + on) % 2) * 6, top - 22 - k * 10, 6, 6);
+      ctx.fillStyle = c.accent;
+      ctx.font = '500 34px "Pixelify Sans", monospace'; ctx.textAlign = 'center';
+      ctx.fillText('★'.repeat(party.stars) + '☆'.repeat(3 - party.stars), cx, top - 64);
+      ctx.fillStyle = c.ink; ctx.font = '500 22px "Pixelify Sans", monospace';
+      ctx.fillText('Brewed!', cx, top + h + 46);
+    }
   }
   new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
@@ -91,6 +159,8 @@ function init() {
     }).join('');
     ui.levels.querySelectorAll('[data-level]').forEach((b) => b.addEventListener('click', () => loadLevel(LEVELS[Number(b.dataset.level)])));
     ui.total.textContent = `${totalStars()}/${MAX_STARS}`;
+    const got = totalStars();
+    document.querySelectorAll('[data-stars]').forEach((el) => { el.textContent = got ? `your stars: ${got}/${MAX_STARS}` : `${LEVELS.length} levels, ${MAX_STARS} stars`; });
   }
   function status(beansGot = 0) {
     ui.beans.textContent = `${beansGot}/${level.beans.length}`;
@@ -101,6 +171,7 @@ function init() {
   }
   function resetRun() {
     clearInterval(timer); running = false; trail = []; eaten = new Set(); robot = { ...start };
+    if (party) { cancelAnimationFrame(party.raf); party = null; }
     ui.run.textContent = '▶ Run'; ui.next.hidden = true; ui.result.textContent = '';
     status();
   }
@@ -158,6 +229,7 @@ function init() {
       ui.result.innerHTML = `☕ Every bean collected! <b>${starText(res.stars)}</b> ` +
         (res.stars === 3 ? 'Perfect, that’s par.' : `Par is ${level.par} wall${level.par > 1 ? 's' : ''}. Can you do it with fewer?`);
       ui.next.hidden = LEVELS.indexOf(level) === LEVELS.length - 1;
+      celebrate(res.stars);
       ui.form.hidden = leaderboardOffline;
       renderStrip();
     } else if (!res.run.reached) {

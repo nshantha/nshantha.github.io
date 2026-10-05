@@ -56,7 +56,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 - `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.
 - `~` opens a terminal (`help`, `whoami`, `cat story`, `play`, `cv`, `coffee` and more).
-- The home page has "coffee run", a Bug2 puzzle: 8 levels where you place a few walls and pick which side the robot hugs, so it collects every coffee bean. It awards stars against par and has a global leaderboard. The page also pulls the latest Substack posts.
+- The home page has "coffee run", a Bug2 puzzle: 8 levels where you place a few walls and pick which side the robot hugs, so it collects every coffee bean. It awards stars against par and has a global leaderboard. Winning bursts beans out of the flag and brews them into a cup. Visitors find it from the hero teaser, the **Play** link in the menu, the sidebar card, the terminal, or the short link `nitesh.fyi/play`. The page also pulls the latest Substack posts.
 - Pages cross-fade with View Transitions, and sections step in as you scroll (off when reduced motion is set).
 - Dark mode follows the system setting, and the toggle remembers your choice.
 

@@ -372,6 +372,7 @@
         <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
         <a href="/">← Home</a>
+        <a href="/play" class="nav-play">Play<i aria-hidden="true"></i></a>
         <a href="#contact">Contact</a>
       </nav>
       <div class="top-actions">
@@ -660,6 +661,7 @@
         </div>
       </div>
       <a class="action" href="/#projects">See my projects <span class="muted">→</span></a>
+      <a class="action" href="/play" style="margin-top:8px">☕ Take a break: play coffee run <span class="muted">→</span></a>
     </aside>
   </div>
 
@@ -859,6 +861,7 @@
       { label: 'Copy email address', kind: 'Action', run: ACTIONS['copy-email'] },
       { label: 'Download CV (PDF)', kind: 'Link', run: () => (location.href = '/Nitesh-Shantha-Kumar-CV.pdf') },
       { label: 'Open the terminal', kind: 'Action', run: () => window.openTerminal() },
+      { label: 'Play coffee run (game)', kind: 'Game', run: () => (location.href = '/play') },
       { label: 'Toggle dark mode', kind: 'Action', run: ACTIONS.theme },
       { label: 'Copy link to this page', kind: 'Action', run: ACTIONS['copy-url'] }
     ];
