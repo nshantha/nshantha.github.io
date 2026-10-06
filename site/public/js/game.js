@@ -25,8 +25,10 @@ function init() {
     form: $('#scoreForm'), name: $('#scoreName'), submit: $('#scoreSubmit'), board: $('#board'), boardNote: $('#boardNote')
   };
 
-  // progress: { [levelId]: { stars, walls: [...], side } } — your best solution per level
-  let progress = store.get('coffee-run') || {};
+  // progress: { [levelId]: { stars, walls: [...], side } }: your best solution per level, for
+  // this visit only. Every refresh starts a fresh game; scores live on the leaderboard.
+  let progress = {};
+  try { localStorage.removeItem('coffee-run'); } catch (e) {} // progress saved by older versions
   let level = LEVELS[0];
   let placed = new Set();
   let side = 'right';
@@ -224,7 +226,6 @@ function init() {
       const best = progress[level.id];
       if (!best || res.stars > best.stars || (res.stars === best.stars && res.wallsUsed < best.walls.length)) {
         progress[level.id] = { stars: res.stars, walls: [...placed], side };
-        store.set('coffee-run', progress);
       }
       ui.result.innerHTML = `☕ Every bean collected! <b>${starText(res.stars)}</b> ` +
         (res.stars === 3 ? 'Perfect, that’s par.' : `Par is ${level.par} wall${level.par > 1 ? 's' : ''}. Can you do it with fewer?`);
@@ -275,7 +276,7 @@ function init() {
     } catch (e) {
       leaderboardOffline = true;
       ui.board.innerHTML = '';
-      ui.boardNote.textContent = 'The leaderboard is offline right now. Your progress is still saved in this browser.';
+      ui.boardNote.textContent = 'The leaderboard is offline right now, so scores can’t be saved.';
     }
   }
   ui.name.value = store.get('coffee-run-name') || '';
@@ -300,8 +301,6 @@ function init() {
     } finally { ui.submit.disabled = false; }
   });
 
-  // Start on the first level you haven't three-starred yet.
-  loadLevel(LEVELS.find((l) => (progress[l.id]?.stars || 0) < 3) || LEVELS[0]);
-  if (totalStars() > 0) ui.form.hidden = false;
+  loadLevel(LEVELS[0]);
   loadBoard();
 }
