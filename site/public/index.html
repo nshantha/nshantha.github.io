@@ -43,14 +43,14 @@
     .brew .steam { fill: var(--faint); opacity: 0; }
     .brew.is-full .steam { opacity: 1; animation: blink 1.2s steps(1) infinite; }
     .brew.is-full .steam.s2 { animation-delay: .6s; }
-    .brew output { display: block; font: 500 22px/1 var(--pixel); }
+    .brew output { display: block; font: 600 22px/1 var(--pixel); }
     .brew small { display: block; margin-top: 6px; color: var(--faint); font: 400 12px/1.4 var(--mono); }
     .rail-hint { margin-top: 24px; color: var(--faint); font: 500 12px/1.9 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
     .rail-hint kbd { font: inherit; color: var(--muted); }
 
     /* Right: elsewhere */
     .card { background: var(--surface); border: 1px solid var(--line); padding: 18px; margin-bottom: 22px; }
-    .card h3 { margin: 0 0 4px; font: 500 18px/1.2 var(--pixel); }
+    .card h3 { margin: 0 0 4px; font: 600 18px/1.2 var(--pixel); }
     .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
     .status { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; font: 500 11px/1 var(--mono); color: var(--good); }
     .status::before { content: ""; width: 6px; height: 6px; background: currentColor; animation: blink 1.6s steps(1) infinite; }
@@ -70,7 +70,7 @@
     .portrait button { position: absolute; left: 10px; bottom: 10px; padding: 6px 9px; border: 1px solid var(--ink); background: var(--surface); font: 500 11px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
     .kicker { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 0 0 14px; color: var(--faint); font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
     .kicker b { color: var(--accent-ink); font-weight: 600; }
-    h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 62px)/1.02 var(--pixel); }
+    h1 { margin: 0; font: 500 clamp(40px, 5.6vw, 62px)/1.02 var(--pixel-art); }
     .dek { margin: 18px 0 0; color: var(--muted); font-size: 19px; line-height: 1.6; }
     .dek strong { color: var(--ink); font-weight: 600; }
     .dek a { color: var(--accent-ink); text-underline-offset: 3px; }
@@ -85,7 +85,7 @@
     .explore-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .ex-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--surface); border: 1px solid var(--line); color: var(--ink); text-decoration: none; }
     .ex-card .meta-row { margin: 0; justify-content: space-between; }
-    .ex-card > b { font: 500 20px/1.2 var(--pixel); font-kerning: none; letter-spacing: .02em; }
+    .ex-card > b { font: 600 20px/1.2 var(--pixel); }
     .ex-foot { margin-top: auto; color: var(--muted); font: 400 12px/1.5 var(--mono); }
     .ex-foot code { font: inherit; padding: 0 3px; border: 1px solid var(--line); }
     .ex-foot .cta { margin: 0 0 0 6px; }
@@ -99,7 +99,7 @@
     .now a:hover { background: var(--sunken); }
     .now .k { display: block; color: var(--faint); font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
     .now .v { display: block; margin-top: 10px; }
-    .now b { display: block; font: 500 20px/1.2 var(--pixel); }
+    .now b { display: block; font: 600 20px/1.2 var(--pixel); }
     .now .v span { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.45; }
     .now .glyph-ico { float: right; width: 20px; height: 20px; shape-rendering: crispEdges; color: var(--accent); }
 
@@ -112,7 +112,7 @@
     .story li::before { content: ""; position: absolute; left: 1px; top: 6px; width: 14px; height: 14px; background: var(--paper); border: 2px solid var(--line); transition: .2s steps(2); }
     .story li.is-lit::before { background: var(--accent); border-color: var(--accent); }
     .story .when { color: var(--accent-ink); font: 500 12px/1.4 var(--mono); letter-spacing: .1em; text-transform: uppercase; }
-    .story h3 { margin: 4px 0 8px; font: 500 24px/1.2 var(--pixel); }
+    .story h3 { margin: 4px 0 8px; font: 600 24px/1.2 var(--pixel); }
     .story p { color: var(--muted); }
     .story p strong { color: var(--ink); }
     .story a { color: var(--accent-ink); text-underline-offset: 3px; }
@@ -139,13 +139,13 @@
     .spine::before { top: 10px; } .spine::after { bottom: 10px; }
     .book.reading .spine { background: var(--blue); }
     .book small { color: var(--faint); font: 500 11px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
-    .book b { display: block; margin-top: 6px; font: 500 20px/1.2 var(--pixel); }
+    .book b { display: block; margin-top: 6px; font: 600 20px/1.2 var(--pixel); }
     .book span { color: var(--muted); font-size: 13px; }
 
     /* Quote */
     .quote { margin: 0; padding: 36px 36px 30px; background: var(--ink); color: var(--paper); }
     .quote p { margin: 0; font: italic 400 clamp(20px, 2.4vw, 25px)/1.55 var(--serif); }
-    .quote p::before { content: "“"; display: block; font: 500 54px/0.6 var(--pixel); color: var(--accent); margin-bottom: 18px; }
+    .quote p::before { content: "“"; display: block; font: 600 54px/0.6 var(--pixel); color: var(--accent); margin-bottom: 18px; }
     .quote footer { margin-top: 18px; color: color-mix(in srgb, var(--paper) 65%, transparent); font: 500 12px/1.5 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
     .quote-after { margin-top: 20px; font-size: 18px; }
 
@@ -165,7 +165,7 @@
     .contact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 22px; }
     .contact-grid a, .contact-grid button { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px; border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent); background: transparent; color: var(--paper); text-decoration: none; text-align: left; }
     .contact-grid a:hover, .contact-grid button:hover { border-color: var(--accent); color: var(--accent); }
-    .contact-grid b { display: block; font: 500 18px/1.2 var(--pixel); }
+    .contact-grid b { display: block; font: 600 18px/1.2 var(--pixel); }
     .contact-grid small { display: block; margin-top: 4px; font: 400 12px/1.4 var(--mono); opacity: .7; }
     footer.site { padding: 28px 0 0; color: var(--faint); font: 400 12px/1.6 var(--mono); }
 

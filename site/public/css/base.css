@@ -7,7 +7,8 @@
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   --sans: "IBM Plex Sans", system-ui, sans-serif;
   --serif: "IBM Plex Serif", Georgia, serif;
-  --pixel: "Pixelify Sans", "IBM Plex Mono", monospace;
+  --pixel: "IBM Plex Sans", system-ui, sans-serif; /* headings */
+  --pixel-art: "Pixelify Sans", "IBM Plex Mono", monospace; /* only the big hello and the monogram */
   --top: 56px;
 }
 @media (prefers-color-scheme: dark) {
@@ -35,7 +36,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .skip:focus { top: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 footer.site kbd { font: inherit; padding: 0 4px; border: 1px solid var(--line); }
-h1, h2, .px, .monogram { font-kerning: none; font-variant-ligatures: none; letter-spacing: .02em; }
+h1, .px, .monogram { font-kerning: none; font-variant-ligatures: none; letter-spacing: .02em; }
+h2, h3 { letter-spacing: -.01em; }
 @keyframes blink { 50% { opacity: 0; } }
 
 /* Pixel primitives */
@@ -47,7 +49,7 @@ h1, h2, .px, .monogram { font-kerning: none; font-variant-ligatures: none; lette
 /* Top bar */
 .topbar { position: sticky; top: 0; z-index: 30; height: var(--top); background: var(--paper); border-bottom: 1px solid var(--line); }
 .topbar-inner { height: 100%; max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 20px; }
-.monogram { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 500 16px/1 var(--pixel); }
+.monogram { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 500 16px/1 var(--pixel-art); }
 .monogram svg { width: 24px; height: 24px; shape-rendering: crispEdges; }
 .topnav { display: flex; gap: 22px; margin-left: 12px; }
 .topnav a { color: var(--muted); font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
@@ -63,7 +65,7 @@ h1, h2, .px, .monogram { font-kerning: none; font-variant-ligatures: none; lette
 section.chapter { padding-top: 76px; }
 .chapter-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
 .chapter-num { color: var(--accent-ink); font: 500 14px/1 var(--mono); }
-h2 { margin: 0; font: 500 34px/1.1 var(--pixel); }
+h2 { margin: 0; font: 600 34px/1.1 var(--pixel); }
 .lead { color: var(--muted); font-size: 17px; margin: 10px 0 26px; }
 p { margin: 0 0 16px; }
 
