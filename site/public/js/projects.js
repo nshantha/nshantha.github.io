@@ -115,7 +115,7 @@ const PROJECTS = [
     if (!summary) return;
     // Private repos are only mentioned when the Worker has a token to count them.
     summary.textContent = gh.includesPrivate
-      ? `${PROJECTS.length} highlights from ${gh.total} repositories: ${gh.public} public, plus ${gh.private} private ideas in progress.`
-      : `${PROJECTS.length} highlights from my ${gh.public} public repositories.`;
+      ? `${PROJECTS.length} highlights from ${gh.total} repositories: ${gh.public} public, plus ${gh.private} private ideas in progress`
+      : `${PROJECTS.length} highlights from my ${gh.public} public repositories`;
   }).catch(() => { /* keep the static text */ });
 })();

@@ -56,7 +56,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 
 ## Interactions
 
-- The home page stays short: each section shows its highlights, and a command button unfolds the rest in place: `cat story.md` (the full story), `./coffee-run` (the game, also at `nitesh.fyi/play`) and `ls projects --all` (every project). Clicking the button types the command out first. The same commands work in the terminal, and without JavaScript everything is simply shown.
+- Every home-page section is headed like a terminal: a `# comment` describing it, then the command as the heading (`cat now.txt`, `cat likes.txt`, `ls posts`…). Three of them fold and unfold: `head story.md` ⇄ `cat story.md` (the full story), `./coffee-run --help` ⇄ `./coffee-run` (the game, also at `nitesh.fyi/play`) and `ls projects | head -4` ⇄ `ls projects --all`. Clicking types the new command out first. The same commands work in the ~ terminal, and without JavaScript everything is shown.
 
 - `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.

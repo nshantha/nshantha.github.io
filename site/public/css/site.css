@@ -127,14 +127,20 @@ a:hover .cta { text-decoration: underline; text-underline-offset: 3px; }
 .now .k { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 .now .cta { margin-top: 12px; }
 
-/* ---- Command expanders: run a command to unfold more ---- */
-.cmd { display: flex; align-items: center; gap: 10px; width: 100%; margin: 18px 0 0; padding: 11px 14px; background: #0d0d0c; color: #e6e3d8; border: 1px solid #000; box-shadow: 3px 3px 0 var(--shadow, #000); font: 500 14px/1.2 "IBM Plex Mono", monospace; text-align: left; cursor: pointer; }
-.cmd:hover { box-shadow: 4px 4px 0 var(--shadow, #000); transform: translate(-1px, -1px); }
-.cmd-prompt { color: #e07a55; }
-.cmd-text { font: inherit; }
-.cmd-text.typing::after { content: "▌"; color: #e07a55; }
-.cmd-hint { margin-left: auto; color: #8b877c; font-size: 12px; white-space: nowrap; }
-.cmd:hover .cmd-hint, .cmd[aria-expanded="true"] .cmd-hint { color: #e07a55; }
+/* ---- Section headings as terminal lines: a # comment, then the command ---- */
+section.chapter > .term-head { margin-bottom: 22px; }
+.term-comment { margin: 0 0 6px; color: var(--faint); font: 400 13px/1.5 "IBM Plex Mono", monospace; }
+.term-comment a { color: inherit; }
+.term-cmd { margin: 0; font: 600 clamp(20px, 2.6vw, 26px)/1.25 "IBM Plex Mono", monospace; letter-spacing: -.01em; }
+.term-cmd code { font: inherit; }
+.term-p { color: var(--accent); margin-right: 2px; }
+.cmd-toggle { display: flex; align-items: baseline; gap: 10px; width: 100%; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.cmd-toggle code { border-bottom: 2px dashed var(--accent-soft); }
+.cmd-toggle:hover code { border-bottom-color: var(--accent); }
+.cmd-text.typing::after { content: "▌"; color: var(--accent); }
+.cmd-hint { margin-left: auto; padding: 4px 8px; border: 1px solid var(--ink); background: var(--surface); color: var(--ink); font: 600 11px/1.2 "IBM Plex Mono", monospace; letter-spacing: .02em; white-space: nowrap; align-self: center; box-shadow: 2px 2px 0 var(--shadow, #000); }
+.cmd-toggle:hover .cmd-hint { background: var(--accent); border-color: var(--accent); color: #fff; }
+.cmd-toggle[aria-expanded="true"] .cmd-hint { background: transparent; box-shadow: none; color: var(--muted); }
 .js .cmd-out:not(.is-open) { display: none; }
 .cmd-out.is-open { animation: cmd-in .35s steps(5); }
 @keyframes cmd-in { from { opacity: 0; transform: translateY(-6px); } }
@@ -145,12 +151,12 @@ a:hover .cta { text-decoration: underline; text-underline-offset: 3px; }
 .js .story.is-open .short { display: none; }
 .js .story:not(.is-open) li { padding-bottom: 22px; }
 .js .story:not(.is-open) h3 { margin-bottom: 4px; font-size: 19px; }
-@media (max-width: 640px) { .cmd { flex-wrap: wrap; } .cmd-hint { margin-left: 22px; width: 100%; } }
+@media (max-width: 640px) { .cmd-toggle { flex-wrap: wrap; } .cmd-hint { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .cmd-out.is-open { animation: none; } }
 
 /* ---- Project cards ---- */
 .pgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.pgrid + .pgrid, .cmd + .pgrid { margin-top: 12px; }
+.pgrid + .pgrid { margin-top: 12px; }
 .pcard { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--surface); border: 1px solid var(--line); color: var(--ink); text-decoration: none; }
 .pcard .meta-row { margin: 0; }
 .pcard b { font: 600 17px/1.3 "IBM Plex Sans", system-ui, sans-serif; }

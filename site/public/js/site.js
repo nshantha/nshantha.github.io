@@ -20,35 +20,38 @@
     });
   }
 
-  // ---- Command expanders: a command button that unfolds more content ---------------
-  // <button class="cmd" data-cmd-target="id"> toggles .is-open on #id. Opening types the
-  // command out first, like a terminal. The same commands work in the ~ terminal.
+  // ---- Command expanders: a section's command heading unfolds its content -----------
+  // <button data-cmd-target="id" data-cmd-closed="head story.md" data-cmd-open="cat story.md">
+  // toggles .is-open on #id, typing the new command out first, like a terminal.
+  // The same commands work in the ~ terminal.
   const expanders = new Map();
   $$('[data-cmd-target]').forEach((btn) => {
     const target = document.getElementById(btn.dataset.cmdTarget);
     if (!target) return;
-    const e = { btn, target, code: $('.cmd-text', btn), hint: $('.cmd-hint', btn) };
-    e.command = e.code.textContent;
-    expanders.set(target.id, e);
+    expanders.set(target.id, { btn, target, code: $('.cmd-text', btn), hint: $('.cmd-hint', btn) });
     btn.addEventListener('click', () => setOpen(target.id, !target.classList.contains('is-open')));
   });
   function setOpen(id, open) {
     const e = expanders.get(id);
-    if (!e) return;
+    if (!e || e.typing || e.target.classList.contains('is-open') === open) return;
+    const command = open ? e.btn.dataset.cmdOpen : e.btn.dataset.cmdClosed;
     const finish = () => {
+      e.typing = false;
+      e.code.textContent = command;
       e.target.classList.toggle('is-open', open);
       e.btn.setAttribute('aria-expanded', String(open));
-      if (open) { e.closedHint = e.hint.textContent; e.hint.textContent = e.btn.dataset.hintOpen || 'hide ↑'; }
+      if (open) { e.closedHint = e.hint.textContent; e.hint.textContent = e.btn.dataset.hintOpen || 'show less ↑'; }
       else if (e.closedHint) e.hint.textContent = e.closedHint;
     };
-    if (!open || reduceMotion || e.target.classList.contains('is-open')) return finish();
-    // Type the command, then reveal.
+    if (reduceMotion) return finish();
+    // Type the command out, then show (or fold) the output.
+    e.typing = true;
     let n = 0;
     e.code.classList.add('typing');
     const tick = setInterval(() => {
-      e.code.textContent = e.command.slice(0, ++n);
-      if (n >= e.command.length) { clearInterval(tick); e.code.classList.remove('typing'); finish(); }
-    }, 28);
+      e.code.textContent = command.slice(0, ++n);
+      if (n >= command.length) { clearInterval(tick); e.code.classList.remove('typing'); finish(); }
+    }, 26);
   }
   function openAndShow(id) {
     const e = expanders.get(id);
@@ -168,11 +171,19 @@
     print(`❯ ${line}`, 'cmd');
     if (!line) return;
     history.push(line); hIndex = history.length;
-    const UNFOLD = { 'cat story.md': 'storyList', './coffee-run': 'playOut', 'ls projects --all': 'projectList' };
-    const unfold = UNFOLD[line.toLowerCase().replace(/\s+/g, ' ')];
-    if (unfold) {
-      if (!onHome) { go('/#' + { storyList: 'story', playOut: 'play', projectList: 'projects' }[unfold]); return; }
-      print('unfolding it on the page…', 'dim'); close(); openAndShow(unfold); return;
+    // The section commands on the home page: run them here and the page follows.
+    const PAGE = {
+      'cat story.md': ['storyList', true], 'head story.md': ['storyList', false],
+      './coffee-run': ['playOut', true], './coffee-run --help': ['playOut', false],
+      'ls projects --all': ['projectList', true], 'ls projects | head -4': ['projectList', false]
+    };
+    const pageCmd = PAGE[line.toLowerCase().replace(/\s+/g, ' ')];
+    if (pageCmd) {
+      const [id, open] = pageCmd;
+      if (!onHome) { go('/#' + { storyList: 'story', playOut: 'play', projectList: 'projects' }[id]); return; }
+      print(open ? 'unfolding it on the page…' : 'folding it up…', 'dim'); close();
+      if (open) openAndShow(id); else { setOpen(id, false); document.getElementById(id).closest('section').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
+      return;
     }
     const [cmd, ...args] = line.split(/\s+/);
     const arg = (args[0] || '').toLowerCase();
