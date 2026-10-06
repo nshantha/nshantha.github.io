@@ -12,16 +12,16 @@
     /* A print-first CV. Source for /Nitesh-Shantha-Kumar-CV.pdf (see tools/build-cv.mjs). */
     :root { --ink: #16150f; --muted: #4a4840; --faint: #77746a; --line: #d6d2c6; --accent: #b4461f; --paper: #f2f0e9; }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--paper); color: var(--ink); font: 9.6pt/1.42 "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-    .sheet { width: 8.5in; min-height: 11in; margin: 24px auto; padding: 0.5in 0.6in; background: #fff; box-shadow: 0 2px 18px rgba(0,0,0,.08); }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 8.9pt/1.36 "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    .sheet { width: 8.5in; min-height: 11in; margin: 24px auto; padding: 0.42in 0.55in; background: #fff; box-shadow: 0 2px 18px rgba(0,0,0,.08); }
     .toolbar { width: 8.5in; margin: 24px auto 0; display: flex; justify-content: space-between; font: 500 12px/1 "IBM Plex Mono", monospace; }
     .toolbar a { color: var(--ink); }
     header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
-    h1 { margin: 0; font-size: 22pt; line-height: 1; letter-spacing: -.01em; }
+    h1 { margin: 0; font-size: 20pt; line-height: 1; letter-spacing: -.01em; }
     .role { margin-top: 5px; color: var(--muted); font-size: 10.5pt; }
     .contact { text-align: right; font: 400 8.5pt/1.6 "IBM Plex Mono", monospace; color: var(--muted); }
     .contact a { color: inherit; text-decoration: none; }
-    h2 { margin: 13px 0 5px; color: var(--accent); font: 600 8.5pt/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; }
+    h2 { margin: 11px 0 4px; color: var(--accent); font: 600 8.5pt/1 "IBM Plex Mono", monospace; letter-spacing: .14em; text-transform: uppercase; }
     p { margin: 0; }
     .summary { margin-top: 10px; }
     .job { margin-top: 6px; }
@@ -30,7 +30,7 @@
     .job-head span { color: var(--faint); font: 400 8.5pt/1.6 "IBM Plex Mono", monospace; white-space: nowrap; }
     .job-title { color: var(--muted); font-style: italic; }
     ul { margin: 4px 0 0; padding-left: 15px; }
-    li { margin: 1px 0; }
+    li { margin: 0; }
     .skills { display: grid; grid-template-columns: 1.35in 1fr; gap: 3px 12px; }
     .skills dt { font-weight: 600; }
     .skills dd { margin: 0; color: var(--muted); }
@@ -58,61 +58,51 @@
     <header>
       <div>
         <h1>Nitesh Shantha Kumar</h1>
-        <div class="role">Software Engineer · Distributed systems, data &amp; reliability</div>
+        <div class="role">Software Engineer · Seattle, WA</div>
       </div>
       <div class="contact">
-        Seattle, WA<br>
         <a href="mailto:nithesh1001@gmail.com">nithesh1001@gmail.com</a><br>
         <a href="https://nitesh.fyi">nitesh.fyi</a> · <a href="https://github.com/nshantha">github.com/nshantha</a>
       </div>
     </header>
-
-    <p class="summary">Software engineer who designs event-driven backend systems: Kafka pipelines, PostgreSQL that stays fast under load, and the reliability work that keeps both running. Technical lead on a retail pricing and promotions platform, and builder of agentic tooling for engineering teams. Background in robotics and safety-critical avionics software.</p>
 
     <h2>Experience</h2>
     <div class="job">
       <div class="job-head"><b>Nordstrom</b><span>Seattle, WA · Aug 2021 – Present</span></div>
       <div class="job-title">Software Engineer — Pricing and Promotions Platform</div>
       <ul>
-        <li>Technical lead for a clearance and promotions platform with REST and Kafka ingestion; split delivery into parallel workstreams and own design review and integration.</li>
-        <li>Move legacy batch pipelines to event-driven publishing on Kafka with the transactional outbox pattern, using feature-flagged, shadow-mode cutovers with rollback plans.</li>
-        <li>Design for scale and resilience: asynchronous processing, rate limiting, event-fed read stores, and fallbacks to upstream services.</li>
-        <li>Diagnose database and throughput problems, lead incident investigations, and write root-cause analyses with prioritised follow-ups.</li>
-        <li>Build alerting and runbooks, plus agentic tooling (skills and subagents) that automates incident triage, used across teams.</li>
+        <li>Technical lead for a clearance and promotions platform with two ingestion paths, a synchronous REST API and an asynchronous Kafka consumer, plus a business-user application; decomposed delivery into dependency-mapped worktracks so four engineers could build in parallel, owning design review and integration across them.</li>
+        <li>Migrated clearance and end-of-lifecycle event publishing off a legacy Oracle and Airflow pipeline onto Kafka using a transactional outbox with confirmed-flush acknowledgement, publishing to existing topics with identical schemas so downstream consumers required zero configuration changes. Cutover gated on a production shadow-mode parity check behind split feature flags, with tiered rollback covering named failure scenarios.</li>
+        <li>Designed the replacement of ~28,000 blocking per-clearance product-service calls/day with a log-compacted Kafka topic consumed into a local read store, keeping the upstream service as a permanent fallback on miss. Baselined production latency and error rate before designing (32ms average, p99 199ms, 0.05% errors across 197,579 calls). Authored three architecture decision records, each naming the rejected alternative and the constraint behind it.</li>
+        <li>Chose asynchronous batch processing over synchronous downstream calls, then rate-limited to 2K clearances/min against a 10-minute SLA to protect upstream inventory, pricing and conflict services despite 5x headroom; load tested to 2.5x the production limit.</li>
+        <li>Root-caused a processing backlog of ~20,000 clearances within 1h18m: the job loaded the entire queue per cycle against an upstream service resolving ~7 records/sec with per-request batching unavailable, giving a hard ceiling near 350 rows per 50-second cycle. Shipped bounded batching as containment, then per-call timeouts and commit-and-continue resilience as the structural fix; published an RCA with five causal chains and 14 prioritised follow-ups.</li>
+        <li>Cut PostgreSQL CPU from 100% to under 10% within 24 hours of diagnosis: traced 5.6B sequential row reads with zero index scans to a COALESCE blocking index use on a view’s join keys, proving the keys were never null and row output identical before proposing (EXPLAIN cost 82,460 → 13; rows scanned 7.5M → 3). Removed the need for a proposed user-facing restriction.</li>
+        <li>Redesigned promotion redemption limit enforcement as a single atomic database operation combining validation and counter increment, eliminating race-condition limit violations; P99 redemption latency 1,000ms → 10ms with support for 10x concurrency.</li>
+        <li>Built and published an agentic incident-investigation toolkit as an installable plugin: 10 skills and 7 subagents automating triage across Slack, New Relic, GitHub, Confluence, ServiceNow and Jira, with 36 structured root-cause documents; extended by another engineer in a 1,557-line pull request.</li>
+        <li>Built the platform alerting programme after two incidents where monitoring appeared healthy but could not fire: 11 category pages pairing every alert condition to concrete triage steps, with 7 of 9 proposed alerts now live in production.</li>
       </ul>
     </div>
     <div class="job">
       <div class="job-head"><b>Ak Aerotek</b><span>Bengaluru, India · May 2016 – May 2019</span></div>
       <div class="job-title">Software Engineer</div>
       <ul>
-        <li>Verification and validation of safety-critical avionics software to DO-178B/C, writing Ada test harnesses and running them on target hardware.</li>
-        <li>Led a small team through code and audit reviews.</li>
+        <li>Verification and validation of safety-critical avionics software to DO-178B/C, authoring Ada test harnesses and executing them against target hardware.</li>
+        <li>Led a team of 6 through code and audit reviews, reducing the delivery defect rate by 90%.</li>
       </ul>
     </div>
-
-    <h2>Skills</h2>
-    <dl class="skills">
-      <dt>Languages</dt><dd>Java, Python, SQL, C++</dd>
-      <dt>Distributed systems</dt><dd>Apache Kafka (Avro, log compaction, ACLs, Confluent Cloud), transactional outbox, event-driven and service-oriented design, REST APIs, concurrency, fault tolerance</dd>
-      <dt>Data</dt><dd>PostgreSQL (query plans, indexing, MVCC), Oracle, DynamoDB, Neo4j, Redis / Valkey, Flyway</dd>
-      <dt>Cloud &amp; operations</dt><dd>AWS (EKS, S3, RDS, Aurora), Kubernetes, Docker, New Relic, Splunk, JMeter, incident response and on-call</dd>
-      <dt>AI &amp; tooling</dt><dd>Agents, skills and subagents, Model Context Protocol (MCP), LangGraph, retrieval over code and knowledge graphs</dd>
-    </dl>
-
-    <h2>Selected projects</h2>
-    <ul class="projects">
-      <li><b>Universal MCP Manager</b> — Electron app for installing and managing MCP servers across Claude Code, VS Code and Cursor.</li>
-      <li><b>AlgoMentor</b> — local-first interview-prep desktop app with a Socratic tutor running on local Claude Code or Codex CLIs.</li>
-      <li><b>Neo4jAI / SqlAI</b> — natural-language interfaces to Neo4j and PostgreSQL through LangGraph agents and MCP servers.</li>
-      <li><b>Bug2 &amp; FireBot</b> — robot motion planning and a ROS firefighting robot from graduate robotics work.</li>
-    </ul>
-
     <h2>Education</h2>
     <div class="edu">
       <div class="job-head"><b>M.S., Engineering Sciences (Robotics) — University at Buffalo, NY</b><span>2019 – 2021</span></div>
       <div class="job-title">Graduate Research Assistant, autonomous-vehicle perception and sensor fusion (LANDR Lab)</div>
-      <div class="job-head"><b>B.E., Electronics &amp; Communication — Visvesvaraya Technological University</b><span>2011 – 2015</span></div>
+      <div class="job-head"><b>B.E., Electronics &amp; Communication — Visvesvaraya Technological University, India</b><span>2011 – 2015</span></div>
     </div>
+    <h2>Technical skills</h2>
+    <dl class="skills">
+      <dt>Languages</dt><dd>Java, Python, SQL, C++</dd>
+      <dt>Distributed systems</dt><dd>Apache Kafka (producers, consumers, topic ACLs, Avro, log compaction, Confluent Cloud), transactional outbox and event-driven architecture, RESTful API design, service-oriented architecture, large-scale distributed systems, concurrency and multi-threading, fault tolerance</dd>
+      <dt>Data</dt><dd>PostgreSQL, Oracle, DynamoDB, Neo4j, Redis / Valkey (ElastiCache)</dd>
+      <dt>Cloud &amp; operations</dt><dd>AWS (EKS, S3, RDS, Aurora), Kubernetes, Docker, New Relic, Splunk, JMeter, Flyway, incident response and on-call</dd>
+    </dl>
   </main>
 </body>
 </html>
