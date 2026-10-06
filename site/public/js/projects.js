@@ -104,7 +104,7 @@ const PROJECTS = [
     const list = document.getElementById('projectList');
     if (list) list.innerHTML = PROJECTS.slice(shown).map(card).join('');
     const more = document.querySelector('[data-cmd-target="projectList"] .cmd-hint');
-    if (more && !more.closest('[aria-expanded="true"]')) more.textContent = `show ${PROJECTS.length - shown} more ↓`;
+    if (more && !more.closest('[aria-expanded="true"]')) more.textContent = `show ${PROJECTS.length - shown} more ↵`;
   }
   render();
 
