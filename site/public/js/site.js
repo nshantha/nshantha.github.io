@@ -20,10 +20,9 @@
     });
   }
 
-  // ---- Runnable section commands -----------------------------------------------------
-  // Each section heading is a command (<button class="run" data-run="outputId">). Running
-  // it types the command out and prints the section's output underneath. Commands run
-  // themselves the first time you scroll to them; clicking runs them again.
+  // ---- Runnable commands: where a section has more to show ---------------------------
+  // <button data-cmd-target="id"> shows a command. Running it types the command out and
+  // prints the output (#id gets .is-open); running it again clears it.
   const typeOut = (code, text, done) => {
     if (reduceMotion) { code.textContent = text; return done(); }
     let n = 0;
@@ -33,31 +32,6 @@
       if (n >= text.length) { clearInterval(tick); code.classList.remove('typing'); done(); }
     }, 26);
   };
-  function runSection(btn, instant) {
-    const out = document.getElementById(btn.dataset.run);
-    const code = $('.cmd-text', btn);
-    if (!out || btn.dataset.busy) return;
-    if (instant) { out.classList.add('ran'); return; }
-    btn.dataset.busy = '1';
-    out.classList.remove('ran');
-    typeOut(code, code.dataset.cmd, () => { out.classList.add('ran'); delete btn.dataset.busy; });
-  }
-  const runButtons = $$('button.run[data-run]');
-  runButtons.forEach((btn) => btn.addEventListener('click', () => runSection(btn)));
-  if (reduceMotion || !('IntersectionObserver' in window)) runButtons.forEach((btn) => runSection(btn, true));
-  else {
-    const io = new IntersectionObserver((entries) => entries.forEach((en) => {
-      if (!en.isIntersecting) return;
-      io.unobserve(en.target);
-      runSection(en.target, en.boundingClientRect.top < window.innerHeight * 0.2);
-    }), { rootMargin: '0px 0px -20% 0px' });
-    runButtons.forEach((btn) => io.observe(btn));
-  }
-  const ensureRan = (el) => { const sec = el.closest('section'); const btn = sec && $('button.run[data-run]', sec); if (btn) runSection(btn, true); };
-
-  // ---- Next prompts: run the command shown to unfold more (or fold it back) ---------
-  // <button data-cmd-target="id" data-cmd-closed="cat story.md" data-cmd-open="head story.md">
-  // runs the command it shows, toggles .is-open on #id, then offers the opposite command.
   const expanders = new Map();
   $$('[data-cmd-target]').forEach((btn) => {
     const target = document.getElementById(btn.dataset.cmdTarget);
@@ -68,18 +42,16 @@
   function setOpen(id, open) {
     const e = expanders.get(id);
     if (!e || e.typing || e.target.classList.contains('is-open') === open) return;
-    ensureRan(e.btn);
-    const running = open ? e.btn.dataset.cmdClosed : e.btn.dataset.cmdOpen;
-    const next = open ? e.btn.dataset.cmdOpen : e.btn.dataset.cmdClosed;
-    e.typing = true;
-    typeOut(e.code, running, () => {
+    const finish = () => {
       e.typing = false;
       e.target.classList.toggle('is-open', open);
       e.btn.setAttribute('aria-expanded', String(open));
-      if (open) { e.closedHint = e.hint.textContent; e.hint.textContent = e.btn.dataset.hintOpen || 'show less ↵'; }
+      if (open) { e.closedHint = e.hint.textContent; e.hint.textContent = e.btn.dataset.hintOpen || 'clear ↵'; }
       else if (e.closedHint) e.hint.textContent = e.closedHint;
-      setTimeout(() => { e.code.textContent = next; }, reduceMotion ? 0 : 450);
-    });
+    };
+    if (!open) return finish();
+    e.typing = true;
+    typeOut(e.code, e.code.dataset.cmd, finish);
   }
   function openAndShow(id) {
     const e = expanders.get(id);
@@ -149,9 +121,8 @@
     '  cd <section>      jump to a section' + (onHome ? '' : ' (on the home page)'),
     '  open <link>       x · github · substack · hushy · resume · cv',
     '  play              play the coffee-run robot game',
-    'on the home page, the section commands run right there:',
-    '  cat now.txt · head story.md · cat story.md · ./coffee-run',
-    '  cat likes.txt · cat why.md · ls posts · ls projects --all',
+    'on the home page these run right there:',
+    '  cat story.md · ./coffee-run · ls projects --all',
     '  cv                download my CV',
     '  coffee            make a cup',
     '  theme             toggle dark mode',
@@ -200,19 +171,11 @@
     history.push(line); hIndex = history.length;
     // The section commands on the home page: run them here and the page follows.
     const PAGE = {
-      'cat story.md': ['storyList', true], 'head story.md': ['storyList', false],
-      './coffee-run': ['playOut', true], './coffee-run --help': ['playOut', false],
-      'ls projects --all': ['projectList', true], 'ls projects | head -4': ['projectList', false]
+      'cat story.md': ['storyList', true], './coffee-run': ['playOut', true], 'ls projects --all': ['projectList', true]
     };
-    const RUNS = { 'cat now.txt': 'now', 'cat likes.txt': 'likes', 'cat why.md': 'why', 'ls posts': 'writing' };
-    const runs = onHome && RUNS[line.toLowerCase().replace(/\s+/g, ' ')];
-    if (runs) {
-      print('running it on the page…', 'dim'); close();
-      const sec = document.getElementById(runs);
-      sec.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      runSection($('button.run[data-run]', sec));
-      return;
-    }
+    const JUMPS = { 'cat now.txt': 'now', 'cat likes.txt': 'likes', 'cat why.md': 'why', 'ls posts': 'writing', 'head story.md': 'story' };
+    const jump = onHome && JUMPS[line.toLowerCase().replace(/\s+/g, ' ')];
+    if (jump) { print(`→ ${jump}`, 'dim'); close(); document.getElementById(jump).scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); return; }
     const pageCmd = PAGE[line.toLowerCase().replace(/\s+/g, ' ')];
     if (pageCmd) {
       const [id, open] = pageCmd;
@@ -257,7 +220,7 @@
       default: return print(`${cmd}: command not found. type \`help\`.`, 'err');
     }
   }
-  const COMPLETIONS = ['cat story.md', 'head story.md', './coffee-run', 'ls projects --all', 'cat now.txt', 'cat likes.txt', 'cat why.md', 'ls posts', 'help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
+  const COMPLETIONS = ['cat story.md', './coffee-run', 'ls projects --all', 'help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
   function onKey(e) {
     if (e.key === 'Enter') { run(input.value); input.value = ''; }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (hIndex > 0) input.value = history[--hIndex]; }
