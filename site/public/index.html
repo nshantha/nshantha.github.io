@@ -19,8 +19,9 @@
   <link rel="stylesheet" href="/css/site.css">
   <style>
     /* Layout */
-    .layout { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 250px minmax(0, 720px) 250px; gap: 56px; justify-content: center; }
-    .rail { position: sticky; top: calc(var(--top) + 32px); align-self: start; max-height: calc(100vh - var(--top) - 48px); overflow: auto; padding-bottom: 24px; scrollbar-width: thin; }
+    .layout { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 240px minmax(0, 760px); gap: 64px; justify-content: center; }
+    .topbar-inner { max-width: 1112px; } /* same width as the two columns below */
+    .rail { position: sticky; top: calc(var(--top) + 32px); margin-top: 60px; align-self: start; max-height: calc(100vh - var(--top) - 48px); overflow: auto; padding-bottom: 24px; scrollbar-width: thin; }
     .rail-label { margin: 0 0 14px; color: var(--faint); font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; }
 
     /* Left: tree + coffee */
@@ -77,7 +78,7 @@
     .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
     .links a, .links button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 11px; background: var(--surface); border: 1px solid var(--ink); text-decoration: none; font: 500 12px/1 var(--mono); color: var(--ink); }
     .links .primary { background: var(--ink); color: var(--paper); }
-    .socials { display: none; gap: 16px; margin: 14px 0 0; font: 500 12px/1 var(--mono); }
+    .socials { display: flex; gap: 16px; margin: 16px 0 0; font: 500 12px/1 var(--mono); }
     .socials a { color: var(--muted); text-decoration: none; }
     .socials a:hover { color: var(--accent-ink); }
     .explore { margin-top: 44px; }
@@ -183,16 +184,15 @@
     .mobile-toc-btn { display: none; }
 
     @media (max-width: 1320px) {
-      .layout { grid-template-columns: 240px minmax(0, 720px); gap: 48px; }
-      .rail-right { display: none; }
-      .socials { display: flex; }
+      .layout { grid-template-columns: 220px minmax(0, 720px); gap: 48px; }
+      .topbar-inner { max-width: 1036px; }
     }
     @media (max-width: 960px) {
       .layout { grid-template-columns: minmax(0, 1fr); padding: 0 16px; }
-      .rail-left { position: fixed; inset: var(--top) 0 auto 0; z-index: 25; max-height: 78vh; padding: 20px 16px; background: var(--paper); border-bottom: 1px solid var(--ink); transform: translateY(-110%); visibility: hidden; transition: transform .2s steps(4), visibility .2s; }
+      .rail-left { position: fixed; inset: var(--top) 0 auto 0; margin-top: 0; z-index: 25; max-height: 78vh; padding: 20px 16px; background: var(--paper); border-bottom: 1px solid var(--ink); transform: translateY(-110%); visibility: hidden; transition: transform .2s steps(4), visibility .2s; }
       .rail-left.is-open { transform: none; visibility: visible; }
       .mobile-toc-btn { display: inline-flex; }
-      .topnav, .kbd-hint, .rail-hint { display: none; }
+      .kbd-hint { display: none; }
       .topbar-inner { padding: 0 16px; gap: 12px; }
       main { padding-top: 32px; }
       .contact { padding: 28px 20px; margin-inline: -16px; }
@@ -200,7 +200,6 @@
     @media (max-width: 640px) {
       .hero { grid-template-columns: 1fr; gap: 24px; }
       .portrait { max-width: 150px; }
-      .socials { display: flex; }
       .explore-grid { grid-template-columns: 1fr; }
       .now { grid-template-columns: 1fr 1fr; }
       .likes, .shelf, .contact-grid { grid-template-columns: 1fr; }
@@ -217,15 +216,7 @@
     <div class="topbar-inner">
       <button class="icon-btn mobile-toc-btn" id="tocToggle" type="button" aria-expanded="false" aria-controls="toc">Contents</button>
       <a class="monogram" href="#top" aria-label="Back to top"><svg class="" viewBox="0 0 9 9" aria-hidden="true"><rect width="9" height="9" fill="var(--accent)"/><g fill="#fff"><rect x="1" y="1" width="1" height="1"/><rect x="7" y="1" width="1" height="1"/><rect x="1" y="2" width="1" height="1"/><rect x="2" y="2" width="1" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="1" y="3" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="1" y="4" width="1" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="7" y="4" width="1" height="1"/><rect x="1" y="5" width="1" height="1"/><rect x="5" y="5" width="1" height="1"/><rect x="7" y="5" width="1" height="1"/><rect x="1" y="6" width="1" height="1"/><rect x="6" y="6" width="1" height="1"/><rect x="7" y="6" width="1" height="1"/><rect x="1" y="7" width="1" height="1"/><rect x="7" y="7" width="1" height="1"/></g></svg><span>Nitesh Shantha Kumar</span></a>
-      <nav class="topnav" aria-label="Primary">
-        <a href="#story">Story</a>
-        <a href="#play" class="nav-play">Play<i aria-hidden="true"></i></a>
-        <a href="#projects">Projects</a>
-        <a href="/resume">Resume</a>
-        <a href="#elsewhere">Contact</a>
-      </nav>
       <div class="top-actions">
-        <button class="icon-btn pixel-btn" id="paletteOpen" type="button" aria-label="Open command menu"><span class="kbd-hint">Jump to</span> <kbd>⌘K</kbd></button>
         <button class="icon-btn term-btn" type="button" data-terminal aria-label="Open terminal"><span aria-hidden="true">❯_</span><span class="kbd-hint">Terminal</span></button>
         <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button>
       </div>
@@ -261,7 +252,6 @@
         </svg>
         <div><output id="brewPct">0%</output><small id="brewNote">brewing as you read</small></div>
       </div>
-      <p class="rail-hint">Press <kbd>J</kbd> / <kbd>K</kbd> for sections<br><kbd>⌘K</kbd> or <kbd>/</kbd> to search<br><kbd>~</kbd> for a terminal</p>
     </aside>
 
     <main id="main">
@@ -526,33 +516,12 @@
             <a href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer"><span><b>X</b><small>@nitesh_aradhya</small></span><span>↗</span></a>
             <a href="https://onemorelayer.dev/" target="_blank" rel="noreferrer"><span><b>One More Layer</b><small>my Substack</small></span><span>↗</span></a>
             <a href="https://github.com/nshantha/" target="_blank" rel="noreferrer"><span><b>GitHub</b><small>@nshantha</small></span><span>↗</span></a>
-            <a href="/Nitesh-Shantha-Kumar-CV.pdf" download><span><b>CV</b><small>download as PDF</small></span><span>↓</span></a>
-            <a href="/resume"><span><b>Resume</b><small>what I know, and where I’ve worked</small></span><span>→</span></a>
-            <a href="https://tryhushy.com/" target="_blank" rel="noreferrer"><span><b>Hushy</b><small>tryhushy.com</small></span><span>↗</span></a>
-            <button type="button" data-terminal><span><b>Terminal</b><small>or press ~ anywhere</small></span><span>❯</span></button>
           </div>
         </section>
 
         <footer class="site">© <span id="year">2026</span> Nitesh Shantha Kumar · Made with love, and a lot of coffee. Press <kbd>~</kbd> for a terminal.</footer>
       </article>
     </main>
-
-    <aside class="rail rail-right" aria-label="Quick links">
-      <div class="card">
-        <h3>Nitesh Shantha Kumar</h3>
-        <p>Software engineer · Seattle, WA</p>
-        <span class="status">Building Hushy</span>
-        <div class="action-list">
-          <button class="action primary pixel-btn" type="button" data-action="copy-email">Copy email <span class="muted">⧉</span></button>
-          <a class="action" href="/resume">Resume <span class="muted">→</span></a>
-          <a class="action" href="/Nitesh-Shantha-Kumar-CV.pdf" download>Download CV <span class="muted">↓</span></a>
-          <button class="action" type="button" data-terminal>Terminal <span class="muted">~</span></button>
-          <a class="action" href="https://x.com/nitesh_aradhya" target="_blank" rel="noreferrer">X <span class="muted">↗</span></a>
-          <a class="action" href="https://onemorelayer.dev/" target="_blank" rel="noreferrer">Substack <span class="muted">↗</span></a>
-          <a class="action" href="https://github.com/nshantha/" target="_blank" rel="noreferrer">GitHub <span class="muted">↗</span></a>
-        </div>
-      </div>
-    </aside>
   </div>
 
   <dialog class="palette" id="palette" aria-label="Jump to">
@@ -726,7 +695,6 @@
     }
     function openPalette() { pInput.value = ''; pIndex = 0; renderPalette(); palette.showModal(); pInput.focus(); }
     function runPalette(i) { const it = pMatches[i]; if (!it) return; palette.close(); it.run(); }
-    $('#paletteOpen').addEventListener('click', openPalette);
     pInput.addEventListener('input', () => { pIndex = 0; renderPalette(); });
     pInput.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown') { e.preventDefault(); pIndex = (pIndex + 1) % Math.max(1, pMatches.length); renderPalette(); }
