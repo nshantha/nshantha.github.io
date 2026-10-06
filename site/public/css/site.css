@@ -140,18 +140,14 @@ section.chapter > .term-head { margin-bottom: 22px; }
 .cmd-toggle:hover .cmd-hint, .cmd-toggle:focus-visible .cmd-hint { background: #e07a55; border-color: #e07a55; color: #fff; }
 .next-prompt { margin: 22px 0 0; padding: 12px 14px; background: #0d0d0c; color: #e6e3d8; border: 1px solid #000; box-shadow: 3px 3px 0 var(--shadow, #000); font: 500 15px/1.3 "IBM Plex Mono", monospace; }
 .next-prompt .term-p { color: #e07a55; }
-.next-prompt + .pgrid, .next-prompt + .cmd-out { margin-top: 14px; }
+.next-prompt + .cmd-out, .next-prompt + .story-wrap { margin-top: 22px; }
+#projectList { margin-top: 14px; }
+.story .short { display: none; }
+.js .story-wrap:has(.story:not(.is-open)) .story-line { display: none; }
 .js .cmd-out:not(.is-open) { display: none; }
 .cmd-out.is-open { animation: cmd-in .35s steps(5); }
 @keyframes cmd-in { from { opacity: 0; transform: translateY(-6px); } }
 @media print { .js .cmd-out { display: block !important; } .next-prompt { display: none; } }
-/* The story stays visible: collapsed shows one line per milestone, open shows it all. */
-.js .story.cmd-out:not(.is-open) { display: block; }
-.story .short { margin: 0; color: var(--muted); }
-.js .story:not(.is-open) .long { display: none; }
-.js .story.is-open .short { display: none; }
-.js .story:not(.is-open) li { padding-bottom: 22px; }
-.js .story:not(.is-open) h3 { margin-bottom: 4px; font-size: 19px; }
 @media (max-width: 640px) { .cmd-toggle { flex-wrap: wrap; } .cmd-hint { margin-left: 0; } }
 @media (prefers-reduced-motion: reduce) { .cmd-out.is-open { animation: none; } }
 

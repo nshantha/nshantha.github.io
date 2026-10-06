@@ -326,6 +326,7 @@
         <section class="chapter" id="story" aria-labelledby="story-title">
           <div class="term-head"><h2 id="story-title"><span class="hash" aria-hidden="true">#</span> my story</h2><p class="term-sub">from soldering robots in Bangalore to building agents in Seattle</p></div>
           <div class="sec-body">
+          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="storyList" aria-controls="storyList" aria-expanded="false" data-hint-open="clear ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="cat story.md">cat story.md</code><span class="cmd-hint">run ↵</span></button></div>
           <div class="story-wrap">
           <span class="story-line" id="storyLine" aria-hidden="true"></span>
           <ol class="story cmd-out" id="storyList">
@@ -388,7 +389,6 @@
             </li>
           </ol>
           </div>
-          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="storyList" aria-controls="storyList" aria-expanded="false" data-hint-open="fold it ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="cat story.md">cat story.md</code><span class="cmd-hint">read it all ↵</span></button></div>
           </div>
         </section>
 
@@ -396,7 +396,7 @@
         <section class="chapter" id="play" aria-labelledby="play-title">
           <div class="term-head"><h2 id="play-title"><span class="hash" aria-hidden="true">#</span> coffee run</h2><p class="term-sub">A tiny puzzle built on Bug2, one of the first robot algorithms I wrote. Place a few walls and pick which side the robot hugs, so it grabs every coffee bean on its way to the flag. <span data-stars>8 levels, 24 stars</span></p></div>
           <div class="sec-body">
-          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="playOut" aria-controls="playOut" aria-expanded="false" data-hint-open="quit ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="./coffee-run">./coffee-run</code><span class="cmd-hint">start the game ↵</span></button></div>
+          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="playOut" aria-controls="playOut" aria-expanded="false" data-hint-open="quit ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="./coffee-run">./coffee-run</code><span class="cmd-hint">run ↵</span></button></div>
           <div class="cmd-out" id="playOut">
           <div class="game steps">
             <div class="level-strip" id="levelStrip" role="group" aria-label="Levels"></div>
@@ -508,10 +508,12 @@
         <section class="chapter" id="projects" aria-labelledby="projects-title">
           <div class="term-head"><h2 id="projects-title"><span class="hash" aria-hidden="true">#</span> projects</h2><p class="term-sub"><span id="repoSummary">highlights from my repositories on GitHub</span></p></div>
           <div class="sec-body">
+          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="projectsOut" aria-controls="projectsOut" aria-expanded="false" data-hint-open="clear ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="ls projects">ls projects</code><span class="cmd-hint">run ↵</span></button></div>
+          <div class="cmd-out" id="projectsOut">
           <div class="pgrid" id="projectsFeatured" data-count="4"></div>
-          <div class="next-prompt"><button type="button" class="cmd-toggle" data-cmd-target="projectList" aria-controls="projectList" aria-expanded="false" data-hint-open="show less ↵"><span class="term-p" aria-hidden="true">❯</span> <code class="cmd-text" data-cmd="ls projects --all">ls projects --all</code><span class="cmd-hint">show the rest ↵</span></button></div>
-          <div class="pgrid cmd-out" id="projectList"></div>
+          <div class="pgrid" id="projectList"></div>
           <p class="more-link"><a href="https://github.com/nshantha?tab=repositories" target="_blank" rel="noreferrer">Everything else is on GitHub ↗</a></p>
+          </div>
           </div>
         </section>
 

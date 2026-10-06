@@ -56,7 +56,7 @@ Both pages share the same pixel look and the same blog-style layout: a tree tabl
 
 ## Interactions
 
-- Each home-page section is titled like a shell comment (`# my story`) and shows its highlights. Where there's more, a runnable command follows: `cat story.md` (the full story), `./coffee-run` (the game, also at `nitesh.fyi/play`) and `ls projects --all`. Running one types it out and prints the rest underneath; running it again clears it. The `~` terminal accepts the same commands. Without JavaScript, everything is shown.
+- Each home-page section is titled like a shell comment (`# my story`). Most sections just show their content. Story, game and projects instead show a command first, `cat story.md`, `./coffee-run` (also at `nitesh.fyi/play`) and `ls projects`, and print their content underneath when you run it; running it again clears it. The `~` terminal accepts the same commands. Without JavaScript, everything is shown.
 
 - `⌘K` / `Ctrl+K` or `/` opens a command menu to jump to sections, projects, and links.
 - `j` / `k` move to the next or previous section.

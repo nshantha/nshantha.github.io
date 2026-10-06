@@ -122,7 +122,7 @@
     '  open <link>       x · github · substack · hushy · resume · cv',
     '  play              play the coffee-run robot game',
     'on the home page these run right there:',
-    '  cat story.md · ./coffee-run · ls projects --all',
+    '  cat story.md · ./coffee-run · ls projects',
     '  cv                download my CV',
     '  coffee            make a cup',
     '  theme             toggle dark mode',
@@ -171,7 +171,7 @@
     history.push(line); hIndex = history.length;
     // The section commands on the home page: run them here and the page follows.
     const PAGE = {
-      'cat story.md': ['storyList', true], './coffee-run': ['playOut', true], 'ls projects --all': ['projectList', true]
+      'cat story.md': ['storyList', true], './coffee-run': ['playOut', true], 'ls projects': ['projectsOut', true], 'ls projects --all': ['projectsOut', true]
     };
     const JUMPS = { 'cat now.txt': 'now', 'cat likes.txt': 'likes', 'cat why.md': 'why', 'ls posts': 'writing', 'head story.md': 'story' };
     const jump = onHome && JUMPS[line.toLowerCase().replace(/\s+/g, ' ')];
@@ -179,7 +179,7 @@
     const pageCmd = PAGE[line.toLowerCase().replace(/\s+/g, ' ')];
     if (pageCmd) {
       const [id, open] = pageCmd;
-      if (!onHome) { go('/#' + { storyList: 'story', playOut: 'play', projectList: 'projects' }[id]); return; }
+      if (!onHome) { go('/#' + { storyList: 'story', playOut: 'play', projectsOut: 'projects' }[id]); return; }
       print(open ? 'unfolding it on the page…' : 'folding it up…', 'dim'); close();
       if (open) openAndShow(id); else { setOpen(id, false); document.getElementById(id).closest('section').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }
       return;
@@ -220,7 +220,7 @@
       default: return print(`${cmd}: command not found. type \`help\`.`, 'err');
     }
   }
-  const COMPLETIONS = ['cat story.md', './coffee-run', 'ls projects --all', 'help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
+  const COMPLETIONS = ['cat story.md', './coffee-run', 'help', 'whoami', 'ls', 'ls projects', 'cat story', 'cat now', 'cat likes', 'cat quote', 'open x', 'open github', 'open substack', 'open hushy', 'open resume', 'open cv', 'play', 'cv', 'coffee', 'theme', 'clear', 'history', 'exit', ...SECTIONS.map((s) => 'cd ' + s)];
   function onKey(e) {
     if (e.key === 'Enter') { run(input.value); input.value = ''; }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (hIndex > 0) input.value = history[--hIndex]; }

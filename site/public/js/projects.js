@@ -74,7 +74,7 @@ const PROJECTS = [
 
 // Renders projects wherever the page asks for them:
 //   #projectsFeatured  the first few, as cards
-//   #projectList       the rest, revealed by `ls projects --all`
+//   #projectList       the rest; both print when you run `ls projects`
 //   #repoSummary       a live line of repository counts from /api/github
 (() => {
   const esc = (v) => String(v).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[c]);
@@ -103,8 +103,6 @@ const PROJECTS = [
     // #projectList holds the projects not already featured.
     const list = document.getElementById('projectList');
     if (list) list.innerHTML = PROJECTS.slice(shown).map(card).join('');
-    const more = document.querySelector('[data-cmd-target="projectList"] .cmd-hint');
-    if (more && !more.closest('[aria-expanded="true"]')) more.textContent = `show ${PROJECTS.length - shown} more ↵`;
   }
   render();
 
